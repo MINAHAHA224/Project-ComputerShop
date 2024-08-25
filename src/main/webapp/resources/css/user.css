@@ -1,0 +1,14 @@
+.header_title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e6caca;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table {
+    border-radius: 5px;
+    border: 1px solid #e3d6d6;
+
+}
