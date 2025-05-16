@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import vn.hoidanit.laptopshop.domain.Product_;
+import vn.javaweb.ComputerShop.domain.Product_;
 import vn.javaweb.ComputerShop.domain.Product;
 
 public class ProductSpecs {
