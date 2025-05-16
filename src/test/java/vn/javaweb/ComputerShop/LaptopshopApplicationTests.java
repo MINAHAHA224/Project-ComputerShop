@@ -1,4 +1,4 @@
-package vn.hoidanit.laptopshop;
+package vn.javaweb.ComputerShop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
