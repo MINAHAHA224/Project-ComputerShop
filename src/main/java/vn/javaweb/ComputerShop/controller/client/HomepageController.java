@@ -11,11 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import vn.javaweb.ComputerShop.domain.Cart;
-import vn.javaweb.ComputerShop.domain.Product;
-import vn.javaweb.ComputerShop.domain.User;
-import vn.javaweb.ComputerShop.domain.dto.ProductCriteriaDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ProductRpDTO;
+import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
+import vn.javaweb.ComputerShop.domain.dto.request.ProductCriteriaDTO;
 import vn.javaweb.ComputerShop.service.ProductService;
 import vn.javaweb.ComputerShop.service.UserService;
 
@@ -29,32 +27,30 @@ public class HomepageController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String getHomepage(Model model, HttpServletRequest request) {
-        Pageable pageable = PageRequest.of(0, 10);
+    @GetMapping("/home")
+    public String getHomepage(Model model) {
+        List<ProductRpDTO> listResult = this.productService.getAllProduct();
+        model.addAttribute("products", listResult);
 
-        Page<Product> pageProducts = this.productService.getAllProduct(pageable);
 
-        List<Product> allProduct = pageProducts.getContent();
-        model.addAttribute("products", allProduct);
-
-        HttpSession session = request.getSession(false);
-
-        User user = this.userService.getUserByEmail((String) session.getAttribute("email"));
-        Cart cart = this.productService.getCartByUser(user);
-        if (cart == null) {
-            Cart newCart = new Cart();
-            int sum = 0;
-            newCart.setSum(sum);
-
-            session.setAttribute("sum", newCart.getSum());
-
-        } else {
-            Cart newCart = new Cart();
-            session.setAttribute("sum", newCart.getSum());
-        }
-        return "client/Homepage/show";
+        return "client/homepage/show";
     }
+
+    //        HttpSession session = request.getSession(false);
+//
+//        UserEntity user = this.userService.getUserByEmail((String) session.getAttribute("email"));
+//        CartEntity cart = this.productService.getCartByUser(user);
+//        if (cart == null) {
+//            CartEntity newCart = new CartEntity();
+//            int sum = 0;
+//            newCart.setSum(sum);
+//
+//            session.setAttribute("sum", newCart.getSum());
+//
+//        } else {
+//            CartEntity newCart = new CartEntity();
+//            session.setAttribute("sum", newCart.getSum());
+//        }
 
     @GetMapping("/accessDeny")
     public String getAccessdenyPage() {
@@ -75,10 +71,10 @@ public class HomepageController {
             page = 1;
         }
         Pageable pageable = PageRequest.of(page - 1, 6);
-        Page<Product> prs = this.productService.fetchProductsWithSpec(pageable, productCriteriaDTO);
+        Page<ProductEntity> prs = this.productService.fetchProductsWithSpec(pageable, productCriteriaDTO);
 
-        List<Product> products = prs.getContent().size() > 0 ? prs.getContent()
-                : new ArrayList<Product>();
+        List<ProductEntity> products = prs.getContent().size() > 0 ? prs.getContent()
+                : new ArrayList<ProductEntity>();
 
         String qs = request.getQueryString();
         if (qs != null && !qs.isBlank()) {

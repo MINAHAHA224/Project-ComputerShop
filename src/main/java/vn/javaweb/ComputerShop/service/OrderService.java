@@ -1,16 +1,12 @@
 package vn.javaweb.ComputerShop.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
-import vn.javaweb.ComputerShop.domain.Cart;
-import vn.javaweb.ComputerShop.domain.CartDetail;
-import vn.javaweb.ComputerShop.domain.Order;
-import vn.javaweb.ComputerShop.domain.OrderDetail;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.*;
+import vn.javaweb.ComputerShop.domain.entity.OrderDetailEntity;
 import vn.javaweb.ComputerShop.repository.CartDetailRepository;
 import vn.javaweb.ComputerShop.repository.CartRepository;
 import vn.javaweb.ComputerShop.repository.OrderDetailRepository;
@@ -32,34 +28,34 @@ public class OrderService {
         this.cartDetailRepository = cartDetailRepository;
     }
 
-    public Order getOrderById(long id) {
+    public OrderEntity getOrderById(long id) {
         return this.orderRepository.findById(id);
     }
 
-    public List<Order> getOrderByUser(User user) {
+    public List<OrderEntity> getOrderByUser(UserEntity user) {
         return this.orderRepository.findByUser(user);
     }
 
-    public List<OrderDetail> getOrderDetailByOrder(Order order) {
+    public List<OrderDetailEntity> getOrderDetailByOrder(OrderEntity order) {
         return this.orderDetailRepository.findByOrder(order);
     }
 
     public void deleteOrder(long id) {
 
-        Order order = this.getOrderById(id);
-        List<OrderDetail> orderDetails = this.getOrderDetailByOrder(order);
-        for (OrderDetail orderDetail : orderDetails) {
+        OrderEntity order = this.getOrderById(id);
+        List<OrderDetailEntity> orderDetails = this.getOrderDetailByOrder(order);
+        for (OrderDetailEntity orderDetail : orderDetails) {
             this.orderDetailRepository.deleteById(orderDetail.getId());
         }
         this.orderRepository.deleteById(id);
     }
 
     public void handlePlaceOrder(
-            User user, HttpSession session,
+            UserEntity user, HttpSession session,
             String receiverName, String receiverAddress, String receiverPhone) {
 
         // create order
-        Order order = new Order();
+        OrderEntity order = new OrderEntity();
         order.setUser(user);
         order.setReceiverName(receiverName);
         order.setReceiverAddress(receiverAddress);
@@ -70,13 +66,13 @@ public class OrderService {
         // create orderDetail
 
         // step 1: get cart by user
-        Cart cart = this.cartRepository.findByUser(user);
+        CartEntity cart = this.cartRepository.findByUser(user);
         if (cart != null) {
-            List<CartDetail> cartDetails = cart.getCartDetails();
+            List<CartDetailEntity> cartDetails = cart.getCartDetails();
 
             if (cartDetails != null) {
-                for (CartDetail cd : cartDetails) {
-                    OrderDetail orderDetail = new OrderDetail();
+                for (CartDetailEntity cd : cartDetails) {
+                    OrderDetailEntity orderDetail = new OrderDetailEntity();
                     orderDetail.setOrder(order);
                     orderDetail.setProduct(cd.getProduct());
                     orderDetail.setPrice(cd.getPrice() * cd.getQuantity());
@@ -86,7 +82,7 @@ public class OrderService {
                 }
 
                 // step 2: delete cart_detail and cart
-                for (CartDetail cd : cartDetails) {
+                for (CartDetailEntity cd : cartDetails) {
                     totalPrice = totalPrice + cd.getQuantity() * cd.getPrice();
                     this.cartDetailRepository.deleteById(cd.getId());
 

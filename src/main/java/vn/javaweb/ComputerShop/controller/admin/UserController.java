@@ -16,7 +16,7 @@ import org.springframework.validation.FieldError;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.service.UploadService;
 import vn.javaweb.ComputerShop.service.UserService;
 
@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("/admin/user")
     public String showUserPage(Model model) {
-        List<User> listUser = this.userService.getAllUser();
+        List<UserEntity> listUser = this.userService.getAllUser();
         model.addAttribute("updateUser", listUser);
 
         return "admin/user/show";
@@ -50,15 +50,15 @@ public class UserController {
 
     @GetMapping("/admin/user/create")
     public String getCreateUser(Model model) {
-        model.addAttribute("newUser", new User());
+        model.addAttribute("newUser", new UserEntity());
 
         return "admin/user/create";
     }
 
     @PostMapping("/admin/user/create")
     public String postCreateUser(Model model,
-            @Valid @ModelAttribute("newUser") User hoidanit, BindingResult newUserBingdingResult,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+                                 @Valid @ModelAttribute("newUser") UserEntity hoidanit, BindingResult newUserBingdingResult,
+                                 @RequestParam("hoidanitFile") MultipartFile file) {
 
         List<FieldError> errors = newUserBingdingResult.getFieldErrors();
         for (FieldError error : errors) {
@@ -76,7 +76,7 @@ public class UserController {
         hoidanit.setPassword(hashPassword);
 
         hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
-        this.userService.handleSaveUser(hoidanit);
+//        this.userService.handleSaveUser(hoidanit);
         return "redirect:/admin/user";
     }
 
@@ -84,7 +84,7 @@ public class UserController {
 
     @GetMapping("/admin/user/{id}")
     public String getDetailPage(Model model, @PathVariable long id, HttpServletResponse response) {
-        List<User> dataToDetail = this.userService.getFirstUserById(id);
+        List<UserEntity> dataToDetail = this.userService.getFirstUserById(id);
         model.addAttribute("listInfoUser", dataToDetail);
 
         return "admin/user/detail";
@@ -93,13 +93,13 @@ public class UserController {
     @GetMapping("/admin/user/update/{id}")
     public String getUpdatePage(Model model, @PathVariable long id) {
 
-        User dataToConfigUpdatePage = this.userService.getUserUpdateById(id);
+        UserEntity dataToConfigUpdatePage = this.userService.getUserUpdateById(id);
         model.addAttribute("newUser", dataToConfigUpdatePage);
         return "admin/user/update";
     }
 
     @PostMapping("/admin/user/update")
-    public String postUpdatePage(Model model, @Valid @ModelAttribute("newUser") User hoidanit,
+    public String postUpdatePage(Model model, @Valid @ModelAttribute("newUser") UserEntity hoidanit,
             BindingResult updateUserBingdingResult,
             @RequestParam("hoidanitFile") MultipartFile file) {
         List<FieldError> errors = updateUserBingdingResult.getFieldErrors();
@@ -110,7 +110,7 @@ public class UserController {
         if (updateUserBingdingResult.hasErrors()) {
             return "admin/user/update";
         }
-        User dataCurrentInfo = this.userService.getUserUpdateById(hoidanit.getId());
+        UserEntity dataCurrentInfo = this.userService.getUserUpdateById(hoidanit.getId());
         String newAvater = this.uploadService.handleUploadFile(file, "avatar");
         if (dataCurrentInfo.getFullName() != hoidanit.getFullName() ||
                 dataCurrentInfo.getAddress() != hoidanit.getAddress() ||
@@ -124,7 +124,7 @@ public class UserController {
             dataCurrentInfo.setAvatar(newAvater);
         }
 
-        this.userService.handleSaveUser(dataCurrentInfo);
+//        this.userService.handleSaveUser(dataCurrentInfo);
 
         return "redirect:/admin/user";
     }
@@ -133,16 +133,16 @@ public class UserController {
     @GetMapping("/admin/user/delete/{id}")
     public String getDeletePage(Model model, @PathVariable long id) {
 
-        List<User> dataToShowDelete = this.userService.getFirstUserById(id);
+        List<UserEntity> dataToShowDelete = this.userService.getFirstUserById(id);
         model.addAttribute("user", dataToShowDelete);
 
-        User dataConfigDelete = this.userService.getAllUserById(id);
+        UserEntity dataConfigDelete = this.userService.getAllUserById(id);
         model.addAttribute("newUser", dataConfigDelete);
         return "admin/user/delete";
     }
 
     @PostMapping("/admin/user/delete")
-    public String postDeletePage(Model model, @ModelAttribute("newUser") User hoidanit) {
+    public String postDeletePage(Model model, @ModelAttribute("newUser") UserEntity hoidanit) {
         this.userService.deleteUserById(hoidanit.getId());
 
         return "redirect:/admin/user";

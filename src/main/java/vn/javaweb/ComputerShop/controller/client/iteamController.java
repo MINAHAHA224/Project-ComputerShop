@@ -12,11 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import vn.javaweb.ComputerShop.domain.Cart;
-import vn.javaweb.ComputerShop.domain.CartDetail;
-import vn.javaweb.ComputerShop.domain.Order;
-import vn.javaweb.ComputerShop.domain.Product;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.*;
 import vn.javaweb.ComputerShop.repository.CartDetailRepository;
 import vn.javaweb.ComputerShop.repository.CartRepository;
 import vn.javaweb.ComputerShop.service.OrderService;
@@ -24,7 +20,6 @@ import vn.javaweb.ComputerShop.service.ProductService;
 import vn.javaweb.ComputerShop.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class iteamController {
@@ -46,7 +41,7 @@ public class iteamController {
 
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable long id, HttpServletRequest request) {
-        Product oneProduct = this.productService.getOnlyOneProduct(id);
+        ProductEntity oneProduct = this.productService.getOnlyOneProduct(id);
         model.addAttribute("product", oneProduct);
         model.addAttribute("id", id);
 
@@ -67,17 +62,17 @@ public class iteamController {
 
     @GetMapping("/cart")
     public String getCartPage(Model model, HttpServletRequest request) {
-        User currentUser = new User();// null
+        UserEntity currentUser = new UserEntity();// null
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
 
-        Cart cart = this.productService.getCartByUser(currentUser);
+        CartEntity cart = this.productService.getCartByUser(currentUser);
 
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        List<CartDetailEntity> cartDetails = cart == null ? new ArrayList<CartDetailEntity>() : cart.getCartDetails();
 
         double totalPrice = 0;
-        for (CartDetail cd : cartDetails) {
+        for (CartDetailEntity cd : cartDetails) {
             totalPrice += cd.getPrice() * cd.getQuantity();
         }
 
@@ -97,9 +92,9 @@ public class iteamController {
     }
 
     @PostMapping("/confirm-checkout")
-    public String postConfirmCheckout(@ModelAttribute("cart") Cart cart) {
+    public String postConfirmCheckout(@ModelAttribute("cart") CartEntity cart) {
 
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        List<CartDetailEntity> cartDetails = cart == null ? new ArrayList<CartDetailEntity>() : cart.getCartDetails();
 
         this.productService.handleConfirmCheckout(cartDetails);
 
@@ -109,12 +104,12 @@ public class iteamController {
     @GetMapping("/checkout")
     public String getCheckoutPage(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User currentUser = this.userService.getUserByEmail((String) session.getAttribute("email"));
-        Cart cart = this.productService.getCartByUser(currentUser);
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        UserEntity currentUser = this.userService.getUserByEmail((String) session.getAttribute("email"));
+        CartEntity cart = this.productService.getCartByUser(currentUser);
+        List<CartDetailEntity> cartDetails = cart == null ? new ArrayList<CartDetailEntity>() : cart.getCartDetails();
 
         double totalPrice = 0;
-        for (CartDetail cd : cartDetails) {
+        for (CartDetailEntity cd : cartDetails) {
             totalPrice = totalPrice + cd.getQuantity() * cd.getPrice();
         }
 
@@ -132,7 +127,7 @@ public class iteamController {
             @RequestParam("receiverPhone") String receiverPhone) {
         HttpSession session = request.getSession(false);
 
-        User user = this.userService.getUserByEmail((String) session.getAttribute("email"));
+        UserEntity user = this.userService.getUserByEmail((String) session.getAttribute("email"));
         if (user != null) {
             this.orderService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone);
         }
@@ -149,9 +144,9 @@ public class iteamController {
     @GetMapping("/order-history")
     public String getOrderHistoryPage(Model model, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User user = this.userService.getUserByEmail((String) session.getAttribute("email"));
+        UserEntity user = this.userService.getUserByEmail((String) session.getAttribute("email"));
 
-        List<Order> orders = this.orderService.getOrderByUser(user);
+        List<OrderEntity> orders = this.orderService.getOrderByUser(user);
 
         model.addAttribute("orders", orders);
 

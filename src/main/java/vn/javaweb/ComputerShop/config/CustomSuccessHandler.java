@@ -17,7 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.service.UserService;
 
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
@@ -67,7 +67,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String email = authentication.getName();
 
         // Query data
-        User user = this.userService.getUserByEmail(email);
+        UserEntity user = this.userService.getUserByEmail(email);
         if (user != null) {
             session.setAttribute("fullname", user.getFullName());
             session.setAttribute("avatar", user.getAvatar());

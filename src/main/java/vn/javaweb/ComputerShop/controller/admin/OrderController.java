@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import vn.javaweb.ComputerShop.domain.Order;
-import vn.javaweb.ComputerShop.domain.OrderDetail;
+import vn.javaweb.ComputerShop.domain.entity.OrderEntity;
+import vn.javaweb.ComputerShop.domain.entity.OrderDetailEntity;
 import vn.javaweb.ComputerShop.repository.OrderDetailRepository;
 import vn.javaweb.ComputerShop.repository.OrderRepository;
 import vn.javaweb.ComputerShop.service.OrderService;
@@ -33,7 +32,7 @@ public class OrderController {
 
     @GetMapping("/admin/order")
     public String getOrder(Model model) {
-        List<Order> orders = this.orderRepository.findAll();
+        List<OrderEntity> orders = this.orderRepository.findAll();
 
         model.addAttribute("orders", orders);
 
@@ -43,9 +42,9 @@ public class OrderController {
     @GetMapping("/admin/order/{id}")
     public String getOrderDetail(Model model, @PathVariable long id) {
 
-        Order order = this.orderService.getOrderById(id);
+        OrderEntity order = this.orderService.getOrderById(id);
         if (order != null) {
-            List<OrderDetail> orderDetails = this.orderService.getOrderDetailByOrder(order);
+            List<OrderDetailEntity> orderDetails = this.orderService.getOrderDetailByOrder(order);
 
             model.addAttribute("orderDetails", orderDetails);
         }
@@ -55,7 +54,7 @@ public class OrderController {
 
     @GetMapping("/admin/order/update/{id}")
     public String getUpdateOrderPage(Model model, @PathVariable long id) {
-        Order orders = this.orderService.getOrderById(id);
+        OrderEntity orders = this.orderService.getOrderById(id);
         if (orders != null) {
             model.addAttribute("orders", orders);
         }
@@ -64,9 +63,9 @@ public class OrderController {
     }
 
     @PostMapping("/admin/order/update")
-    public String postUpdateOrderPage(@ModelAttribute("orders") Order orderView) {
+    public String postUpdateOrderPage(@ModelAttribute("orders") OrderEntity orderView) {
         // TODO: process POST request
-        Order order = this.orderService.getOrderById(orderView.getId());
+        OrderEntity order = this.orderService.getOrderById(orderView.getId());
         order.setStatus(orderView.getStatus());
         this.orderRepository.save(order);
 
@@ -75,7 +74,7 @@ public class OrderController {
 
     @GetMapping("/admin/order/delete/{id}")
     public String getDeleteOrderPage(Model model, @PathVariable long id) {
-        Order orders = this.orderService.getOrderById(id);
+        OrderEntity orders = this.orderService.getOrderById(id);
         if (orders != null) {
             model.addAttribute("orders", orders);
         }
@@ -85,7 +84,7 @@ public class OrderController {
     }
 
     @PostMapping("/admin/order/delete")
-    public String postDeleteOrderPage(@ModelAttribute("orders") Order orderView) {
+    public String postDeleteOrderPage(@ModelAttribute("orders") OrderEntity orderView) {
 
         this.orderService.deleteOrder(orderView.getId());
         return "redirect:/admin/order";

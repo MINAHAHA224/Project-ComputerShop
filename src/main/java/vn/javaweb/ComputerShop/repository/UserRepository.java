@@ -1,33 +1,35 @@
 package vn.javaweb.ComputerShop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 
 @Repository
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    User save(User hoidanit);
+    UserEntity save(UserEntity hoidanit);
 
-    List<User> findByEmail(String email);
+    List<UserEntity> findByEmail(String email);
 
-    List<User> findFirstByEmail(String email);
+    List<UserEntity> findFirstByEmail(String email);
 
-    User findUserByEmail(String email);
+   Optional<UserEntity>  findUserEntityByEmail(String email);
+   boolean existsUserEntityByEmail ( String email);
 
-    List<User> findFirstById(long id);
+    List<UserEntity> findFirstById(long id);
 
-    User findById(long id);
+    UserEntity findById(long id);
 
-    User findAllById(long id);
+    UserEntity findAllById(long id);
 
     void deleteById(long id);
 
-    List<User> findByEmailAndAddress(String email, String address);
+    List<UserEntity> findByEmailAndAddress(String email, String address);
 
     boolean existsByEmail(String email);
 

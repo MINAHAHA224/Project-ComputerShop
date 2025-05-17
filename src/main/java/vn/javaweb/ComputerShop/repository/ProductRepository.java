@@ -9,22 +9,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import vn.javaweb.ComputerShop.domain.Product;
+import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
 
 @Repository
 
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
 
-   Product save(Product hoidanit);
+   ProductEntity save(ProductEntity hoidanit);
 
-   List<Product> findFirstById(long id);
+   List<ProductEntity> findFirstById(long id);
 
-   Product findById(long id);
+   ProductEntity findById(long id);
 
    void deleteById(long id);
 
-   Page<Product> findAll(Pageable page);
+   Page<ProductEntity> findAll(Pageable page);
 
-   Page<Product> findAll(Specification<Product> spec, Pageable pageable);
+   Page<ProductEntity> findAll(Specification<ProductEntity> spec, Pageable pageable);
 
 }

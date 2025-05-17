@@ -36,11 +36,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- đây là công cụ giúp Crt + s là nó tự cập nhật thay đổi nhanh luôn giúp mình khỏi cần chạy lại server -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-devtools</artifactId>-->
+<!--			<optional>true</optional>-->
+<!--		</dependency>-->
 
 		<!-- Setup MySQL với Spring-->
 		<dependency>
@@ -118,7 +118,28 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Send main with thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--		</dependency>-->
 
+		<!-- Oauth2 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
+		<!-- Security taglib -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			 <!-- Hoặc cùng phiên bản với spring-security-core bạn đang dùng -->
+		</dependency>
 
 
 	</dependencies>

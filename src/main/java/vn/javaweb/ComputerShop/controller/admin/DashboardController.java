@@ -6,15 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import vn.javaweb.ComputerShop.domain.Order;
-import vn.javaweb.ComputerShop.domain.Product;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.OrderEntity;
+import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
+import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.repository.OrderRepository;
 import vn.javaweb.ComputerShop.repository.ProductRepository;
 import vn.javaweb.ComputerShop.repository.UserRepository;
-import vn.javaweb.ComputerShop.service.OrderService;
-import vn.javaweb.ComputerShop.service.ProductService;
-import vn.javaweb.ComputerShop.service.UserService;
 
 @Controller
 public class DashboardController {
@@ -33,9 +30,9 @@ public class DashboardController {
     @GetMapping("/admin")
     public String getDashboard(Model model) {
 
-        List<User> users = this.userRepository.findAll();
-        List<Product> products = this.productRepository.findAll();
-        List<Order> orders = this.orderRepository.findAll();
+        List<UserEntity> users = this.userRepository.findAll();
+        List<ProductEntity> products = this.productRepository.findAll();
+        List<OrderEntity> orders = this.orderRepository.findAll();
 
         int coutIdUser = users.size();
         int coutIdProduct = products.size();

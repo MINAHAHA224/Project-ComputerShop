@@ -3,13 +3,13 @@ package vn.javaweb.ComputerShop.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import vn.javaweb.ComputerShop.domain.Cart;
-import vn.javaweb.ComputerShop.domain.User;
+import vn.javaweb.ComputerShop.domain.entity.CartEntity;
+import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long> {
+public interface CartRepository extends JpaRepository<CartEntity, Long> {
 
-    Cart findByUser(User user);
+    CartEntity findByUser(UserEntity user);
 
     void deleteCartById(long id);
 

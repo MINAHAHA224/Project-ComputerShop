@@ -3,10 +3,10 @@ package vn.javaweb.ComputerShop.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import vn.javaweb.ComputerShop.domain.Role;
+import vn.javaweb.ComputerShop.domain.entity.RoleEntity;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    Role findByName(String name);
+    RoleEntity findByName(String name);
 }

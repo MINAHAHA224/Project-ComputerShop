@@ -18,7 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import jakarta.validation.Valid;
-import vn.javaweb.ComputerShop.domain.Product;
+import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
 import vn.javaweb.ComputerShop.service.ProductService;
 import vn.javaweb.ComputerShop.service.UploadService;
 import vn.javaweb.ComputerShop.service.UserService;
@@ -33,40 +33,40 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/admin/product")
-    public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
-        int page = 1;
-        try {
-            if (pageOptional.isPresent()) {
-                page = Integer.parseInt(pageOptional.get());
-            } else {
-                page = 1;
-            }
-        } catch (Exception e) {
-            page = 1;
-            // TODO: handle exception
-        }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-        Page<Product> listProducts = this.productService.getAllProduct(pageable);
-
-        List<Product> allProduct = listProducts.getContent();
-        model.addAttribute("products", allProduct);
-
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", listProducts.getTotalPages());
-        return "admin/product/show";
-    }
+//    @GetMapping("/admin/product")
+//    public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
+//        int page = 1;
+//        try {
+//            if (pageOptional.isPresent()) {
+//                page = Integer.parseInt(pageOptional.get());
+//            } else {
+//                page = 1;
+//            }
+//        } catch (Exception e) {
+//            page = 1;
+//            // TODO: handle exception
+//        }
+//        Pageable pageable = PageRequest.of(page - 1, 2);
+//        Page<ProductEntity> listProducts = this.productService.getAllProduct(pageable);
+//
+//        List<ProductEntity> allProduct = listProducts.getContent();
+//        model.addAttribute("products", allProduct);
+//
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", listProducts.getTotalPages());
+//        return "admin/product/show";
+//    }
 
     // Create product not update
 
     @GetMapping("/admin/product/create")
     public String getCreateProduct(Model model) {
-        model.addAttribute("newProduct", new Product());
+        model.addAttribute("newProduct", new ProductEntity());
         return "admin/product/create";
     }
 
     @PostMapping("/admin/product/create")
-    public String postCreateProduct(Model model, @Valid @ModelAttribute("newProduct") Product product,
+    public String postCreateProduct(Model model, @Valid @ModelAttribute("newProduct") ProductEntity product,
             BindingResult createProductNBindingResult,
             @RequestParam("hoidanitFile") MultipartFile file) {
         List<FieldError> errors = createProductNBindingResult.getFieldErrors();
@@ -87,7 +87,7 @@ public class ProductController {
     // Product detail
     @GetMapping("/admin/product/{id}")
     public String getProductDetail(Model model, @PathVariable long id) {
-        List<Product> allProduct = this.productService.getFirstProductById(id);
+        List<ProductEntity> allProduct = this.productService.getFirstProductById(id);
         model.addAttribute("products", allProduct);
         return "admin/product/detail";
     }
@@ -95,13 +95,13 @@ public class ProductController {
     // product update
     @GetMapping("/admin/product/update/{id}")
     public String getProductUpdate(Model model, @PathVariable long id) {
-        Product onlyOneProduct = this.productService.getOnlyOneProduct(id);
+        ProductEntity onlyOneProduct = this.productService.getOnlyOneProduct(id);
         model.addAttribute("product", onlyOneProduct);
         return "admin/product/update";
     }
 
     @PostMapping("/admin/product/update")
-    public String postProductUpdate(@Valid @ModelAttribute("product") Product hoidanit,
+    public String postProductUpdate(@Valid @ModelAttribute("product") ProductEntity hoidanit,
             BindingResult updateProductNBindingResult,
             @RequestParam("hoidanitFile") MultipartFile file) {
 
@@ -113,7 +113,7 @@ public class ProductController {
         if (updateProductNBindingResult.hasErrors()) {
             return "admin/product/update";
         }
-        Product currentProduct = this.productService.getOnlyOneProduct(hoidanit.getId());
+        ProductEntity currentProduct = this.productService.getOnlyOneProduct(hoidanit.getId());
         hoidanit.setImage(this.uploadService.handleUploadFile(file, "product"));
         if (currentProduct.getName() != hoidanit.getName() ||
                 currentProduct.getPrice() != hoidanit.getPrice() ||
@@ -135,16 +135,16 @@ public class ProductController {
     @GetMapping("/admin/product/delete/{id}")
     public String getDeleteProduct(Model model, @PathVariable long id) {
 
-        List<Product> oneProduct = this.productService.getFirstProductById(id);
+        List<ProductEntity> oneProduct = this.productService.getFirstProductById(id);
         model.addAttribute("product1", oneProduct);
 
-        Product twoProduct = this.productService.getOnlyOneProduct(id);
+        ProductEntity twoProduct = this.productService.getOnlyOneProduct(id);
         model.addAttribute("product2", twoProduct);
         return "admin/product/delete";
     }
 
     @PostMapping("/admin/user/product")
-    public String postDeleteProduct(@ModelAttribute("product") Product hoidanit) {
+    public String postDeleteProduct(@ModelAttribute("product") ProductEntity hoidanit) {
         this.productService.deleteProductById(hoidanit.getId());
 
         return "redirect:/admin/product";
