@@ -57,6 +57,9 @@ public class UserEntity implements UserDetails {
     @OneToOne(mappedBy = "user")
     private AuthMethodEntity authMethodEntity;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserOtpEntity>  userOtpEntities;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

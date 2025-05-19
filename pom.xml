@@ -118,10 +118,17 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Send main with thymeleaf -->
+		<!-- Send main with JSP -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<!-- Use mock to send mail with JSP-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<!-- Nếu bạn dùng Spring Boot, version sẽ được quản lý bởi spring-boot-starter-parent -->
+			<!-- Nếu không, bạn cần chỉ định <version>...</version> phù hợp với phiên bản Spring Framework bạn dùng -->
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->

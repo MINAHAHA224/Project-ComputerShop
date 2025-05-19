@@ -133,7 +133,7 @@
                                 </form:form>
                                     <!-- Thêm phần Quên mật khẩu -->
                                     <div class="text-center mt-3">
-                                        <a href="/forgot-password" class="text-secondary">Quên mật khẩu?</a>
+                                        <a href="/forgotPassword" class="text-secondary">Quên mật khẩu?</a>
                                     </div>
                                 <div class="divider-text my-4">
                                     <span>HOẶC</span>

@@ -1,8 +1,8 @@
 package vn.javaweb.ComputerShop.service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +18,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import vn.javaweb.ComputerShop.component.GoogleOauth2;
+import vn.javaweb.ComputerShop.component.MailerComponent;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.ResetPasswordDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.AuthMethodEntity;
 import vn.javaweb.ComputerShop.domain.entity.RoleEntity;
 import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
-import vn.javaweb.ComputerShop.repository.AuthMethodRepository;
-import vn.javaweb.ComputerShop.repository.CartRepository;
-import vn.javaweb.ComputerShop.repository.RoleRepository;
-import vn.javaweb.ComputerShop.repository.UserRepository;
+import vn.javaweb.ComputerShop.domain.entity.UserOtpEntity;
+import vn.javaweb.ComputerShop.repository.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,28 +36,35 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CartRepository cartRepository;
-    private  final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final AuthMethodRepository authMethodRepository;
+    private final UserOtpRepository userOtpRepository;
+    private final MailerComponent mailerComponent;
 
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final GoogleOauth2 googleOauth2;
 
 
-    public InformationDTO handleLogin (LoginDTO loginDTO , HttpSession session ){
+    public ResponseBodyDTO handleLogin(LoginDTO loginDTO, HttpSession session) {
+        ResponseBodyDTO response = new ResponseBodyDTO();
         String email = loginDTO.getEmail().trim();
         String password = loginDTO.getPassword().trim();
         UserEntity user = new UserEntity();
-        Optional<UserEntity> emailOnDb  = this.userRepository.findUserEntityByEmail(email);
-        if (emailOnDb.isPresent()){
+        Optional<UserEntity> emailOnDb = this.userRepository.findUserEntityByEmail(email);
+        if (emailOnDb.isPresent()) {
             user = emailOnDb.get();
-        }else {
-            return null;
+        } else {
+            response.setStatus(500);
+            response.setMessage("Email chưa được đăng kí");
+            return response;
         }
 
-        if ( !passwordEncoder.matches(password , user.getPassword())){
-            return null;
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            response.setStatus(500);
+            response.setMessage("Mật khẩu không đúng");
+            return response;
         }
 
         // set data for Spring Security
@@ -78,18 +86,25 @@ public class UserService {
             informationDTO.setAvatar(user.getAvatar());
             informationDTO.setSum(user.getCart() == null ? 0 : user.getCart().getSum());
 
-            return informationDTO;
-        }catch (RuntimeException e){
+
+            response.setStatus(200);
+            response.setMessage("Đăng nhập thành công");
+            response.setData(informationDTO);
+            return response;
+
+        } catch (RuntimeException e) {
             System.out.println("--ER authenticationToken ");
             e.printStackTrace();
-            return null;
+            throw e;
         }
 
 
     }
 
     @Transactional
-    public boolean  handleRegister (RegisterDTO registerDTO) {
+    public ResponseBodyDTO handleRegister(RegisterDTO registerDTO) {
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        response.setMessage("Đăng ký không thành công");
         try {
             UserEntity user = new UserEntity();
             user.setFullName(registerDTO.getFirstName() + " " + registerDTO.getLastName());
@@ -101,8 +116,10 @@ public class UserService {
             user.setRole(role);
 
             this.userRepository.save(user);
-            return true;
-        }catch (RuntimeException e){
+            response.setStatus(200);
+            response.setMessage("Đăng ký thành công");
+            return response;
+        } catch (RuntimeException e) {
             System.out.println("--ER handleRegister " + e.getMessage());
             e.printStackTrace();
             throw e;
@@ -139,14 +156,14 @@ public class UserService {
                 googleOauth2.getUserInfoEndpoint(), HttpMethod.GET, entity, Map.class);
 
         Map<String, Object> userInfo = userInfoResponse.getBody();
-        String external_id = (String)userInfo.get("sub");
-        String email = (String)userInfo.get("email");
-        String name = (String)userInfo.get("name");
-        String picture = (String)userInfo.get("picture");
+        String external_id = (String) userInfo.get("sub");
+        String email = (String) userInfo.get("email");
+        String name = (String) userInfo.get("name");
+        String picture = (String) userInfo.get("picture");
 
         boolean existEmail = this.userRepository.existsByEmail(email);
         // if exists => create token for security
-        if ( existEmail){
+        if (existEmail) {
             UserEntity user = this.userRepository.findUserEntityByEmail(email).get();
 
             informationDTO.setId(user.getId());
@@ -154,9 +171,9 @@ public class UserService {
             informationDTO.setFullName(user.getFullName());
             informationDTO.setAvatar(user.getAvatar());
             informationDTO.setRole(user.getRole().getName());
-            informationDTO.setSum(user.getCart() != null ? user.getCart().getSum()  : 0 );
+            informationDTO.setSum(user.getCart() != null ? user.getCart().getSum() : 0);
             return informationDTO;
-        }else {
+        } else {
             try {
                 // save user first
                 UserEntity userNew = new UserEntity();
@@ -164,7 +181,7 @@ public class UserService {
                 userNew.setFullName(name);
                 RoleEntity role = this.roleRepository.findByName("USER");
                 userNew.setRole(role);
-                UserEntity userCurrent =  this.userRepository.save(userNew);
+                UserEntity userCurrent = this.userRepository.save(userNew);
 
                 // save AuthMethod second
                 AuthMethodEntity authMethod = new AuthMethodEntity();
@@ -174,8 +191,7 @@ public class UserService {
                 this.authMethodRepository.save(authMethod);
 
 
-
-            }catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 System.out.println("--ER handleLoginOauth2Google " + e.getMessage());
                 e.printStackTrace();
                 throw e;
@@ -193,10 +209,145 @@ public class UserService {
         }
 
 
+    }
 
+    @Transactional
+    public ResponseBodyDTO handleSendOTP(String email) {
+        ResponseBodyDTO responseBodyDTO = new ResponseBodyDTO();
+        responseBodyDTO.setStatus(500);
+        responseBodyDTO.setMessage("Đã có lỗi xảy ra trong quá trình xử lý mã OTP");
+
+        // first  check email exist
+
+     Optional<UserEntity>    user = this.userRepository.findUserEntityByEmail(email);
+        if (user.isPresent()) {
+            // second check email has OTP not yet expired , if it has , can not canSentEmail = false
+            boolean canSentEmail = true;
+            List<UserOtpEntity> listUserOtp = this.userOtpRepository.findUserOtpEntityByUser(user.get());
+            for (UserOtpEntity userOtp : listUserOtp) {
+                if (userOtp.getExpiredTime().isAfter(LocalDateTime.now())) {
+                    canSentEmail = false;
+                    break;
+                }
+            }
+            if (canSentEmail) {
+                try {
+
+                    String OTP = this.mailerComponent.generateOTP(6);
+                    boolean handleSend = this.mailerComponent.sendConfirmLink(email, OTP);
+                    UserOtpEntity userOtp = new UserOtpEntity();
+                    userOtp.setUser(user.get());
+                    userOtp.setOtpCode(OTP);
+                    userOtp.setCreatedAt(LocalDateTime.now());
+                    userOtp.setExpiredTime(LocalDateTime.now().plusMinutes(1));
+                    userOtp.setUsed(false);
+                    // set OTP to database
+                    this.userOtpRepository.save(userOtp);
+                    // set body
+                    responseBodyDTO.setStatus(200);
+                    responseBodyDTO.setMessage("Mã OTP đã được gửi vào email của bạn ");
+                    return responseBodyDTO;
+                } catch (RuntimeException e) {
+                    System.out.println("--ER handleSendOTP " + e.getMessage());
+                    e.printStackTrace();
+                    throw e;
+                }
+            } else {
+                responseBodyDTO.setStatus(500);
+                responseBodyDTO.setMessage("Email đã được gửi mã OTP đang còn hiệu lực");
+                return responseBodyDTO;
+            }
+
+        } else {
+            responseBodyDTO.setStatus(500);
+            responseBodyDTO.setMessage("Email chưa được đăng ký  hoặc đã có lỗi xảy ra");
+            return responseBodyDTO;
+        }
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleVerifyOTP(String email, String OTP) {
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+        response.setStatus(500);
+        response.setMessage("Đã có lỗi xảy ra trong quá trình xử lý mã OTP");
+       Optional<UserEntity>  user = this.userRepository.findUserEntityByEmail(email);
+        if ( user.isPresent()){
+            // check first email have OTP not yet Expired if has userOtpEnough = have data  otherwise has no data
+            List<UserOtpEntity> listUserOtp = this.userOtpRepository.findUserOtpEntityByUser(user.get());
+            UserOtpEntity userOtpEnough = new UserOtpEntity();
+            for (UserOtpEntity userOtp : listUserOtp) {
+                if (userOtp.getExpiredTime().isAfter(LocalDateTime.now())) {
+                    userOtpEnough = userOtp;
+                    break;
+                }
+            }
+
+            // if has userOtpEnough = have data , accept and update userOtp
+            if (userOtpEnough.getId() != null) {
+                boolean used = userOtpEnough.isUsed();
+                String otpDb = userOtpEnough.getOtpCode();
+
+                if (otpDb.equals(OTP) && !used) {
+                    // Update OTP is used
+                    try {
+                        userOtpEnough.setUsed(true);
+                        this.userOtpRepository.save(userOtpEnough);
+                        response.setStatus(200);
+                        response.setMessage("Xác thực mã OTP thành công");
+                        return response;
+                    } catch (RuntimeException e) {
+                        System.out.println("-- ER update userOtp " + e.getMessage());
+                        e.printStackTrace();
+                        throw e;
+                    }
+
+                }else {
+                    response.setStatus(500);
+                    response.setMessage("Mã OTP không đúng hoặc  đã được sử dụng");
+                    return response;
+                }
+
+
+                //  otherwise has no data , announcement error
+            }else {
+                response.setStatus(500);
+                response.setMessage("Mã OTP đã hết hạn");
+
+            }
+        }else {
+            response.setStatus(500);
+            response.setMessage("Email không tồn tại");
+            return response;
+        }
+
+        return response;
 
 
     }
+
+
+    @Transactional
+    public ResponseBodyDTO handleResetPassword(ResetPasswordDTO resetPasswordDTO) {
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        response.setMessage("Có lỗi xảy ra khi đặt lại mật khẩu");
+        try {
+            UserEntity user = this.userRepository.findUserEntityByEmail(resetPasswordDTO.getEmail().trim()).get();
+            user.setPassword(passwordEncoder.encode(resetPasswordDTO.getPassword()));
+            this.userRepository.save(user);
+
+            response.setStatus(200);
+            response.setMessage("Đặt lại mật khẩu thành công");
+            return response;
+        } catch (RuntimeException e) {
+            System.out.println("--ER " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
+
+    }
+
 
     public List<UserEntity> getAllUser() {
         return this.userRepository.findAll();
@@ -226,7 +377,6 @@ public class UserService {
     public RoleEntity getRoleByName(String name) {
         return this.roleRepository.findByName(name);
     }
-
 
 
     // check exist email

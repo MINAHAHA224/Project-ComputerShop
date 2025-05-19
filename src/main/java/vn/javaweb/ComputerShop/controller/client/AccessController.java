@@ -1,5 +1,6 @@
 package vn.javaweb.ComputerShop.controller.client;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -15,13 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.ResetPasswordDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.service.UserService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,33 +36,33 @@ public class AccessController {
     @GetMapping("/login")
     public String getLogin(Model model) {
         LoginDTO loginDTO = new LoginDTO();
-        model.addAttribute("loginDTO" , loginDTO);
+        model.addAttribute("loginDTO", loginDTO);
         return "client/auth/login";
     }
 
     @PostMapping("/login")
-    public String postLogin(Model model , HttpSession session
-            , @Valid @ModelAttribute("loginDTO")LoginDTO loginDTO
+    public String postLogin(Model model, HttpSession session
+            , @Valid @ModelAttribute("loginDTO") LoginDTO loginDTO
             , RedirectAttributes redirectAttributes
-            , BindingResult bindingResult){
+            , BindingResult bindingResult) {
 
 
         List<FieldError> errors = bindingResult.getFieldErrors();
-        if (bindingResult.hasErrors()){
-            for ( FieldError error : errors){
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : errors) {
                 System.out.println("--ER " + error.getField() + " - " + error.getDefaultMessage());
             }
 
             return "client/auth/login";
         }
-        InformationDTO handleLogin = this.userService.handleLogin(loginDTO , session);
+        ResponseBodyDTO handleLogin = this.userService.handleLogin(loginDTO, session);
 
-        if ( handleLogin.getId()!=null){
-            session.setAttribute("informationDTO", handleLogin);
+        if (handleLogin.getStatus() == 200) {
+            session.setAttribute("informationDTO", handleLogin.getData());
 
             return "redirect:/home";
-        }else {
-            model.addAttribute("message" , "Đăng nhập không thành công");
+        } else {
+            model.addAttribute("message", handleLogin.getMessage());
             return "client/auth/login";
 
         }
@@ -73,7 +78,7 @@ public class AccessController {
 
     @PostMapping("/register")
     public String postRegister(Model model, @Valid @ModelAttribute("registerDTO") RegisterDTO registerDTO,
-                               BindingResult bindingResult , RedirectAttributes redirectAttributes) {
+                               BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         List<FieldError> errors = bindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println("--ER " + error.getField() + " - " + error.getDefaultMessage());
@@ -83,33 +88,141 @@ public class AccessController {
             return "client/auth/register";
         }
 
-        boolean handleRegister = this.userService.handleRegister(registerDTO);
-        if (handleRegister ){
-            redirectAttributes.addFlashAttribute("message" , "Đăng ký thành công");
+        ResponseBodyDTO handleRegister = this.userService.handleRegister(registerDTO);
+        if (handleRegister.getStatus() == 200) {
+            redirectAttributes.addFlashAttribute("message", handleRegister.getMessage());
             return "redirect:/login";
-        }else {
-            model.addAttribute("message" , "Đăng ký không thành công");
+        } else {
+            model.addAttribute("message", handleRegister.getMessage());
             return "client/auth/register";
         }
     }
 
 
-
     @GetMapping(value = "/auth/google")
-    public ModelAndView redirectToGoogle (){
+    public ModelAndView redirectToGoogle() {
         return this.userService.handleRedirectToGoogle();
     }
 
     @GetMapping("/auth/oauth2/code/google")
-    public String handleGoogleCallback(@RequestParam("code") String code , HttpServletResponse response , HttpSession session) {
+    public String handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response, HttpSession session) {
 
-       InformationDTO informationDTO = this.userService.handleLoginOauth2Google(code , response);
+        InformationDTO informationDTO = this.userService.handleLoginOauth2Google(code, response);
         session.setAttribute("informationDTO", informationDTO);
-       return  "redirect:/home";
+        return "redirect:/home";
     }
 
 
+    @GetMapping("/forgotPassword")
+    public String getPageForgotPassword(Model model) {
 
+        return "client/auth/forgotPassword";
+    }
+
+    @PostMapping("/forgotPassword")
+    public String postForgotPassword(Model model
+            , @RequestParam(name = "email", required = true) String email
+            , RedirectAttributes redirectAttributes) {
+        ResponseBodyDTO sendOTPtoEmail = this.userService.handleSendOTP(email.trim());
+        if (sendOTPtoEmail.getStatus() != 200) {
+            model.addAttribute("message", sendOTPtoEmail.getMessage());
+            model.addAttribute("email", email.trim());
+            return "client/auth/forgotPassword";
+        } else {
+            redirectAttributes.addFlashAttribute("email", email.trim());
+            redirectAttributes.addFlashAttribute("message", sendOTPtoEmail.getMessage());
+            return "redirect:/verifyOTP";
+        }
+
+    }
+
+    @GetMapping("/verifyOTP")
+    public String getVerifyOTP(Model model,
+                               @ModelAttribute("email") String email // Nhận email từ flash attribute
+    ) {
+        if (email == null || email.isEmpty()) {
+            return "client/auth/verifyOTP";
+        }
+        model.addAttribute("email", email);
+        return "client/auth/verifyOTP";
+    }
+
+    @PostMapping("/verifyOtp")
+    public String postOTPtoVerify(Model model
+            , @RequestParam(name = "email", required = true) String email
+            , @RequestParam(name = "OTP", required = false) String OTP
+            , @RequestParam(name = "action", required = true) String action
+            , RedirectAttributes redirectAttributes) {
+        if (action.equals("VERIFY-OTP")) {
+            ResponseBodyDTO sendOTPtoEmail = this.userService.handleVerifyOTP(email, OTP);
+            if (sendOTPtoEmail.getStatus() != 200) {
+                model.addAttribute("email", email);
+                model.addAttribute("message", sendOTPtoEmail.getMessage());
+                return "client/auth/verifyOTP";
+            } else {
+                redirectAttributes.addFlashAttribute("email", email);
+                redirectAttributes.addFlashAttribute("message", sendOTPtoEmail.getMessage());
+                return "redirect:/resetPassword";
+            }
+        }
+        if (action.equals("RESENT-OTP")) {
+            ResponseBodyDTO resentOtp = this.userService.handleSendOTP(email.trim());
+            model.addAttribute("email", email.trim());
+            model.addAttribute("message", resentOtp.getMessage());
+            return "client/auth/verifyOTP";
+        }
+        return null;
+    }
+
+    @GetMapping("/resetPassword")
+    public String getPageResetPassword(Model model,
+                                       @ModelAttribute("email") String email, // Nhận email từ flash attribute
+                                       HttpServletRequest request) {
+        if (email == null || email.isEmpty()) {
+            return "client/auth/forgotPassword";
+        }
+
+        ResetPasswordDTO resetPasswordDTO = new ResetPasswordDTO();
+        resetPasswordDTO.setEmail(email); // Gán email vào DTO để hiển thị trong trường ẩn
+        model.addAttribute("resetPasswordDTO", resetPasswordDTO);
+        // Không cần add "email" riêng lẻ nữa vì nó đã có trong resetPasswordDTO
+
+        // Kiểm tra nếu có message từ redirect (ví dụ từ verifyOTP)
+//        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+//        if (flashMap != null && flashMap.containsKey("message")) {
+//            model.addAttribute("message", flashMap.get("message"));
+//        }
+
+
+        return "client/auth/resetPassword";
+    }
+
+    @PostMapping(value = "/resetPassword")
+    public String postResetPassword(Model model
+            , @Valid @ModelAttribute("resetPasswordDTO") ResetPasswordDTO resetPasswordDTO
+            , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println("-- ER " + error.getField() + " -- " + error.getDefaultMessage());
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("resetPasswordDTO", resetPasswordDTO);
+            return "client/auth/resetPassword";
+        }
+
+        ResponseBodyDTO handleResetPass = this.userService.handleResetPassword(resetPasswordDTO);
+        if (handleResetPass.getStatus() == 200) {
+            redirectAttributes.addFlashAttribute("message", handleResetPass.getMessage());
+            return "redirect:/login";
+        } else {
+            model.addAttribute("resetPasswordDTO", resetPasswordDTO);
+            model.addAttribute("message", handleResetPass.getMessage());
+            return "client/auth/resetPassword";
+        }
+
+    }
 
 
 }
