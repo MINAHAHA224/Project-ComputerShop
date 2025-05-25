@@ -54,7 +54,7 @@
                             <div class="mb-3">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
                                         <li class="breadcrumb-item active" aria-current="page">Chi Tiết Giỏ Hàng</li>
                                     </ol>
                                 </nav>
@@ -84,15 +84,15 @@
                                             <tr>
                                                 <th scope="row">
                                                     <div class="d-flex align-items-center">
-                                                        <img src="/images/product/${cartDetail.product.image}"
+                                                        <img src="/images/product/${cartDetail.productImage}"
                                                             class="img-fluid me-5 rounded-circle"
                                                             style="width: 80px; height: 80px;" alt="">
                                                     </div>
                                                 </th>
                                                 <td>
                                                     <p class="mb-0 mt-4">
-                                                        <a href="/product/${cartDetail.product.id}" target="_blank">
-                                                            ${cartDetail.product.name}
+                                                        <a href="/product/${cartDetail.productId}" target="_blank">
+                                                            ${cartDetail.productName}
                                                         </a>
                                                     </p>
                                                 </td>
@@ -130,9 +130,8 @@
                                                     </p>
                                                 </td>
                                                 <td>
-                                                    <form method="post" action="/delete-cart-product/${cartDetail.id}">
-                                                        <input type="hidden" name="${_csrf.parameterName}"
-                                                            value="${_csrf.token}" />
+                                                    <form method="post" action="/delete-cart-product/${cartDetail.productId}">
+
                                                         <button class="btn btn-md rounded-circle bg-light border mt-4">
                                                             <i class="fa fa-times text-danger"></i>
                                                         </button>
@@ -172,33 +171,30 @@
                                                     <fmt:formatNumber type="number" value="${totalPrice}" /> đ
                                                 </p>
                                             </div>
-                                            <form:form action="/confirm-checkout" method="post" modelAttribute="cart">
-                                                <input type="hidden" name="${_csrf.parameterName}"
-                                                    value="${_csrf.token}" />
+                                            <form action="/confirm-checkout"  method="post">
                                                 <div style="display: none;">
-                                                    <c:forEach var="cartDetail" items="${cart.cartDetails}"
-                                                        varStatus="status">
+                                                    <c:forEach var="cartDetail" items="${cartDetails}" varStatus="status">
                                                         <div class="mb-3">
                                                             <div class="form-group">
                                                                 <label>Id:</label>
-                                                                <form:input class="form-control" type="text"
-                                                                    value="${cartDetail.id}"
-                                                                    path="cartDetails[${status.index}].id" />
+                                                                <input class="form-control" type="text"
+                                                                       name="cartDetailOne[${status.index}].id"
+                                                                       value="${cartDetail.id}" />
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Quantity:</label>
-                                                                <form:input class="form-control" type="text"
-                                                                    value="${cartDetail.quantity}"
-                                                                    path="cartDetails[${status.index}].quantity" />
+                                                                <input class="form-control" type="text"
+                                                                       name="cartDetailOne[${status.index}].quantity"
+                                                                       value="${cartDetail.quantity}" />
                                                             </div>
                                                         </div>
                                                     </c:forEach>
                                                 </div>
-                                                <button
-                                                    class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Xác
-                                                    nhận thanh toán
+                                                <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">
+                                                    Xác nhận thanh toán
                                                 </button>
-                                            </form:form>
+                                            </form>
+
                                         </div>
                                     </div>
                                 </div>

@@ -35,11 +35,17 @@ public abstract class CartEntity_ {
 	 * @see vn.javaweb.ComputerShop.domain.entity.CartEntity#user
 	 **/
 	public static volatile SingularAttribute<CartEntity, UserEntity> user;
+	
+	/**
+	 * @see vn.javaweb.ComputerShop.domain.entity.CartEntity#status
+	 **/
+	public static volatile SingularAttribute<CartEntity, String> status;
 
 	public static final String SUM = "sum";
 	public static final String CART_DETAILS = "cartDetails";
 	public static final String ID = "id";
 	public static final String USER = "user";
+	public static final String STATUS = "status";
 
 }
 

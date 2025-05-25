@@ -34,7 +34,7 @@ public abstract class UserEntity_ {
 	/**
 	 * @see vn.javaweb.ComputerShop.domain.entity.UserEntity#cart
 	 **/
-	public static volatile SingularAttribute<UserEntity, CartEntity> cart;
+	public static volatile ListAttribute<UserEntity, CartEntity> cart;
 	
 	/**
 	 * @see vn.javaweb.ComputerShop.domain.entity.UserEntity#userOtpEntities

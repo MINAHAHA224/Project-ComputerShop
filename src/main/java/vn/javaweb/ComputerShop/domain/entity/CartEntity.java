@@ -2,14 +2,7 @@ package vn.javaweb.ComputerShop.domain.entity;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
@@ -28,8 +21,11 @@ public class CartEntity {
     @Min(value = 0)
     private int sum;
 
+
+    private String status;
+
     // user_id
-    @OneToOne()
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

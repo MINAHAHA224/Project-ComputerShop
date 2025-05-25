@@ -71,6 +71,40 @@
                                             <th scope="col">Thành tiền</th>
                                         </tr>
                                     </thead>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     <tbody>
                                         <c:if test="${ empty cartDetails}">
                                             <tr>
@@ -84,15 +118,15 @@
                                             <tr>
                                                 <th scope="row">
                                                     <div class="d-flex align-items-center">
-                                                        <img src="/images/product/${cartDetail.product.image}"
+                                                        <img src="/images/product/${cartDetail.productImage}"
                                                             class="img-fluid me-5 rounded-circle"
                                                             style="width: 80px; height: 80px;" alt="">
                                                     </div>
                                                 </th>
                                                 <td>
                                                     <p class="mb-0 mt-4">
-                                                        <a href="/product/${cartDetail.product.id}" target="_blank">
-                                                            ${cartDetail.product.name}
+                                                        <a href="/product/${cartDetail.productId}" target="_blank">
+                                                            ${cartDetail.productName}
                                                         </a>
                                                     </p>
                                                 </td>
@@ -121,8 +155,8 @@
                                 </table>
                             </div>
                             <c:if test="${not empty cartDetails}">
-                                <form:form action="/place-order" method="post" modelAttribute="cart">
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <form:form action="/place-order" method="post" modelAttribute="infoOrderRqDTO">
+
                                     <div class="mt-5 row g-4 justify-content-start">
                                         <div class="col-12 col-md-6">
                                             <div class="p-4 ">
@@ -131,16 +165,21 @@
                                                 <div class="row">
                                                     <div class="col-12 form-group mb-3">
                                                         <label>Tên người nhận</label>
-                                                        <input class="form-control" name="receiverName" required />
+                                                        <form:input class="form-control" name="receiverName" path="receiverName" />
+                                                        <form:errors path="receiverName" cssClass="text-danger" />
                                                     </div>
                                                     <div class="col-12 form-group mb-3">
                                                         <label>Địa chỉ người nhận</label>
-                                                        <input class="form-control" name="receiverAddress" required />
+                                                        <form:input class="form-control" name="receiverAddress" path="receiverAddress" />
+                                                        <form:errors path="receiverAddress" cssClass="text-danger" />
                                                     </div>
                                                     <div class="col-12 form-group mb-3">
                                                         <label>Số điện thoại</label>
-                                                        <input class="form-control" name="receiverPhone" required />
+                                                        <form:input class="form-control" name="receiverPhone" path="receiverPhone" />
+                                                        <form:errors path="receiverPhone" cssClass="text-danger" />
                                                     </div>
+
+                                                    <form:hidden path="totalPriceToSaveOrder"  />
                                                     <div class="mt-4">
                                                         <i class="fas fa-arrow-left"></i>
                                                         <a href="/cart">Quay lại giỏ hàng</a>

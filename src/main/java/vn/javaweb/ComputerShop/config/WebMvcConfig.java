@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -22,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         bean.setSuffix(".jsp");
         return bean;
     }
+
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {

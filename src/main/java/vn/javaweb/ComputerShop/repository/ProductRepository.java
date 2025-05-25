@@ -10,16 +10,19 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
+import vn.javaweb.ComputerShop.repository.custom.ProductRepositoryCustom;
 
 @Repository
 
-public interface ProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> , ProductRepositoryCustom {
 
    ProductEntity save(ProductEntity hoidanit);
 
    List<ProductEntity> findFirstById(long id);
 
    ProductEntity findById(long id);
+
+   ProductEntity findProductEntityById(long id);
 
    void deleteById(long id);
 

@@ -1,5 +1,6 @@
 package vn.javaweb.ComputerShop.domain.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -14,10 +15,10 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 @Table(name = "roles")
-public class RoleEntity {
+public class RoleEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -3,6 +3,7 @@ package vn.javaweb.ComputerShop.controller.admin;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,38 +25,36 @@ import vn.javaweb.ComputerShop.service.UploadService;
 import vn.javaweb.ComputerShop.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class ProductController {
     private final UploadService uploadService;
     private final ProductService productService;
 
-    public ProductController(UserService userService, UploadService uploadService, ProductService productService) {
-        this.uploadService = uploadService;
-        this.productService = productService;
-    }
 
-//    @GetMapping("/admin/product")
-//    public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
-//        int page = 1;
-//        try {
-//            if (pageOptional.isPresent()) {
-//                page = Integer.parseInt(pageOptional.get());
-//            } else {
-//                page = 1;
-//            }
-//        } catch (Exception e) {
-//            page = 1;
-//            // TODO: handle exception
-//        }
-//        Pageable pageable = PageRequest.of(page - 1, 2);
-//        Page<ProductEntity> listProducts = this.productService.getAllProduct(pageable);
-//
-//        List<ProductEntity> allProduct = listProducts.getContent();
-//        model.addAttribute("products", allProduct);
-//
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", listProducts.getTotalPages());
-//        return "admin/product/show";
-//    }
+
+    @GetMapping("/admin/product")
+    public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            } else {
+                page = 1;
+            }
+        } catch (Exception e) {
+            page = 1;
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page - 1, 2);
+        Page<ProductEntity> listProducts = this.productService.getAllProduct(pageable);
+
+        List<ProductEntity> allProduct = listProducts.getContent();
+        model.addAttribute("products", allProduct);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", listProducts.getTotalPages());
+        return "admin/product/show";
+    }
 
     // Create product not update
 

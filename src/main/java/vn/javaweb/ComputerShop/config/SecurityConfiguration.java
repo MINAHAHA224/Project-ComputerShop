@@ -16,13 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import jakarta.servlet.DispatcherType;
 import vn.javaweb.ComputerShop.repository.UserRepository;
-import vn.javaweb.ComputerShop.service.CustomUserDetailsService;
-import vn.javaweb.ComputerShop.service.UserService;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
@@ -30,28 +26,12 @@ import vn.javaweb.ComputerShop.service.UserService;
 public class SecurityConfiguration {
     private final UserRepository userRepository;
 
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
-
-    @Bean
-    public AuthenticationSuccessHandler customSuccessHandler() {
-        return new CustomSuccessHandler();
-    }
-
-//    @Bean
-//    public DaoAuthenticationProvider authProvider(
-//            PasswordEncoder passwordEncoder,
-//            UserDetailsService userDetailsService) {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder);
-//        // authProvider.setHideUserNotFoundExceptions(false);
-//        return authProvider;
-//    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -59,6 +39,7 @@ public class SecurityConfiguration {
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 "Cannot find user with email = " + email));
+
     }
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -68,6 +49,7 @@ public class SecurityConfiguration {
         return authProvider;
     }
 
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
@@ -75,13 +57,6 @@ public class SecurityConfiguration {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public SpringSessionRememberMeServices rememberMeServices() {
-        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
-        // optionally customize
-        rememberMeServices.setAlwaysRemember(true);
-        return rememberMeServices;
-    }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -95,7 +70,7 @@ public class SecurityConfiguration {
                                 "/images/**")
                         .permitAll()
 
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin" , "/admin/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll())
                 // khi logout thì xóa luôn cookie
@@ -104,10 +79,10 @@ public class SecurityConfiguration {
                         .invalidSessionUrl("/logout?expired")
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false))
-                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true));
 
                 // cơ chế remember me
-                .rememberMe(rememberme -> rememberme.rememberMeServices(rememberMeServices()));
+//                .rememberMe(rememberme -> rememberme.rememberMeServices(rememberMeServices()));
 
 //                .formLogin(formLogin -> formLogin
 //                        .loginPage("/login")

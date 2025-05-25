@@ -181,9 +181,9 @@
 
         //set form index
         const index = input.attr("data-cart-detail-index")
-        const el = document.getElementById(`cartDetails${index}.quantity`);
+        // const el = document.getElementById(`cartDetailOne${index}.quantity` );
+      const el = document.querySelector(`input[name='cartDetailOne[${index}].quantity']`);
         $(el).val(newVal);
-
 
 
         //get price

@@ -3,32 +3,37 @@ package vn.javaweb.ComputerShop.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import vn.javaweb.ComputerShop.component.GoogleOauth2;
 import vn.javaweb.ComputerShop.component.MailerComponent;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.ResetPasswordDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
-import vn.javaweb.ComputerShop.domain.entity.AuthMethodEntity;
-import vn.javaweb.ComputerShop.domain.entity.RoleEntity;
-import vn.javaweb.ComputerShop.domain.entity.UserEntity;
+import vn.javaweb.ComputerShop.domain.entity.*;
 import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
-import vn.javaweb.ComputerShop.domain.entity.UserOtpEntity;
 import vn.javaweb.ComputerShop.repository.*;
+import vn.javaweb.ComputerShop.utils.SecurityUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +46,7 @@ public class UserService {
     private final AuthMethodRepository authMethodRepository;
     private final UserOtpRepository userOtpRepository;
     private final MailerComponent mailerComponent;
+
 
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -67,6 +73,7 @@ public class UserService {
             return response;
         }
 
+
         // set data for Spring Security
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -74,19 +81,36 @@ public class UserService {
                     password,
                     user.getAuthorities()
             );
-            authenticationManager.authenticate(authenticationToken);
+            Authentication authenticationResult = authenticationManager.authenticate(authenticationToken);
             //add data into SecurityContextHolder to view used to authorized
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+             SecurityContextHolder.getContext().setAuthentication(authenticationResult);
             // set session
+
+            // Lưu SecurityContext vào HttpSession
+
+
+            // Lưu vào HttpSession
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            HttpServletResponse responseForSecurity = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+            HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+            repo.saveContext(SecurityContextHolder.getContext(), request, responseForSecurity);
+
+            // Lấy thông tin người dùng đã xác thực
+            String testEmailFromSecurity = SecurityUtils.getPrincipal(); // Đây là username (email)
+            System.out.println("Logged in user (from SecurityUtils after setAuthentication): " + testEmailFromSecurity);
+            System.out.println("Authorities in SecurityContext: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+
+
             InformationDTO informationDTO = new InformationDTO();
             informationDTO.setId(user.getId());
             informationDTO.setEmail(user.getEmail());
             informationDTO.setRole(user.getRole().getName());
             informationDTO.setFullName(user.getFullName());
             informationDTO.setAvatar(user.getAvatar());
-            informationDTO.setSum(user.getCart() == null ? 0 : user.getCart().getSum());
+            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, "ACTIVE");
+            informationDTO.setSum(cartCurrent.isPresent() ? cartCurrent.get().getSum() : 0);
 
-
+            session.setAttribute("email", user.getEmail());
             response.setStatus(200);
             response.setMessage("Đăng nhập thành công");
             response.setData(informationDTO);
@@ -133,7 +157,7 @@ public class UserService {
     }
 
     @Transactional
-    public InformationDTO handleLoginOauth2Google(String code, HttpServletResponse response) {
+    public InformationDTO handleLoginOauth2Google(String code, HttpServletResponse response, HttpSession session) {
 
         InformationDTO informationDTO = new InformationDTO();
         // 1. Get access token
@@ -171,7 +195,11 @@ public class UserService {
             informationDTO.setFullName(user.getFullName());
             informationDTO.setAvatar(user.getAvatar());
             informationDTO.setRole(user.getRole().getName());
-            informationDTO.setSum(user.getCart() != null ? user.getCart().getSum() : 0);
+            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, "ACTIVE");
+            informationDTO.setSum(cartCurrent.isPresent() ? cartCurrent.get().getSum() : 0);
+
+            session.setAttribute("email", user.getEmail());
+
             return informationDTO;
         } else {
             try {
@@ -204,6 +232,9 @@ public class UserService {
             informationDTO.setAvatar(picture);
             informationDTO.setRole(user.getRole().getName());
             informationDTO.setSum(0);
+
+            session.setAttribute("email", email);
+
             return informationDTO;
 
         }
@@ -219,7 +250,7 @@ public class UserService {
 
         // first  check email exist
 
-     Optional<UserEntity>    user = this.userRepository.findUserEntityByEmail(email);
+        Optional<UserEntity> user = this.userRepository.findUserEntityByEmail(email);
         if (user.isPresent()) {
             // second check email has OTP not yet expired , if it has , can not canSentEmail = false
             boolean canSentEmail = true;
@@ -271,8 +302,8 @@ public class UserService {
 
         response.setStatus(500);
         response.setMessage("Đã có lỗi xảy ra trong quá trình xử lý mã OTP");
-       Optional<UserEntity>  user = this.userRepository.findUserEntityByEmail(email);
-        if ( user.isPresent()){
+        Optional<UserEntity> user = this.userRepository.findUserEntityByEmail(email);
+        if (user.isPresent()) {
             // check first email have OTP not yet Expired if has userOtpEnough = have data  otherwise has no data
             List<UserOtpEntity> listUserOtp = this.userOtpRepository.findUserOtpEntityByUser(user.get());
             UserOtpEntity userOtpEnough = new UserOtpEntity();
@@ -302,7 +333,7 @@ public class UserService {
                         throw e;
                     }
 
-                }else {
+                } else {
                     response.setStatus(500);
                     response.setMessage("Mã OTP không đúng hoặc  đã được sử dụng");
                     return response;
@@ -310,12 +341,12 @@ public class UserService {
 
 
                 //  otherwise has no data , announcement error
-            }else {
+            } else {
                 response.setStatus(500);
                 response.setMessage("Mã OTP đã hết hạn");
 
             }
-        }else {
+        } else {
             response.setStatus(500);
             response.setMessage("Email không tồn tại");
             return response;

@@ -2,6 +2,7 @@ package vn.javaweb.ComputerShop.controller.admin;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +17,21 @@ import org.springframework.validation.FieldError;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import vn.javaweb.ComputerShop.domain.entity.OrderEntity;
+import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
 import vn.javaweb.ComputerShop.domain.entity.UserEntity;
+import vn.javaweb.ComputerShop.repository.OrderRepository;
+import vn.javaweb.ComputerShop.repository.ProductRepository;
+import vn.javaweb.ComputerShop.repository.UserRepository;
 import vn.javaweb.ComputerShop.service.UploadService;
 import vn.javaweb.ComputerShop.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     private final UserService userService;
     private final UploadService uploadService;
@@ -29,13 +39,22 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     // img detail
 
-    public UserController(UserService userService, UploadService uploadService,
-            PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.uploadService = uploadService;
-        // mã hóa thông tin
-        this.passwordEncoder = passwordEncoder;
+    @GetMapping("/admin")
+    public String getDashboard(Model model) {
 
+        List<UserEntity> users = this.userRepository.findAll();
+        List<ProductEntity> products = this.productRepository.findAll();
+        List<OrderEntity> orders = this.orderRepository.findAll();
+
+        int coutIdUser = users.size();
+        int coutIdProduct = products.size();
+        int coutIdOrder = orders.size();
+
+        model.addAttribute("coutIdUser", coutIdUser);
+        model.addAttribute("coutIdProduct", coutIdProduct);
+        model.addAttribute("coutIdOrder", coutIdOrder);
+
+        return "admin/dashboard/show";
     }
 
     @GetMapping("/admin/user")

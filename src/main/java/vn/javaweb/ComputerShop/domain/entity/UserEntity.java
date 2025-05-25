@@ -1,5 +1,6 @@
 package vn.javaweb.ComputerShop.domain.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,11 +28,11 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Validated
 @Entity
 @Table(name = "users")
-public class UserEntity implements UserDetails {
+public class UserEntity implements Serializable, UserDetails  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -52,8 +53,8 @@ public class UserEntity implements UserDetails {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
-    @OneToOne(mappedBy = "user")
-    private CartEntity cart;
+    @OneToMany(mappedBy = "user")
+    private List<CartEntity> cart;
     @OneToOne(mappedBy = "user")
     private AuthMethodEntity authMethodEntity;
 
