@@ -42,12 +42,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <c:forEach var="user" items="${updateUser}">
+                                            <c:forEach var="user" items="${listUser}">
                                                 <tr>
                                                     <th>${user.id}</th>
                                                     <td>${user.email}</td>
                                                     <td>${user.fullName}</td>
-                                                    <td>${user.role.name}</td>
+                                                    <td>${user.nameRole}</td>
                                                     <td>
                                                         <a href="/admin/user/${user.id}"
                                                             class=" btn btn-success">Detail</a>

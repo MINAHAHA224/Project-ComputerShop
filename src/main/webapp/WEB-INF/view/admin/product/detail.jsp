@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
         <html lang="en">
 
         <head>
@@ -24,7 +25,7 @@
                         <div class="container mt-5">
                             <div class="row">
                                 <div class="col-12 mx-auto">
-                                    <c:forEach var="product" items="${products}">
+
 
                                         <div class="d-flex justify-content-between">
                                             <h3>product detail with id = ${product.id}</h3>
@@ -41,7 +42,9 @@
                                                 <ul class="list-group list-group-flush">
                                                     <li class="list-group-item">ID : ${product.id} </li>
                                                     <li class="list-group-item">Name : ${product.name}</li>
-                                                    <li class="list-group-item">Price : ${product.price}</li>
+                                                    <li class="list-group-item">Price :
+                                                        <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true"/>
+                                                    </li>
                                                     <li class="list-group-item">Detail description :
                                                         ${product.detailDesc}</li>
                                                     <li class="list-group-item">Short description : ${product.shortDesc}
@@ -60,7 +63,7 @@
                                             </div>
                                         </table>
 
-                                    </c:forEach>
+
 
                                     <a href="/admin/product" class="btn btn-primary"> Back</a>
 

@@ -8,5 +8,5 @@ import vn.javaweb.ComputerShop.domain.entity.RoleEntity;
 @Repository
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    RoleEntity findByName(String name);
+    RoleEntity findRoleEntityByName(String name);
 }

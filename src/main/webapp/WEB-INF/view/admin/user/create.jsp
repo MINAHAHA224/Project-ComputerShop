@@ -46,7 +46,7 @@
                                             <h3>Create a user</h3>
                                             <hr />
                                             <form:form method="post" enctype="multipart/form-data"
-                                                action="/admin/user/create" modelAttribute="newUser" class="row">
+                                                action="/admin/user/create" modelAttribute="userCreateRqDTO" class="row">
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <c:set var="errorEmail">
                                                         <form:errors path="email" cssClass="invalid-feedback" />
@@ -68,8 +68,12 @@
                                                     ${errorPassword}
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
+                                                    <c:set var="errorPhone">
+                                                        <form:errors path="phone" cssClass="invalid-feedback" />
+                                                    </c:set>
                                                     <label class="form-label">Phone number:</label>
-                                                    <form:input type="text" class="form-control" path="phone" />
+                                                    <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}" path="phone" />
+                                                    ${errorPhone}
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <c:set var="errorFullname">
@@ -82,13 +86,17 @@
                                                     ${errorFullname}
                                                 </div>
                                                 <div class="mb-3 col-12">
+                                                    <c:set var="errorAddress">
+                                                        <form:errors path="address" cssClass="invalid-feedback" />
+                                                    </c:set>
                                                     <label class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control" path="address" />
+                                                    <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" path="address" />
+                                                        ${errorAddress}
                                                 </div>
 
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label class="form-label">Role:</label>
-                                                    <form:select class="form-select" path="role.name">
+                                                    <form:select class="form-select" path="roleName">
                                                         <form:option value="ADMIN">ADMIN</form:option>
                                                         <form:option value="USER">USER</form:option>
                                                     </form:select>
@@ -96,7 +104,7 @@
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="avatarFile" class="form-label">Avatar:</label>
                                                     <input class="form-control" type="file" id="avatarFile"
-                                                        accept=".png, .jpg, .jpeg" name="hoidanitFile">
+                                                        accept=".png, .jpg, .jpeg" name="avatarFile">
                                                 </div>
                                                 <div class="col-12 mb-3">
                                                     <img style="max-height: 250px; display: none;" alt="avatar preview"

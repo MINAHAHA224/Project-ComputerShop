@@ -15,4 +15,9 @@ public class ProductDetailRpDTO {
     private Double price;
     private String detailDesc;
     private String shortDesc;
+
+    // more detail
+    private Long quantity;
+    private String target;
+    private Long sold;
 }

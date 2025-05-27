@@ -2,6 +2,7 @@ package vn.javaweb.ComputerShop.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -14,11 +15,9 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import vn.javaweb.ComputerShop.domain.dto.request.*;
-import vn.javaweb.ComputerShop.domain.dto.response.ProductDetailRpDTO;
-import vn.javaweb.ComputerShop.domain.dto.response.ProductFilterRpDTO;
-import vn.javaweb.ComputerShop.domain.dto.response.ProductRpDTO;
-import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.*;
 import vn.javaweb.ComputerShop.domain.entity.CartDetailEntity;
 import vn.javaweb.ComputerShop.domain.entity.CartEntity;
 import vn.javaweb.ComputerShop.domain.entity.ProductEntity;
@@ -32,32 +31,145 @@ import vn.javaweb.ComputerShop.repository.UserRepository;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
-    private final UserService userService;
+    private final UploadService uploadService;
 
 
-    public ProductFilterRpDTO handleShowDataProductFilter(ProductFilterDTO productFilterDTO, Pageable pageable) {
+
+    public ProductFilterRpDTO handleShowDataProductFilter(ProductFilterDTO productFilterDTO) {
+        int page = 1;
+        try {
+            if (!productFilterDTO.getPage().isEmpty()) {
+                page = Integer.parseInt(productFilterDTO.getPage());
+            } else {
+                page = 1;
+            }
+        } catch (Exception e) {
+            page = 1;
+        }
+        Pageable pageable = PageRequest.of(page - 1, 6);
+
         ProductFilterRpDTO result = new ProductFilterRpDTO();
         Page<ProductRpDTO> listProduct = this.productRepository.findProductFilter(productFilterDTO, pageable);
         result.setListProduct(listProduct.getContent());
-        result.setPage(pageable.getPageNumber());
+        result.setPage(page);
         result.setTotalPage(listProduct.getTotalPages());
         return result;
     }
 
-    public Page<ProductEntity> getAllProduct(Pageable page) {
-
-        return this.productRepository.findAll(page);
+    public ProductFilterAdRpDTO handleShowDataProductAdmin(Optional<String> pageOptional) {
+        ProductFilterAdRpDTO result = new ProductFilterAdRpDTO();
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            } else {
+                page = 1;
+            }
+        } catch (Exception e) {
+            page = 1;
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page - 1, 2);
+        Page<ProductAdRpDTO> listProducts = this.productRepository.findProducts(pageable);
+        result.setListProduct(listProducts.getContent());
+        result.setPage(page);
+        result.setTotalPage(listProducts.getTotalPages());
+        return result;
     }
 
-    public ProductEntity handleSaveProduct(ProductEntity a) {
-        ProductEntity success = this.productRepository.save(a);
 
-        return success;
+    public ProductUpdateRqDTO handleGetProductUpdate ( Long id){
+        ProductUpdateRqDTO result = new ProductUpdateRqDTO();
+        ProductEntity product = this.productRepository.findProductEntityById(id);
+
+        result.setId(product.getId());
+        result.setImage(product.getImage());
+        result.setName(product.getName());
+        result.setFactory(product.getFactory());
+        result.setPrice(product.getPrice());
+        result.setDetailDesc(product.getDetailDesc());
+        result.setShortDesc(product.getShortDesc());
+        result.setQuantity(product.getQuantity());
+        result.setTarget(product.getTarget());
+        result.setSold(product.getSold());
+        return result;
+
     }
+    @Transactional
+    public ResponseBodyDTO handleCreateProduct (ProductCreateRqDTO productCreateRqDTO , MultipartFile file){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+            String avatarProduct = this.uploadService.handleUploadFile(file, "product");
+
+
+        boolean checkExistName = this.productRepository.existsProductEntityByName(productCreateRqDTO.getName().trim());
+        if ( checkExistName){
+            response.setStatus(500);
+            response.setMessage("Admin : Tên sản phẩm đã được sử dụng");
+            return response;
+        }
+
+        ProductEntity newProduct = new ProductEntity();
+        newProduct.setName(productCreateRqDTO.getName().trim());
+        newProduct.setPrice(productCreateRqDTO.getPrice());
+        newProduct.setDetailDesc(productCreateRqDTO.getDetailDesc().trim());
+        newProduct.setShortDesc(productCreateRqDTO.getShortDesc().trim());
+        newProduct.setQuantity(productCreateRqDTO.getQuantity());
+        newProduct.setFactory(productCreateRqDTO.getFactory().trim());
+        newProduct.setTarget(productCreateRqDTO.getFactory());
+        newProduct.setImage(avatarProduct);
+        newProduct.setSold(0);
+
+        // handle save
+        this.productRepository.save(newProduct);
+
+        response.setStatus(200);
+        response.setMessage("Tạo sản phẩm thành công");
+        return response;
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleUpdateProduct (ProductUpdateRqDTO productUpdateRqDTO , MultipartFile file){
+        ProductEntity currentProduct = this.productRepository.findProductEntityById(productUpdateRqDTO.getId());
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+        if ( !currentProduct.getName().equals(productUpdateRqDTO.getName())){
+            boolean checkExistName = this.productRepository.existsProductEntityByName(productUpdateRqDTO.getName().trim());
+            if ( checkExistName){
+                response.setStatus(500);
+                response.setMessage("Admin : Tên sản phẩm đã được sử dụng");
+                return response;
+            }
+        }
+
+        currentProduct.setName(productUpdateRqDTO.getName().trim());
+        currentProduct.setPrice(productUpdateRqDTO.getPrice());
+        currentProduct.setDetailDesc(productUpdateRqDTO.getDetailDesc().trim());
+        currentProduct.setShortDesc(productUpdateRqDTO.getShortDesc().trim());
+        currentProduct.setQuantity(productUpdateRqDTO.getQuantity());
+        currentProduct.setFactory(productUpdateRqDTO.getFactory().trim());
+        currentProduct.setTarget(productUpdateRqDTO.getFactory());
+        if (file!=null && !Objects.equals(file.getOriginalFilename(), "")){
+            String avatarProduct = this.uploadService.handleUploadFile(file, "product");
+            currentProduct.setImage(avatarProduct);
+        }
+
+        currentProduct.setSold(productUpdateRqDTO.getSold());
+
+
+        this.productRepository.save(currentProduct);
+
+        response.setStatus(200);
+        response.setMessage("Admin : Cập nhật sản phẩm thành công");
+        return response;
+    }
+
+
+
+
 
     public List<ProductRpDTO> getAllProductView() {
         List<ProductRpDTO> listResult = new ArrayList<>();
@@ -77,20 +189,38 @@ public class ProductService {
         return listResult;
     }
 
+    @Transactional
+    public ResponseBodyDTO handleDeleteProduct ( Long id){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        this.productRepository.deleteProductEntityById(id);
+        response.setStatus(200);
+        response.setMessage("Admin : Xóa sản phẩn thành công");
+        return response;
 
-    public List<ProductEntity> getFirstProductById(long id) {
-        return this.productRepository.findFirstById(id);
     }
 
-    public ProductEntity getOnlyOneProduct(long id) {
 
+    public ProductDetailRpDTO handleGetProductRpAdmin(Long id) {
+        ProductDetailRpDTO productDetail = new ProductDetailRpDTO();
+        ProductEntity product = this.productRepository.findProductEntityById(id);
 
-        return this.productRepository.findById(id);
+        productDetail.setId(product.getId());
+        productDetail.setImage(product.getImage());
+        productDetail.setName(product.getName());
+        productDetail.setFactory(product.getFactory());
+        productDetail.setPrice(product.getPrice());
+        productDetail.setDetailDesc(product.getDetailDesc());
+        productDetail.setShortDesc(product.getShortDesc());
+        productDetail.setQuantity(product.getQuantity());
+        productDetail.setTarget(product.getTarget());
+        productDetail.setSold(product.getSold());
+
+        return productDetail;
     }
 
-    public ProductDetailRpDTO getProductDetail(long id) {
+    public ProductDetailRpDTO handleGetProductDetail(long id) {
         ProductDetailRpDTO productDetailRpDTO = new ProductDetailRpDTO();
-        ProductEntity entity = this.productRepository.findById(id);
+        ProductEntity entity = this.productRepository.findProductEntityById(id);
         productDetailRpDTO.setId(entity.getId());
         productDetailRpDTO.setName(entity.getName());
         productDetailRpDTO.setImage(entity.getImage());
@@ -101,60 +231,37 @@ public class ProductService {
         return productDetailRpDTO;
     }
 
-    public void deleteProductById(long id) {
-        this.productRepository.deleteById(id);
-    }
 
 
 
 
 
 
-    public CartEntity getCartByUser(UserEntity user) {
-        return this.cartRepository.findByUser(user);
-    }
 
 
-
-    public List<CartDetailEntity> getCartDetailByCart(CartEntity cart) {
-        return this.cartDetailRepository.findByCart(cart);
-    }
-
-    public CartDetailEntity getCartDetailByProductId(long id) {
-        return this.cartDetailRepository.findByProductId(id);
-    }
-
-    public void deleteCartDetail(long id) {
-        this.cartDetailRepository.deleteCDetailById(id);
-    }
-
-    public void deleteCart(long id) {
-        this.cartRepository.deleteCartById(id);
-    }
-
-    public void handleRemoveCartDetail(long cartDetailId, HttpSession session) {
-        Optional<CartDetailEntity> cartDetailOptional = this.cartDetailRepository.findById(cartDetailId);
-        if (cartDetailOptional.isPresent()) {
-            CartDetailEntity cartDetail = cartDetailOptional.get();
-
-            CartEntity currentCart = cartDetail.getCart();
-            // delete cart-detail
-            this.cartDetailRepository.deleteById(cartDetailId);
-
-            // update cart
-            if (currentCart.getSum() > 1) {
-                // update current cart
-                int s = currentCart.getSum() - 1;
-                currentCart.setSum(s);
-                session.setAttribute("sum", s);
-                this.cartRepository.save(currentCart);
-            } else {
-                // delete cart (sum = 1)
-                this.cartRepository.deleteById(currentCart.getId());
-                session.setAttribute("sum", 0);
-            }
-        }
-    }
+//    public void handleRemoveCartDetail(long cartDetailId, HttpSession session) {
+//        Optional<CartDetailEntity> cartDetailOptional = this.cartDetailRepository.findById(cartDetailId);
+//        if (cartDetailOptional.isPresent()) {
+//            CartDetailEntity cartDetail = cartDetailOptional.get();
+//
+//            CartEntity currentCart = cartDetail.getCart();
+//            // delete cart-detail
+//            this.cartDetailRepository.deleteById(cartDetailId);
+//
+//            // update cart
+//            if (currentCart.getSum() > 1) {
+//                // update current cart
+//                int s = currentCart.getSum() - 1;
+//                currentCart.setSum(s);
+//                session.setAttribute("sum", s);
+//                this.cartRepository.save(currentCart);
+//            } else {
+//                // delete cart (sum = 1)
+//                this.cartRepository.deleteById(currentCart.getId());
+//                session.setAttribute("sum", 0);
+//            }
+//        }
+//    }
 
     @Transactional
     public ResponseBodyDTO handleConfirmCheckout(CartDetailsListDTO cartDetailsListDTO) {

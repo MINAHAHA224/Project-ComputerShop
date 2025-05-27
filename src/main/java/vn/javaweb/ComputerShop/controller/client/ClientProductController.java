@@ -1,6 +1,5 @@
 package vn.javaweb.ComputerShop.controller.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -14,26 +13,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.javaweb.ComputerShop.domain.dto.request.CartDetailsListDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.InfoOrderRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.*;
-import vn.javaweb.ComputerShop.domain.entity.*;
-import vn.javaweb.ComputerShop.repository.CartDetailRepository;
-import vn.javaweb.ComputerShop.repository.CartRepository;
 import vn.javaweb.ComputerShop.service.CartService;
 import vn.javaweb.ComputerShop.service.OrderService;
 import vn.javaweb.ComputerShop.service.ProductService;
-import vn.javaweb.ComputerShop.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestParam;
-import vn.javaweb.ComputerShop.utils.SecurityUtils;
 
 @Controller
 @RequiredArgsConstructor
-public class ItemController {
+public class ClientProductController {
 
     private final CartService cartService;
     private final ProductService productService;
@@ -44,7 +36,7 @@ public class ItemController {
 
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable Long id) {
-        ProductDetailRpDTO productDetail = this.productService.getProductDetail(id);
+        ProductDetailRpDTO productDetail = this.productService.handleGetProductDetail(id);
         model.addAttribute("product", productDetail);
         return "client/product/detail";
     }

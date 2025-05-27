@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
@@ -23,15 +22,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import vn.javaweb.ComputerShop.component.GoogleOauth2;
 import vn.javaweb.ComputerShop.component.MailerComponent;
-import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
-import vn.javaweb.ComputerShop.domain.dto.request.ResetPasswordDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.*;
 import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.UserDetailDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.UserRpDTO;
 import vn.javaweb.ComputerShop.domain.entity.*;
-import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
-import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
 import vn.javaweb.ComputerShop.repository.*;
 import vn.javaweb.ComputerShop.utils.SecurityUtils;
 
@@ -46,6 +45,7 @@ public class UserService {
     private final AuthMethodRepository authMethodRepository;
     private final UserOtpRepository userOtpRepository;
     private final MailerComponent mailerComponent;
+    private final UploadService uploadService;
 
 
 
@@ -74,8 +74,7 @@ public class UserService {
         }
 
 
-        // set data for Spring Security
-        try {
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     email,
                     password,
@@ -84,16 +83,15 @@ public class UserService {
             Authentication authenticationResult = authenticationManager.authenticate(authenticationToken);
             //add data into SecurityContextHolder to view used to authorized
              SecurityContextHolder.getContext().setAuthentication(authenticationResult);
-            // set session
+            // set session boi vi neu sai security rieng ma ko sai qua form login
+        // thi thang Spring security no se ko tu di check , ma minh phai set session cho no no moi check
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authenticationResult);
+        SecurityContextHolder.setContext(context);
 
-            // Lưu SecurityContext vào HttpSession
+        // gắn vào HttpSession để Spring Security nhận diện
+        session.setAttribute("SPRING_SECURITY_CONTEXT", context);
 
-
-            // Lưu vào HttpSession
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            HttpServletResponse responseForSecurity = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-            HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
-            repo.saveContext(SecurityContextHolder.getContext(), request, responseForSecurity);
 
             // Lấy thông tin người dùng đã xác thực
             String testEmailFromSecurity = SecurityUtils.getPrincipal(); // Đây là username (email)
@@ -116,13 +114,6 @@ public class UserService {
             response.setData(informationDTO);
             return response;
 
-        } catch (RuntimeException e) {
-            System.out.println("--ER authenticationToken ");
-            e.printStackTrace();
-            throw e;
-        }
-
-
     }
 
     @Transactional
@@ -136,7 +127,7 @@ public class UserService {
             user.setPassword(registerDTO.getPassword());
             String hashPassword = this.passwordEncoder.encode(user.getPassword());
             user.setPassword(hashPassword);
-            RoleEntity role = this.roleRepository.findByName("USER");
+            RoleEntity role = this.roleRepository.findRoleEntityByName("USER");
             user.setRole(role);
 
             this.userRepository.save(user);
@@ -200,14 +191,13 @@ public class UserService {
 
             session.setAttribute("email", user.getEmail());
 
-            return informationDTO;
         } else {
             try {
                 // save user first
                 UserEntity userNew = new UserEntity();
                 userNew.setEmail(email);
                 userNew.setFullName(name);
-                RoleEntity role = this.roleRepository.findByName("USER");
+                RoleEntity role = this.roleRepository.findRoleEntityByName("USER");
                 userNew.setRole(role);
                 UserEntity userCurrent = this.userRepository.save(userNew);
 
@@ -225,6 +215,7 @@ public class UserService {
                 throw e;
             }
 
+
             UserEntity user = this.userRepository.findUserEntityByEmail(email).get();
             informationDTO.setId(user.getId());
             informationDTO.setEmail(email);
@@ -234,12 +225,9 @@ public class UserService {
             informationDTO.setSum(0);
 
             session.setAttribute("email", email);
-
-            return informationDTO;
-
         }
 
-
+        return informationDTO;
     }
 
     @Transactional
@@ -380,46 +368,140 @@ public class UserService {
     }
 
 
-    public List<UserEntity> getAllUser() {
-        return this.userRepository.findAll();
+    public List<UserRpDTO> handleGetUsers() {
+        List<UserRpDTO> listResult = new ArrayList<>();
+        List<UserEntity> listEntity =  this.userRepository.findAll();
+        for (UserEntity  entity :  listEntity){
+            UserRpDTO result = new UserRpDTO();
+            result.setId(entity.getId());
+            result.setEmail(entity.getEmail());
+            result.setFullName(entity.getFullName());
+            result.setNameRole(entity.getRole().getName());
+            listResult.add(result);
+        }
+
+        return  listResult;
     }
 
-    public List<UserEntity> getFirstUserByEmail(String email) {
-        return this.userRepository.findFirstByEmail(email);
+    @Transactional
+    public ResponseBodyDTO handleCreateUser (UserCreateRqDTO userCreateRqDTO , MultipartFile file){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+        String email = userCreateRqDTO.getEmail().trim();
+        String address = userCreateRqDTO.getAddress().trim();
+        String phone =  userCreateRqDTO.getPhone().trim();
+        String fullName = userCreateRqDTO.getFullName().trim();
+        String avatar = this.uploadService.handleUploadFile(file, "avatar");
+        String hashPassword = this.passwordEncoder.encode(userCreateRqDTO.getPassword());
+        RoleEntity role = this.roleRepository.findRoleEntityByName (userCreateRqDTO.getRoleName());
+
+        // handle check email and password
+        boolean checkEmailExist = this.userRepository.existsUserEntityByEmail(email);
+        if ( checkEmailExist){
+            response.setStatus(500);
+            response.setMessage("Admin : email đã có tài khoản sử dụng");
+            return response;
+        }
+
+        boolean checkExistPhone = this.userRepository.existsUserEntityByPhone(phone);
+        if ( checkExistPhone){
+            response.setStatus(500);
+            response.setMessage("Admin : Số tài khoản đã được sử dụng");
+            return response;
+        }
+        // save user
+        UserEntity user = new UserEntity();
+        user.setEmail(email);
+        user.setAddress(address);
+        user.setPhone(phone);
+        user.setFullName(fullName);
+        user.setAvatar(avatar);
+        user.setPassword(hashPassword);
+        user.setRole(role);
+
+        this.userRepository.save(user);
+
+
+        response.setStatus(200);
+        response.setMessage("Admin : tạo tài khoản thành công");
+        return response;
+
     }
 
-    public List<UserEntity> getFirstUserById(long id) {
-        return this.userRepository.findFirstById(id);
+
+    public UserDetailDTO handleGetUserDetail (Long id){
+        UserEntity user = this.userRepository.findUserEntityById(id);
+
+        UserDetailDTO result = new UserDetailDTO();
+        result.setId(user.getId());
+        result.setEmail(user.getEmail());
+        result.setFullName(user.getFullName());
+        result.setPhone(user.getPhone());
+        result.setAddress(user.getAddress());
+        result.setRoleName(user.getRole().getName());
+        result.setAvatar(user.getAvatar());
+
+        return result;
     }
 
-    public UserEntity getUserUpdateById(long id) {
-        return this.userRepository.findById(id);
+    public UserUpdateRqDTO handleShowDataUserUpdate (Long id ){
+        UserEntity user = this.userRepository.findUserEntityById(id);
+
+        UserUpdateRqDTO result = new UserUpdateRqDTO();
+        result.setId(user.getId());
+        result.setEmail(user.getEmail());
+        result.setFullName(user.getFullName());
+        result.setPhone(user.getPhone());
+        result.setAddress(user.getAddress());
+        result.setRoleName(user.getRole().getName());
+        result.setAvatar(user.getAvatar());
+
+        return result;
     }
 
-    public UserEntity getAllUserById(long id) {
-        return this.userRepository.findAllById(id);
+    @Transactional
+    public ResponseBodyDTO handleUpdateUser ( UserUpdateRqDTO userUpdateRqDTO , MultipartFile file){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+        UserEntity userCurrent = this.userRepository.findUserEntityById(userUpdateRqDTO.getId());
+
+        RoleEntity role = this.roleRepository.findRoleEntityByName(userUpdateRqDTO.getRoleName().trim());
+        String phone = userUpdateRqDTO.getPhone().trim();
+
+        // handle check phone
+        boolean checkExistPhone = this.userRepository.existsUserEntityByPhone(phone);
+        if ( checkExistPhone ){
+            response.setData(500);
+            response.setMessage("Admin : Số điện thoại đã được sử dụng");
+            return response;
+        }
+        // set data new
+        userCurrent.setFullName(userUpdateRqDTO.getFullName());
+        userCurrent.setAddress(userUpdateRqDTO.getAddress());
+        userCurrent.setPhone(userUpdateRqDTO.getPhone());
+        userCurrent.setRole(role);
+        if ( file!=null && !Objects.equals(file.getOriginalFilename(), "")){
+            String newAvatar = this.uploadService.handleUploadFile(file, "avatar");
+            userCurrent.setAvatar(newAvatar);
+        }
+
+
+        this.userRepository.save(userCurrent);
+
+        response.setStatus(200);
+        response.setMessage("Admin : Cập nhật tài khoản người dùng thành công");
+        return response;
     }
 
-    public void deleteUserById(long id) {
-
-        this.userRepository.deleteById(id);
+    @Transactional
+    public ResponseBodyDTO handleDeleteUser ( Long id){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        this.userRepository.deleteUserEntityById(id);
+        response.setStatus(200);
+        response.setMessage("Admin : Xóa tài khoản thành công");
+        return response;
     }
 
-    public RoleEntity getRoleByName(String name) {
-        return this.roleRepository.findByName(name);
-    }
 
-
-    // check exist email
-
-
-    public UserEntity getUserByEmail(String email) {
-        return this.userRepository.findUserEntityByEmail(email).get();
-    }
-
-    public void handleSaveCart(UserEntity user) {
-        this.cartRepository.findByUser(user);
-    }
-    // check login\
 
 }

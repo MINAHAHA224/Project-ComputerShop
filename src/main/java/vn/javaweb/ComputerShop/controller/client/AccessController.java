@@ -21,8 +21,10 @@ import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.ResetPasswordDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ProductRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.UserEntity;
+import vn.javaweb.ComputerShop.service.ProductService;
 import vn.javaweb.ComputerShop.service.UserService;
 
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AccessController {
     private final UserService userService;
+    private final ProductService productService;
 
     @GetMapping("/login")
     public String getLogin(Model model) {
@@ -59,7 +62,7 @@ public class AccessController {
         if (handleLogin.getStatus() == 200 && ((InformationDTO) handleLogin.getData()).getRole().equals("ADMIN")) {
             session.setAttribute("informationDTO", handleLogin.getData());
             model.addAttribute("messageSuccess" ,handleLogin.getMessage());
-            return "admin/dashboard/show";
+            return "redirect:/admin";
         } else if (handleLogin.getStatus() == 200) {
             session.setAttribute("informationDTO", handleLogin.getData());
             model.addAttribute("messageSuccess" ,handleLogin.getMessage());
@@ -114,7 +117,8 @@ public class AccessController {
         InformationDTO informationDTO = this.userService.handleLoginOauth2Google(code, response, session);
         session.setAttribute("informationDTO", informationDTO);
 
-        return "client/homepage/show";
+
+        return "redirect:/home";
     }
 
 

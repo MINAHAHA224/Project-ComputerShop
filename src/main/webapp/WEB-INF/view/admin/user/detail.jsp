@@ -24,7 +24,7 @@
                         <div class="container mt-5">
                             <div class="row">
                                 <div class="col-12 mx-auto">
-                                    <c:forEach var="infoUser" items="${listInfoUser}">
+
 
                                         <div class="d-flex justify-content-between">
                                             <h3>User detail with id = ${infoUser.id}</h3>
@@ -44,7 +44,7 @@
                                                     <li class="list-group-item">Full Name : ${infoUser.fullName}</li>
                                                     <li class="list-group-item">Adress : ${infoUser.address}</li>
                                                     <li class="list-group-item">Phone : ${infoUser.phone}</li>
-                                                    <li class="list-group-item">Role : ${infoUser.role.name}</li>
+                                                    <li class="list-group-item">Role : ${infoUser.roleName}</li>
                                                     <li class="list-group-item">Avatar :
 
                                                         <img class="img-thumbnail"
@@ -55,7 +55,7 @@
                                             </div>
                                         </table>
 
-                                    </c:forEach>
+
 
                                     <a href="/admin/user" class="btn btn-primary"> Back</a>
 

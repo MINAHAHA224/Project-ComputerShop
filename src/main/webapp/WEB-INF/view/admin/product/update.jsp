@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <!DOCTYPE html>
             <html lang="en">
 
@@ -37,7 +38,7 @@
                                             <h3>Create a product</h3>
                                             <hr />
                                             <form:form method="post" enctype="multipart/form-data"
-                                                action="/admin/product/update" modelAttribute="product" class="row">
+                                                action="/admin/product/update" modelAttribute="productUpdateRqDTO" class="row">
                                                 <div class="mb-3" style="display: none;">
                                                     <label class="form-label">ID</label>
                                                     <form:input type="text" class="form-control" path="id" />
@@ -128,7 +129,7 @@
                                                 <div class="mb-3 ">
                                                     <h3>Current Images</h3>
 
-                                                    <img id="selectedAvatar" src="/images/product/${product.image}"
+                                                    <img id="selectedAvatar" src="/images/product/${productUpdateRqDTO.image}"
                                                         class="rounded-circle"
                                                         style="width: 200px; height: 200px; object-fit: cover;"
                                                         alt="example placeholder" />
@@ -138,7 +139,7 @@
                                                                 for="customFile2">Choose
                                                                 file</label>
                                                             <input type="file" class="form-control d-none"
-                                                                name="hoidanitFile" id="customFile2"
+                                                                name="avatarFile" id="customFile2"
                                                                 accept=".png, .jpg, .jpeg"
                                                                 onchange="displaySelectedImage(event, 'selectedAvatar')" />
                                                         </div>

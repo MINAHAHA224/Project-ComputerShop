@@ -14,20 +14,22 @@ import vn.javaweb.ComputerShop.repository.custom.ProductRepositoryCustom;
 
 @Repository
 
-public interface ProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> , ProductRepositoryCustom {
+public interface ProductRepository extends JpaRepository<ProductEntity, Long>, ProductRepositoryCustom {
 
-   ProductEntity save(ProductEntity hoidanit);
+   void deleteProductEntityById ( Long id);
 
-   List<ProductEntity> findFirstById(long id);
 
-   ProductEntity findById(long id);
+   boolean existsProductEntityByName ( String name);
+
+
+
+
+
 
    ProductEntity findProductEntityById(long id);
 
-   void deleteById(long id);
 
    Page<ProductEntity> findAll(Pageable page);
 
-   Page<ProductEntity> findAll(Specification<ProductEntity> spec, Pageable pageable);
 
 }

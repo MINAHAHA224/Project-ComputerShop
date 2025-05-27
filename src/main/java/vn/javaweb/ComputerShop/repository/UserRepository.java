@@ -12,24 +12,17 @@ import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity save(UserEntity hoidanit);
-
-    List<UserEntity> findByEmail(String email);
-
-    List<UserEntity> findFirstByEmail(String email);
-
    Optional<UserEntity>  findUserEntityByEmail(String email);
    boolean existsUserEntityByEmail ( String email);
 
-    List<UserEntity> findFirstById(long id);
+   boolean existsUserEntityByPhone ( String phone);
 
-    UserEntity findById(long id);
+   void deleteUserEntityById ( Long id);
 
-    UserEntity findAllById(long id);
+   UserEntity findUserEntityById ( Long id);
 
-    void deleteById(long id);
 
-    List<UserEntity> findByEmailAndAddress(String email, String address);
+
 
     boolean existsByEmail(String email);
 

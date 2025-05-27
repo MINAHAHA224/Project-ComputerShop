@@ -2,6 +2,7 @@ package vn.javaweb.ComputerShop.controller.admin;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,19 +17,14 @@ import vn.javaweb.ComputerShop.repository.OrderRepository;
 import vn.javaweb.ComputerShop.service.OrderService;
 
 @Controller
-public class OrderController {
+@RequiredArgsConstructor
+public class AdminOrderController {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final OrderService orderService;
 
-    public OrderController(OrderRepository orderRepository,
-            OrderDetailRepository orderDetailRepository, OrderService orderService) {
 
-        this.orderRepository = orderRepository;
-        this.orderDetailRepository = orderDetailRepository;
-        this.orderService = orderService;
-    }
 
     @GetMapping("/admin/order")
     public String getOrder(Model model) {

@@ -46,7 +46,7 @@
                                             <h3>Create a product</h3>
                                             <hr />
                                             <form:form method="post" enctype="multipart/form-data"
-                                                action="/admin/product/create" modelAttribute="newProduct" class="row">
+                                                action="/admin/product/create" modelAttribute="productCreateRqDTO" class="row">
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <c:set var="errorName">
                                                         <form:errors path="name" cssClass="invalid-feedback" />
@@ -123,7 +123,7 @@
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="avatarFile" class="form-label">image:</label>
                                                     <input class="form-control" type="file" id="avatarFile"
-                                                        accept=".png, .jpg, .jpeg" name="hoidanitFile">
+                                                        accept=".png, .jpg, .jpeg" name="avatarFile">
                                                 </div>
                                                 <div class="col-12 mb-3">
                                                     <img style="max-height: 250px; display: none;" alt="avatar preview"

@@ -30,7 +30,7 @@
                                             update
                                         </div>
                                         <form:form method="POST" enctype="multipart/form-data"
-                                            action="/admin/user/update" modelAttribute="newUser" class="header_form">
+                                            action="/admin/user/update" modelAttribute="userUpdateRqDTO" class="header_form">
                                             <div class="mb-3" style="display: none;">
                                                 <label class="form-label">ID</label>
                                                 <form:input type="text" class="form-control" path="id" />
@@ -57,18 +57,24 @@
 
                                             </div>
                                             <div class="mb-3">
+                                                <c:set var="errorAddress">
+                                                    <form:errors path="address" cssClass="invalid-feedback" />
+                                                </c:set>
                                                 <label class="form-label">Address</label>
-                                                <form:input type="text" class="form-control" path="address" />
-
+                                                <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" path="address" />
+                                                    ${errorAddress}
                                             </div>
                                             <div class="mb-3">
+                                                <c:set var="errorPhone">
+                                                    <form:errors path="phone" cssClass="invalid-feedback" />
+                                                </c:set>
                                                 <label class="form-label">Phone</label>
-                                                <form:input type="text" class="form-control" path="phone" />
-
+                                                <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}" path="phone" />
+                                                    ${errorPhone}
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Role:</label>
-                                                <form:select class="form-select" path="role.name">
+                                                <form:select class="form-select" path="roleName">
                                                     <form:option value="ADMIN">ADMIN</form:option>
                                                     <form:option value="USER">USER</form:option>
                                                 </form:select>
@@ -76,7 +82,7 @@
                                             <div class="mb-3 ">
                                                 <h3>Current Images</h3>
 
-                                                <img id="selectedAvatar" src="/images/avatar/${newUser.avatar}"
+                                                <img id="selectedAvatar" src="/images/avatar/${userUpdateRqDTO.avatar}"
                                                     class="rounded-circle"
                                                     style="width: 200px; height: 200px; object-fit: cover;"
                                                     alt="example placeholder" />
@@ -86,7 +92,7 @@
                                                             for="customFile2">Choose
                                                             file</label>
                                                         <input type="file" class="form-control d-none"
-                                                            name="hoidanitFile" id="customFile2"
+                                                            name="avatarFile" id="customFile2"
                                                             accept=".png, .jpg, .jpeg"
                                                             onchange="displaySelectedImage(event, 'selectedAvatar')" />
                                                     </div>
