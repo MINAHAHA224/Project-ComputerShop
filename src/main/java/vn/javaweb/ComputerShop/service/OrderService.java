@@ -21,14 +21,11 @@ import vn.javaweb.ComputerShop.repository.*;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
     private final UserRepository userRepository;
 
 
 
-    public OrderEntity getOrderById(long id) {
-        return this.orderRepository.findById(id);
-    }
+
 
     public List<OrderRpDTO> handleGetDataOrderOfUser(HttpSession session) {
         List<OrderRpDTO> listResult = new ArrayList<>();
@@ -135,19 +132,8 @@ public class OrderService {
         return response;
     }
 
-    public List<OrderDetailEntity> getOrderDetailByOrder(OrderEntity order) {
-        return this.orderDetailRepository.findByOrder(order);
-    }
 
-    public void deleteOrder(long id) {
 
-        OrderEntity order = this.getOrderById(id);
-        List<OrderDetailEntity> orderDetails = this.getOrderDetailByOrder(order);
-        for (OrderDetailEntity orderDetail : orderDetails) {
-            this.orderDetailRepository.deleteById(orderDetail.getId());
-        }
-        this.orderRepository.deleteById(id);
-    }
 
 
 }

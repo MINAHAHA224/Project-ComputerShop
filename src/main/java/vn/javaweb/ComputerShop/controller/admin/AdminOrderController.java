@@ -28,8 +28,7 @@ import vn.javaweb.ComputerShop.service.OrderService;
 @RequiredArgsConstructor
 public class AdminOrderController {
 
-    private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
+
     private final OrderService orderService;
 
 

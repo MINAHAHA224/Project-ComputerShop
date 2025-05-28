@@ -3,6 +3,7 @@ package vn.javaweb.ComputerShop.domain.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -43,6 +44,7 @@ public class UserEntity implements Serializable, UserDetails  {
     private String address;
     private String phone;
     private String avatar;
+
 
     // roleId
     // User many -> to one -> role

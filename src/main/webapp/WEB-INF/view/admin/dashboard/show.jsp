@@ -60,7 +60,47 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card bg-secondary text-white mb-4"> <%-- Chọn màu khác --%>
+                                        <div class="card-body">Báo cáo Sản Phẩm</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <%-- Link đến trang chọn factory --%>
+                                            <a class="small text-white stretched-link" href="<c:url value='/admin/product/report/excel/preview'/>">
+                                                Xuất báo cáo Excel
+                                            </a>
+                                            <%-- Hoặc link trực tiếp đến preview với tất cả factory --%>
+                                            <%--
+                                            <a class="small text-white stretched-link" href="<c:url value='/admin/product/report/excel/preview'/>">
+                                                Xuất báo cáo Excel (Tất cả)
+                                            </a>
+                                            --%>
+                                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card bg-info text-white mb-4"> <%-- Chọn màu khác, ví dụ info --%>
+                                        <div class="card-body">Báo cáo Người Dùng</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <%-- Link trực tiếp đến preview với tất cả user, hoặc có thể tạo trang chọn filter trước --%>
+                                            <a class="small text-white stretched-link" href="<c:url value='/admin/user/report/excel/preview'/>">
+                                                Xuất báo cáo Excel
+                                            </a>
+                                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card bg-danger text-white mb-4"> <%-- Chọn màu khác, ví dụ danger --%>
+                                        <div class="card-body">Báo cáo Đơn Hàng</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <a class="small text-white stretched-link" href="<c:url value='/admin/order/report/excel/preview'/>">
+                                                Xuất báo cáo Excel
+                                            </a>
+                                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>

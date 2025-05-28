@@ -148,6 +148,18 @@
 			 <!-- Hoặc cùng phiên bản với spring-security-core bạn đang dùng -->
 		</dependency>
 
+		<!-- Apache POI for Excel -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.2.3</version> <!-- Hoặc phiên bản mới nhất -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version> <!-- Hoặc phiên bản mới nhất -->
+		</dependency>
+
 
 	</dependencies>
 

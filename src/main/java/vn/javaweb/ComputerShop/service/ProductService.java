@@ -72,7 +72,7 @@ public class ProductService {
             page = 1;
             // TODO: handle exception
         }
-        Pageable pageable = PageRequest.of(page - 1, 2);
+        Pageable pageable = PageRequest.of(page - 1, 5);
         Page<ProductAdRpDTO> listProducts = this.productRepository.findProducts(pageable);
         result.setListProduct(listProducts.getContent());
         result.setPage(page);

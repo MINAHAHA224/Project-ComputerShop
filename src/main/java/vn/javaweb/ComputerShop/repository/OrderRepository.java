@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
-    OrderEntity findById(long id);
+
 
     OrderEntity findOrderEntityById(Long id);
 
     void deleteOrderEntityById ( Long id);
 
-    List<OrderEntity> findByUser(UserEntity user);
+
 }
