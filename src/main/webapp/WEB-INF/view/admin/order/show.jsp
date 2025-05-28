@@ -36,7 +36,10 @@
                                                     <th>TotalPrice</th>
                                                     <th>User</th>
                                                     <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th>Time</th>
+
+                                                    <th>Type Payment</th>
+                                                    <th>Payment</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -47,9 +50,12 @@
                                                             <fmt:formatNumber type="number"
                                                                 value="${order.totalPrice}" /> đ
                                                         </td>
-                                                        <td>${order.user.fullName}</td>
+                                                        <td>${order.nameUser}</td>
                                                         <td>${order.status}</td>
+                                                        <td>${order.time}</td>
 
+                                                        <td>${order.typePayment}</td>
+                                                        <td>${order.statusPayment}</td>
                                                         <td>
                                                             <a href="/admin/order/${order.id}"
                                                                 class=" btn btn-success">Detail</a>

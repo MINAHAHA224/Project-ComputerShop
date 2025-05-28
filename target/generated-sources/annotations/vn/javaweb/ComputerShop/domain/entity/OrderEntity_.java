@@ -5,6 +5,7 @@ import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.ListAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
+import java.util.Date;
 
 @StaticMetamodel(OrderEntity.class)
 @Generated("org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
@@ -37,9 +38,19 @@ public abstract class OrderEntity_ {
 	public static volatile SingularAttribute<OrderEntity, String> receiverName;
 	
 	/**
+	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity#statusPayment
+	 **/
+	public static volatile SingularAttribute<OrderEntity, String> statusPayment;
+	
+	/**
 	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity#id
 	 **/
 	public static volatile SingularAttribute<OrderEntity, Long> id;
+	
+	/**
+	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity#time
+	 **/
+	public static volatile SingularAttribute<OrderEntity, Date> time;
 	
 	/**
 	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity
@@ -55,15 +66,23 @@ public abstract class OrderEntity_ {
 	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity#status
 	 **/
 	public static volatile SingularAttribute<OrderEntity, String> status;
+	
+	/**
+	 * @see vn.javaweb.ComputerShop.domain.entity.OrderEntity#typePayment
+	 **/
+	public static volatile SingularAttribute<OrderEntity, String> typePayment;
 
 	public static final String RECEIVER_ADDRESS = "receiverAddress";
 	public static final String ORDER_DETAILS = "orderDetails";
 	public static final String RECEIVER_PHONE = "receiverPhone";
 	public static final String TOTAL_PRICE = "totalPrice";
 	public static final String RECEIVER_NAME = "receiverName";
+	public static final String STATUS_PAYMENT = "statusPayment";
 	public static final String ID = "id";
+	public static final String TIME = "time";
 	public static final String USER = "user";
 	public static final String STATUS = "status";
+	public static final String TYPE_PAYMENT = "typePayment";
 
 }
 

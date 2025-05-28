@@ -1,17 +1,25 @@
 package vn.javaweb.ComputerShop.controller.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import vn.javaweb.ComputerShop.domain.dto.request.OrderUpdateRqDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.OrderDetailRpDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.OrderRpDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.OrderEntity;
-import vn.javaweb.ComputerShop.domain.entity.OrderDetailEntity;
 import vn.javaweb.ComputerShop.repository.OrderDetailRepository;
 import vn.javaweb.ComputerShop.repository.OrderRepository;
 import vn.javaweb.ComputerShop.service.OrderService;
@@ -28,62 +36,61 @@ public class AdminOrderController {
 
     @GetMapping("/admin/order")
     public String getOrder(Model model) {
-        List<OrderEntity> orders = this.orderRepository.findAll();
-
+        List<OrderRpDTO> orders = this.orderService.handleGetOrderAd();
         model.addAttribute("orders", orders);
-
         return "admin/order/show";
     }
 
     @GetMapping("/admin/order/{id}")
     public String getOrderDetail(Model model, @PathVariable long id) {
-
-        OrderEntity order = this.orderService.getOrderById(id);
-        if (order != null) {
-            List<OrderDetailEntity> orderDetails = this.orderService.getOrderDetailByOrder(order);
-
+            List<OrderDetailRpDTO> orderDetails = this.orderService.handeGetOrderDetailAd(id);
             model.addAttribute("orderDetails", orderDetails);
-        }
-
-        return "admin/order/detail";
+            return "admin/order/detail";
     }
 
     @GetMapping("/admin/order/update/{id}")
     public String getUpdateOrderPage(Model model, @PathVariable long id) {
-        OrderEntity orders = this.orderService.getOrderById(id);
-        if (orders != null) {
-            model.addAttribute("orders", orders);
-        }
-
+        OrderUpdateRqDTO orders = this.orderService.handleGetOrderRqAd(id);
+        model.addAttribute("orders", orders);
         return "admin/order/update";
     }
 
     @PostMapping("/admin/order/update")
-    public String postUpdateOrderPage(@ModelAttribute("orders") OrderEntity orderView) {
+    public String postUpdateOrderPage(Model model
+            , @Valid  @ModelAttribute("orders") OrderUpdateRqDTO orderView
+            , BindingResult bindingResult , RedirectAttributes redirectAttributes) {
         // TODO: process POST request
-        OrderEntity order = this.orderService.getOrderById(orderView.getId());
-        order.setStatus(orderView.getStatus());
-        this.orderRepository.save(order);
 
-        return "redirect:/admin/order";
+
+        if ( bindingResult.hasErrors()){
+            model.addAttribute("orders", orderView);
+            return "admin/order/update";
+        }
+
+        ResponseBodyDTO response = this.orderService.handleUpdateOrderRqAd(orderView);
+        if ( response.getStatus() != 200 ){
+            model.addAttribute("orders", orderView);
+            model.addAttribute("messageError" ,response.getMessage() );
+            return "admin/order/update";
+        }else {
+            redirectAttributes.addFlashAttribute("messageSuccess" ,response.getMessage() );
+            return "redirect:/admin/order";
+        }
+
+
     }
 
     @GetMapping("/admin/order/delete/{id}")
-    public String getDeleteOrderPage(Model model, @PathVariable long id) {
-        OrderEntity orders = this.orderService.getOrderById(id);
-        if (orders != null) {
-            model.addAttribute("orders", orders);
+    public String getDeleteOrderPage(Model model, @PathVariable long id , RedirectAttributes redirectAttributes) {
+        ResponseBodyDTO handleDelete = this.orderService.handleDeleteOrder(id);
+        if (handleDelete.getStatus() != 200 ){
+            redirectAttributes.addFlashAttribute("messageError" ,handleDelete.getMessage() );
+
+        }else {
+            redirectAttributes.addFlashAttribute("messageSuccess" ,handleDelete.getMessage() );
         }
-        model.addAttribute("id", id);
-
-        return "admin/order/delete";
-    }
-
-    @PostMapping("/admin/order/delete")
-    public String postDeleteOrderPage(@ModelAttribute("orders") OrderEntity orderView) {
-
-        this.orderService.deleteOrder(orderView.getId());
         return "redirect:/admin/order";
+
     }
 
 }

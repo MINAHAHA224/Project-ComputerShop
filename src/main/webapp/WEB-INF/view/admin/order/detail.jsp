@@ -43,20 +43,20 @@
                                                 <c:forEach var="orderDetail" items="${orderDetails}">
                                                     <tr>
                                                         <th><img style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden;"
-                                                                src="/images/product/${orderDetail.product.image}" />
+                                                                src="/images/product/${orderDetail.productImage}" />
                                                         </th>
                                                         <td>
                                                             <a
-                                                                href="/product/${orderDetail.product.id}">${orderDetail.product.name}</a>
+                                                                href="/product/${orderDetail.productId}">${orderDetail.productName}</a>
                                                         </td>
                                                         <td>
                                                             <fmt:formatNumber type="number"
                                                                 value="${orderDetail.price}" /> đ
                                                         </td>
-                                                        <td>${orderDetail.quantity}</td>
+                                                        <td>${orderDetail.productQuantity}</td>
                                                         <td>
                                                             <fmt:formatNumber type="number"
-                                                                value="${orderDetail.price * orderDetail.quantity}" /> đ
+                                                                value="${orderDetail.price * orderDetail.productQuantity}" /> đ
                                                         </td>
 
                                                     </tr>

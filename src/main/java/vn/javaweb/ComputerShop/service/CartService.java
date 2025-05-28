@@ -14,6 +14,7 @@ import vn.javaweb.ComputerShop.domain.entity.*;
 import vn.javaweb.ComputerShop.repository.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -221,6 +222,10 @@ public class CartService {
         order.setReceiverPhone(infoOrderRqDTO.getReceiverPhone());
         order.setTotalPrice(infoOrderRqDTO.getTotalPriceToSaveOrder());
         order.setStatus("PENDING");
+        order.setTime(new Date());
+        order.setTypePayment("COD");
+        order.setStatusPayment("PENDING");
+
         OrderEntity  orderNew = this.orderRepository.save(order);
 
         // create orderDetail

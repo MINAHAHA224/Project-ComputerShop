@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
-import vn.javaweb.ComputerShop.domain.dto.request.InfoOrderRqDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.OrderUpdateRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.OrderDetailRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.OrderRpDTO;
+import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.*;
 import vn.javaweb.ComputerShop.domain.entity.OrderDetailEntity;
 import vn.javaweb.ComputerShop.repository.*;
@@ -56,6 +57,82 @@ public class OrderService {
        }
 
         return listResult;
+    }
+
+    public List<OrderRpDTO> handleGetOrderAd ( ){
+        List<OrderRpDTO> listResult = new ArrayList<>();
+        List<OrderEntity> listEntity = this.orderRepository.findAll();
+        for ( OrderEntity entity : listEntity){
+            OrderRpDTO result = new OrderRpDTO();
+            result.setId(entity.getId());
+            result.setNameUser(entity.getReceiverName());
+            result.setTotalPrice(entity.getTotalPrice());
+            result.setStatus(entity.getStatus());
+            result.setTime(entity.getTime());
+            result.setTypePayment(entity.getTypePayment());
+            result.setStatusPayment(entity.getStatusPayment());
+
+
+            listResult.add(result);
+        }
+        return listResult;
+    }
+
+    public List<OrderDetailRpDTO> handeGetOrderDetailAd (Long id){
+        List<OrderDetailRpDTO> listResult = new ArrayList<>();
+        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(id);
+        List<OrderDetailEntity> listEntity = orderEntity.getOrderDetails();
+
+        for ( OrderDetailEntity entity : listEntity){
+            OrderDetailRpDTO result = new OrderDetailRpDTO();
+            result.setProductId(entity.getId());
+            result.setProductName(entity.getProduct().getName());
+            result.setProductImage(entity.getProduct().getImage());
+            result.setPrice(entity.getPrice());
+            result.setProductQuantity(entity.getQuantity());
+            listResult.add(result);
+        }
+        return listResult;
+    }
+
+    public OrderUpdateRqDTO handleGetOrderRqAd (Long id){
+        OrderEntity order = this.orderRepository.findOrderEntityById(id);
+        OrderUpdateRqDTO result = new OrderUpdateRqDTO();
+        result.setId(order.getId());
+        result.setStatus(order.getStatus());
+        result.setTotalPrice(order.getTotalPrice());
+        result.setTypePayment(order.getTypePayment());
+        result.setStatusPayment(order.getStatusPayment());
+        result.setReceiverPhone(order.getReceiverPhone());
+        result.setReceiverName(order.getReceiverName());
+        result.setReceiverAddress(order.getReceiverAddress());
+
+        return result;
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleUpdateOrderRqAd ( OrderUpdateRqDTO orderUpdateRqDTO){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        OrderEntity order = this.orderRepository.findOrderEntityById(orderUpdateRqDTO.getId());
+        order.setStatus(orderUpdateRqDTO.getStatus());
+        order.setReceiverName(orderUpdateRqDTO.getReceiverName());
+        order.setReceiverPhone(orderUpdateRqDTO.getReceiverPhone());
+        order.setReceiverAddress(orderUpdateRqDTO.getReceiverAddress());
+        order.setStatusPayment(orderUpdateRqDTO.getStatusPayment());
+        this.orderRepository.save(order);
+
+        response.setStatus(200);
+        response.setMessage("Admin : Cập nhật trạng đơn đặt hàng thành công");
+        return response;
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleDeleteOrder (Long id){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        this.orderRepository.deleteOrderEntityById(id);
+        response.setStatus(200);
+        response.setMessage("Admin : Xóa đơn hàng thành công");
+        return response;
     }
 
     public List<OrderDetailEntity> getOrderDetailByOrder(OrderEntity order) {

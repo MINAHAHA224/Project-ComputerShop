@@ -1,15 +1,9 @@
 package vn.javaweb.ComputerShop.domain.entity;
 
+import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -26,13 +20,22 @@ public class OrderEntity {
 
     private double totalPrice;
 
+    @Column(name = "receiver_name")
     private String receiverName;
-
+    @Column(name = "receiver_address")
     private String receiverAddress;
-
+    @Column(name = "receiver_phone")
     private String receiverPhone;
-
+    @Column(name = "status")
     private String status;
+    @Column(name = "time")
+    private Date time;
+
+    @Column(name = "type_payment")
+    private String typePayment;
+
+    @Column(name = "status_payment")
+    private String statusPayment;
 
     // user id
     @ManyToOne
