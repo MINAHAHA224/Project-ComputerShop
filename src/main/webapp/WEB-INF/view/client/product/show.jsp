@@ -2,7 +2,7 @@
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
             <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
+<!-- JSP Path: client/product/show.jsp -->
                 <!DOCTYPE html>
                 <html lang="en">
 
@@ -13,28 +13,7 @@
                     <meta content="" name="keywords">
                     <meta content="" name="description">
 
-                    <!-- Google Web Fonts -->
-                    <link rel="preconnect" href="https://fonts.googleapis.com">
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                    <link
-                        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-                        rel="stylesheet">
-
-                    <!-- Icon Font Stylesheet -->
-                    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-                        rel="stylesheet">
-
-                    <!-- Libraries Stylesheet -->
-                    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-                    <link href="/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-
-                    <!-- Customized Bootstrap Stylesheet -->
-                    <link href="/client/css/bootstrap.min.css" rel="stylesheet">
-
-                    <!-- Template Stylesheet -->
-                    <link href="/client/css/style.css" rel="stylesheet">
+                    <jsp:include page="../layout/common_head_links.jsp" />
                 </head>
 
                 <body>
@@ -200,48 +179,43 @@
                                                 <div>Không tìm thấy sản phẩm</div>
                                             </c:if>
                                             <c:forEach var="product" items="${products}">
-                                                <div class="col-md-6 col-lg-4">
-                                                    <div class="rounded position-relative fruite-item">
-                                                        <div class="fruite-img">
-                                                            <img src="/images/product/${product.image}"
-                                                                class="img-fluid w-100 rounded-top" alt="">
-                                                        </div>
-                                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                                                            style="top: 10px; left: 10px;">Laptop
-                                                        </div>
-                                                        <div
-                                                            class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                            <h4 style="font-size: 15px;">
-                                                                <a href="/product/${product.id}">
-                                                                    ${product.name}
-                                                                </a>
-
-                                                            </h4>
-                                                            <p style="font-size: 13px;">
-                                                                ${product.shortDesc}</p>
-                                                            <div
-                                                                class="d-flex  flex-lg-wrap justify-content-center flex-column">
-                                                                <p style="font-size: 15px; text-align: center; width: 100%;"
-                                                                    class="text-dark  fw-bold mb-3">
-                                                                    <fmt:formatNumber type="number"
-                                                                        value="${product.price}" />
-                                                                    đ
-                                                                </p>
-                                                                <form action="/add-product-to-cart/${product.id}"
-                                                                    method="post">
-                                                                    <input type="hidden" name="${_csrf.parameterName}"
-                                                                        value="${_csrf.token}" />
-
-                                                                    <button
-                                                                        class="mx-auto btn border border-secondary rounded-pill px-3 text-primary"><i
-                                                                            class="fa fa-shopping-bag me-2 text-primary"></i>
-                                                                        Add to cart
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+<div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+    <div class="card product-card h-100 shadow-sm border-0 rounded-lg overflow-hidden">
+        <div class="product-card-img-container position-relative">
+            <a href="<c:url value='/product/${product.id}'/>">
+                <img src="<c:url value='/images/product/${product.image}'/>"
+                     class="card-img-top product-image" alt="${product.name}">
+            </a>
+            <div class="product-card-actions">
+                <form action="<c:url value='/add-product-to-cart/${product.id}'/>" method="post" class="d-inline">
+                    <security:csrfInput />
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-sm btn-primary rounded-circle" title="Thêm vào giỏ">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                </form>
+                <a href="<c:url value='/product/${product.id}'/>" class="btn btn-sm btn-outline-secondary rounded-circle ms-2" title="Xem chi tiết">
+                    <i class="fas fa-eye"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title product-name mb-2">
+                <a href="<c:url value='/product/${product.id}'/>" class="text-decoration-none">
+                    ${product.name}
+                </a>
+            </h5>
+            <p class="card-text product-short-desc small text-muted mb-2">
+                ${product.shortDesc}
+            </p>
+            <div class="mt-auto">
+                <p class="card-text product-price fw-bold fs-5 mb-2">
+                    <fmt:formatNumber type="number" value="${product.price}" /> đ
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
                                             </c:forEach>
 
 

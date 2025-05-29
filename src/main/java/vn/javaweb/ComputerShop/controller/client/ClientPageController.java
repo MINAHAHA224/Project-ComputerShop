@@ -20,18 +20,13 @@ import vn.javaweb.ComputerShop.service.ProductService;
 public class ClientPageController {
     private final ProductService productService;
 
-
-
-
     @GetMapping("/home")
     public String getHomepage(Model model) {
         List<ProductRpDTO> listResult = this.productService.getAllProductView();
         model.addAttribute("products", listResult);
 
-
         return "client/homepage/show";
     }
-
 
     @GetMapping("/accessDeny")
     public String getAccessDenyPage() {
@@ -40,9 +35,9 @@ public class ClientPageController {
     }
 
     @GetMapping("/products")
-    public String getProductsPage(Model model,ProductFilterDTO productFilterDTO, HttpServletRequest request) {
+    public String getProductsPage(Model model, ProductFilterDTO productFilterDTO, HttpServletRequest request) {
 
-        ProductFilterRpDTO result = this.productService.handleShowDataProductFilter(productFilterDTO  );
+        ProductFilterRpDTO result = this.productService.handleShowDataProductFilter(productFilterDTO);
 
         String qs = request.getQueryString();
         if (qs != null && !qs.isBlank()) {
@@ -56,6 +51,17 @@ public class ClientPageController {
         model.addAttribute("totalPages", result.getTotalPage());
 
         return "client/product/show";
+    }
+
+    @GetMapping("/contact-us")
+    public String getContactPage(Model model) {
+        return "client/contact/show";
+    }
+
+    @GetMapping("/about-us")
+    public String getAboutUsPage(Model model) {
+
+        return "client/about/show";
     }
 
 }
