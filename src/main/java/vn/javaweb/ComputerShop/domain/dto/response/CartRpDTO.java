@@ -12,4 +12,6 @@ import java.util.List;
 public class CartRpDTO {
     private List<CartDetailRpDTO> cartDetails;
     private double totalPrice;
+
+
 }
