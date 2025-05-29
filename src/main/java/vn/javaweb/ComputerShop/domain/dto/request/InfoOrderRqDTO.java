@@ -1,6 +1,7 @@
 package vn.javaweb.ComputerShop.domain.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -27,4 +28,6 @@ public class InfoOrderRqDTO {
 
     private Double totalPriceToSaveOrder ;
 
+    @NotEmpty(message = "Vui lòng chọn phương thức thanh toán")
+    private String paymentMethod;
 }

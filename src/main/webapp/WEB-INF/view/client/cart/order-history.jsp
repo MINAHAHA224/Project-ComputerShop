@@ -108,7 +108,14 @@
                         </td>
                         <td colspan="2"></td> <%-- Giữ cho cột số lượng và thành tiền trống ở dòng này --%>
                         <td colspan="1">
-                                ${order.status}
+                            <c:choose>
+                                <c:when test="${order.status == 'PENDING'}">Chờ xác nhận</c:when>
+                                <c:when test="${order.status == 'CONFIRMED'}">Đã xác nhận đơn</c:when>
+                                <c:when test="${order.status == 'SHIPPED'}">Đã giao cho bên vận chuyển</c:when>
+                                <c:when test="${order.status == 'DELIVERED'}">Giao hàng thành công</c:when>
+                                <c:when test="${order.status == 'CANCELLED'}">Hủy đơn hàng</c:when>
+                                <c:otherwise>Không rõ trạng thái</c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                     <%-- Dòng hiển thị chi tiết các sản phẩm trong Order --%>

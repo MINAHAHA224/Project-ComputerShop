@@ -46,7 +46,7 @@ public class ClientProductController {
             , HttpSession session , Model model ) {
         ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session , productId);
         model.addAttribute("messageSuccess" ,responseBodyDTO.getMessage() );
-        return "client/homepage/show";
+        return "redirect:/home";
     }
 
     @GetMapping("/cart")

@@ -14,15 +14,14 @@ import vn.javaweb.ComputerShop.domain.dto.response.OrderReportDto;
 import vn.javaweb.ComputerShop.domain.dto.response.ProductReportDto;
 import vn.javaweb.ComputerShop.domain.dto.response.RoleSimpleDto;
 import vn.javaweb.ComputerShop.domain.dto.response.UserReportDto;
+import vn.javaweb.ComputerShop.domain.enums.OrderStatus;
+
 import java.sql.Timestamp; // Thêm import này
 import java.text.ParseException; // Thêm import này
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -409,16 +408,15 @@ public class ExportExcelService {
 
 
     public List<String> getAllOrderStatuses() {
+        List<String> statuses = new ArrayList<>();
         String sql = "SELECT DISTINCT o.status FROM orders o WHERE o.status IS NOT NULL AND o.status <> '' ORDER BY o.status ASC";
-        try {
-            Query query = entityManager.createNativeQuery(sql);
-            List<String> statuses = query.getResultList();
-            return statuses.stream().map(obj -> obj != null ? obj.toString() : null).collect(Collectors.toList());
-        } catch (Exception e) {
-            System.err.println("--ERROR getAllOrderStatuses: " + e.getMessage());
-            e.printStackTrace();
-            return new ArrayList<>();
+        Map<String , String> orderStatus = OrderStatus.getOrderStatusMap();
+        for (Map.Entry<String , String> status : orderStatus.entrySet())
+        {
+            statuses.add(status.getKey());
         }
+
+        return statuses;
     }
 
     /**

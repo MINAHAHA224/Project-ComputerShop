@@ -58,12 +58,27 @@
                             <label for="statusFilter">Trạng thái ĐH:</label>
                             <select name="status" id="statusFilter" class="form-select">
                                 <option value="">-- Tất cả --</option>
+<%--                                <c:forEach var="st" items="${allOrderStatuses}">--%>
+<%--                                    <option value="${st}" ${st == selectedStatus ? 'selected' : ''}>--%>
+<%--                                        <c:out value="${st}"/>--%>
+<%--                                    </option>--%>
+<%--                                </c:forEach>--%>
+
                                 <c:forEach var="st" items="${allOrderStatuses}">
                                     <option value="${st}" ${st == selectedStatus ? 'selected' : ''}>
-                                        <c:out value="${st}"/>
+                                        <c:choose>
+                                            <c:when test="${st == 'PENDING'}">Chờ xác nhận</c:when>
+                                            <c:when test="${st == 'CONFIRMED'}">Đã xác nhận đơn</c:when>
+                                            <c:when test="${st == 'SHIPPED'}">Đã giao cho bên vận chuyển</c:when>
+                                            <c:when test="${st == 'DELIVERED'}">Giao hàng thành công</c:when>
+                                            <c:when test="${st == 'CANCELLED'}">Hủy đơn hàng</c:when>
+                                            <c:otherwise>${st}</c:otherwise>
+                                        </c:choose>
                                     </option>
                                 </c:forEach>
                             </select>
+
+
                         </div>
                         <button type="submit" class="btn btn-filter align-self-end">Lọc</button>
                     </form>

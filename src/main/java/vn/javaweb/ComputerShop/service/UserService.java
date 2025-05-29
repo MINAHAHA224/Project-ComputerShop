@@ -31,6 +31,7 @@ import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.UserDetailDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.UserRpDTO;
 import vn.javaweb.ComputerShop.domain.entity.*;
+import vn.javaweb.ComputerShop.domain.enums.CartStatus;
 import vn.javaweb.ComputerShop.repository.*;
 import vn.javaweb.ComputerShop.utils.SecurityUtils;
 
@@ -105,7 +106,7 @@ public class UserService {
             informationDTO.setRole(user.getRole().getName());
             informationDTO.setFullName(user.getFullName());
             informationDTO.setAvatar(user.getAvatar());
-            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, "ACTIVE");
+            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, CartStatus.ACTIVE.toString());
             informationDTO.setSum(cartCurrent.isPresent() ? cartCurrent.get().getSum() : 0);
 
             session.setAttribute("email", user.getEmail());
@@ -186,7 +187,7 @@ public class UserService {
             informationDTO.setFullName(user.getFullName());
             informationDTO.setAvatar(user.getAvatar());
             informationDTO.setRole(user.getRole().getName());
-            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, "ACTIVE");
+            Optional<CartEntity> cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user, CartStatus.ACTIVE.toString());
             informationDTO.setSum(cartCurrent.isPresent() ? cartCurrent.get().getSum() : 0);
 
             session.setAttribute("email", user.getEmail());

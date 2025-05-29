@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.javaweb.ComputerShop.component.MailerComponent;
 import vn.javaweb.ComputerShop.domain.dto.request.InfoOrderRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.CartDetailRpDTO;
@@ -11,6 +12,9 @@ import vn.javaweb.ComputerShop.domain.dto.response.CartRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.CheckoutRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.*;
+import vn.javaweb.ComputerShop.domain.enums.CartStatus;
+import vn.javaweb.ComputerShop.domain.enums.OrderStatus;
+import vn.javaweb.ComputerShop.domain.enums.PaymentStatus;
 import vn.javaweb.ComputerShop.repository.*;
 
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ public class CartService {
     private final CartDetailRepository cartDetailRepository;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final MailerComponent mailerComponent;
 
     public CartRpDTO handleGetCartDetail (HttpSession session){
         CartRpDTO result = new CartRpDTO();
@@ -34,7 +39,7 @@ public class CartService {
         UserEntity userCurrent = this.userRepository.findUserEntityByEmail(email).get();
         List<CartDetailRpDTO> listCardDetailRpDTO = new ArrayList<>();
         double TotalPrice = 0.0;
-        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(userCurrent , "ACTIVE");
+        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(userCurrent , CartStatus.ACTIVE.toString());
         if (cart.isPresent()){
             CartEntity cartOfUser =cart.get();
             List<CartDetailEntity>  cartDetailsOfUser = cartOfUser.getCartDetails();
@@ -67,7 +72,7 @@ public class CartService {
         ResponseBodyDTO response = new ResponseBodyDTO();
 
         UserEntity userCurrent = this.userRepository.findUserEntityByEmail(email).get();
-        CartEntity cart = this.cartRepository.findCartEntityByUserAndStatus(userCurrent , "ACTIVE").get();
+        CartEntity cart = this.cartRepository.findCartEntityByUserAndStatus(userCurrent , CartStatus.ACTIVE.toString()).get();
         ProductEntity product = this.productRepository.findProductEntityById(id);
 
         try {
@@ -99,14 +104,14 @@ public class CartService {
         String email = (String) session.getAttribute("email");
         UserEntity user = this.userRepository.findUserEntityByEmail(email).get();
 
-        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(user ,"ACTIVE");
+        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(user ,CartStatus.ACTIVE.toString());
         ProductEntity product = this.productRepository.findProductEntityById(productId);
 
         if (cart.isEmpty()) {
             CartEntity otherCart = new CartEntity();
             otherCart.setSum(1);
             otherCart.setUser(user);
-            otherCart.setStatus("ACTIVE");
+            otherCart.setStatus(CartStatus.ACTIVE.toString());
             CartEntity newCart =   this.cartRepository.save(otherCart);
 
             // set cart detail because first buy but one
@@ -173,7 +178,7 @@ public class CartService {
         CheckoutRpDTO result = new CheckoutRpDTO();
         String email = (String) session.getAttribute("email");
         UserEntity currentUser = this.userRepository.findUserEntityByEmail(email).get();
-        CartEntity cart = this.cartRepository.findCartEntityByUserAndStatus(currentUser , "ACTIVE").get();
+        CartEntity cart = this.cartRepository.findCartEntityByUserAndStatus(currentUser , CartStatus.ACTIVE.toString()).get();
         List<CartDetailEntity> cartDetails =  cart.getCartDetails();
 
         List<CartDetailRpDTO> listCardDetailRpDTO = new ArrayList<>();
@@ -214,58 +219,66 @@ public class CartService {
         UserEntity user = this.userRepository.findUserEntityByEmail(email).get();
         InformationDTO  informationDTO = (InformationDTO)session.getAttribute("informationDTO");
 
-        // create new order
-        OrderEntity order = new OrderEntity();
-        order.setUser(user);
-        order.setReceiverName(infoOrderRqDTO.getReceiverName());
-        order.setReceiverAddress(infoOrderRqDTO.getReceiverAddress());
-        order.setReceiverPhone(infoOrderRqDTO.getReceiverPhone());
-        order.setTotalPrice(infoOrderRqDTO.getTotalPriceToSaveOrder());
-        order.setStatus("PENDING");
-        order.setTime(new Date());
-        order.setTypePayment("COD");
-        order.setStatusPayment("PENDING");
 
-        OrderEntity  orderNew = this.orderRepository.save(order);
+            OrderEntity order = new OrderEntity();
+            order.setUser(user);
+            order.setReceiverName(infoOrderRqDTO.getReceiverName());
+            order.setReceiverAddress(infoOrderRqDTO.getReceiverAddress());
+            order.setReceiverPhone(infoOrderRqDTO.getReceiverPhone());
+            order.setTotalPrice(infoOrderRqDTO.getTotalPriceToSaveOrder());
+            order.setStatus(OrderStatus.PENDING.toString());
+            order.setTime(new Date());
+            order.setTypePayment("COD");
+            order.setStatusPayment(PaymentStatus.UNPAID.toString());
 
-        // create orderDetail
+            OrderEntity  orderNew = this.orderRepository.save(order);
 
-        // step 1: get cart by user
-       Optional<CartEntity>  cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user , "ACTIVE");
-        if (cartCurrent.isPresent()) {
-            CartEntity cart = cartCurrent.get();
-            List<CartDetailEntity> cartDetails = cart.getCartDetails();
+            // create orderDetail
 
-            if (cartDetails != null) {
+            // step 1: get cart by user
+            Optional<CartEntity>  cartCurrent = this.cartRepository.findCartEntityByUserAndStatus(user , CartStatus.ACTIVE.toString());
+            if (cartCurrent.isPresent()) {
+                CartEntity cart = cartCurrent.get();
+                List<CartDetailEntity> cartDetails = cart.getCartDetails();
 
+                if (cartDetails != null) {
 
-                for (CartDetailEntity cd : cartDetails) {
-                    OrderDetailEntity orderDetail = new OrderDetailEntity();
-                    orderDetail.setOrder(orderNew);
-                    orderDetail.setProduct(cd.getProduct());
-                    orderDetail.setPrice(cd.getPrice() * cd.getQuantity());
-                    orderDetail.setQuantity(cd.getQuantity());
-                    this.orderDetailRepository.save(orderDetail);
+                List<OrderDetailEntity> orderDetails = new ArrayList<>();
+                    for (CartDetailEntity cd : cartDetails) {
+                        OrderDetailEntity orderDetail = new OrderDetailEntity();
+                        orderDetail.setOrder(orderNew);
+                        orderDetail.setProduct(cd.getProduct());
+                        orderDetail.setPrice(cd.getPrice() * cd.getQuantity());
+                        orderDetail.setQuantity(cd.getQuantity());
+                        orderDetails.add(orderDetail);
+                        this.orderDetailRepository.save(orderDetail);
 
-                    // set lai quantity cho product
-                    ProductEntity productCurrent = cd.getProduct();
-                    productCurrent.setSold(productCurrent.getSold() + cd.getQuantity()   );
-                    this.productRepository.save(productCurrent);
+                        // set lai quantity cho product
+                        ProductEntity productCurrent = cd.getProduct();
+                        productCurrent.setSold(productCurrent.getSold() + cd.getQuantity()  );
+                        this.productRepository.save(productCurrent);
+
+                    }
+                    orderNew.setOrderDetails(orderDetails);
+                    this.orderRepository.save(orderNew);
+                    // step 2: update status of card
+                    cart.setStatus(CartStatus.ORDERED.toString());
+                    this.cartRepository.save(cart);
+
+                    // step 3 : update session
+                    informationDTO.setSum(0);
+                    session.setAttribute("informationDTO", informationDTO);
                 }
 
-                // step 2: update status of card
-                cart.setStatus("BUYING");
-                this.cartRepository.save(cart);
 
-                // step 3 : update session
-                informationDTO.setSum(0);
-                session.setAttribute("informationDTO", informationDTO);
+
+                response.setStatus(200);
+                response.setMessage("Tạo đơn hàng thành công");
+
+                mailerComponent.sendInvoiceEmail(orderNew);
             }
 
-            response.setStatus(200);
-            response.setMessage("Tạo đơn hàng thành công");
-
-        }
+        // create new order
 
         return response;
 
@@ -278,14 +291,14 @@ public class CartService {
         String email = (String) session.getAttribute("email");
         UserEntity user = this.userRepository.findUserEntityByEmail(email).get();
 
-        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(user ,"ACTIVE");
+        Optional<CartEntity> cart = this.cartRepository.findCartEntityByUserAndStatus(user ,CartStatus.ACTIVE.toString());
         ProductEntity product = this.productRepository.findProductEntityById(productId);
 
         if (cart.isEmpty()) {
             CartEntity otherCart = new CartEntity();
             otherCart.setSum(1);
             otherCart.setUser(user);
-            otherCart.setStatus("ACTIVE");
+            otherCart.setStatus(CartStatus.ACTIVE.toString());
             CartEntity newCart =   this.cartRepository.save(otherCart);
 
             // set cart detail because first buy but one

@@ -84,18 +84,22 @@
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label" for="status">Order Status:</label>
                                                 <form:select class="form-select" path="status" id="status">
-                                                    <form:option value="PENDING">PENDING</form:option>
-                                                    <form:option value="SHIPPING">SHIPPING</form:option>
-                                                    <form:option value="COMPLETE">COMPLETE</form:option>
-                                                    <form:option value="CANCEL">CANCEL</form:option>
+                                                    <form:option value="PENDING">Chờ xác nhận</form:option>
+                                                    <form:option value="CONFIRMED">Đã xác nhận đơn</form:option>
+                                                    <form:option value="SHIPPED">Đã giao cho bên vận chuyển</form:option>
+                                                    <form:option value="DELIVERED">Giao hàng thành công</form:option>
+                                                    <form:option value="CANCELLED">Hủy đơn hàng</form:option>
                                                 </form:select>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label" for="statusPayment">Payment Status:</label>
                                                 <form:select class="form-select" path="statusPayment" id="statusPayment">
-                                                    <form:option value="PENDING">PENDING</form:option>
-                                                    <form:option value="COMPLETE">COMPLETE</form:option>
+                                                    <form:option value="UNPAID">Chưa thanh toán</form:option>
+                                                    <form:option value="PAID">Đã thanh toán</form:option>
+                                                    <form:option value="REFUNDED">Đã hoàn tiền</form:option>
+                                                    <form:option value="FAILED">Thanh toán thất bại</form:option>
                                                 </form:select>
+
                                             </div>
                                         </div>
 

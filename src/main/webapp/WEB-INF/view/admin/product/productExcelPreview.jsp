@@ -149,7 +149,7 @@
                         </table>
 
                         <div class="action-buttons">
-                            <a href="<c:url value='/admin'/>" class="btn btn-back">Quay Lại Danh Sách</a> <%-- Hoặc /admin/dashboard --%>
+                            <a href="<c:url value='/admin/product'/>" class="btn btn-back">Quay Lại Danh Sách</a> <%-- Hoặc /admin/dashboard --%>
                             <a href="<c:url value='/admin/product/report/excel/download'>
                                              <c:if test='${not empty selectedFactory}'><c:param name='factory' value='${selectedFactory}'/></c:if>
                                          </c:url>" class="btn btn-download">Tải xuống Excel</a>

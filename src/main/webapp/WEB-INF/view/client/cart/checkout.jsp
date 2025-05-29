@@ -200,12 +200,24 @@
                                                             <p class="mb-0">0 đ</p>
                                                         </div>
                                                     </div>
-                                                    <div class="mt-3 d-flex justify-content-between">
-                                                        <h5 class="mb-0 me-4">Hình thức</h5>
-                                                        <div class="">
-                                                            <p class="mb-0">Thanh toán khi nhận hàng (COD)</p>
+                                                        <%-- PHẦN THAY ĐỔI CHO PHƯƠNG THỨC THANH TOÁN --%>
+                                                    <div class="mt-3">
+                                                        <h5 class="mb-2">Hình thức thanh toán</h5>
+                                                        <form:errors path="paymentMethod" cssClass="text-danger d-block mb-2" />
+                                                        <div class="form-check">
+                                                            <form:radiobutton path="paymentMethod" id="paymentCod" value="COD" class="form-check-input"/>
+                                                            <label class="form-check-label" for="paymentCod">Thanh toán khi nhận hàng (COD)</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <form:radiobutton path="paymentMethod" id="paymentMomo" value="MOMO" class="form-check-input"/>
+                                                            <label class="form-check-label" for="paymentMomo">Thanh toán qua Momo</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <form:radiobutton path="paymentMethod" id="paymentVnpay" value="VNPAY" class="form-check-input"/>
+                                                            <label class="form-check-label" for="paymentVnpay">Thanh toán qua VNPay</label>
                                                         </div>
                                                     </div>
+                                                        <%-- KẾT THÚC PHẦN THAY ĐỔI --%>
                                                 </div>
                                                 <div
                                                     class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
