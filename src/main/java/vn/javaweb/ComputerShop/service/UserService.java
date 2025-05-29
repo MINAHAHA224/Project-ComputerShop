@@ -504,5 +504,96 @@ public class UserService {
     }
 
 
+    public UserProfileUpdateDTO handleGetDataUserToProfile (HttpSession session){
+        InformationDTO informationDTO = (InformationDTO)session.getAttribute("informationDTO") ;
+        UserEntity userEntity= this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
+        UserProfileUpdateDTO profile = new UserProfileUpdateDTO();
+        profile.setEmail(userEntity.getEmail());
+        profile.setFullName(userEntity.getFullName());
+        profile.setAddress(userEntity.getAddress());
+        profile.setAvatar(userEntity.getAvatar());
+        profile.setPhone(userEntity.getPhone());
+        boolean checkOauth2 = this.authMethodRepository.existsAuthMethodEntityByUser(userEntity);
+
+        if (checkOauth2){
+            profile.setHasChangePass(false);
+        }else {
+            profile.setHasChangePass(true);
+        }
+
+        return profile;
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleUpdateProfile ( HttpSession  session , UserProfileUpdateDTO userProfileUpdateDTO){
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO");
+        UserEntity  user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
+        boolean checkPhone = this.userRepository.existsUserEntityByPhone(userProfileUpdateDTO.getPhone().trim());
+
+        if (user.getPhone() == null ||!user.getPhone().equals(userProfileUpdateDTO.getPhone() )){
+            if ( checkPhone){
+                response.setStatus(500);
+                response.setMessage("Số điện thoại đã được sử dụng ");
+                return response;
+            }
+            user.setPhone(userProfileUpdateDTO.getPhone().trim());
+
+        }
+
+        user.setAddress(userProfileUpdateDTO.getAddress().trim());
+        this.userRepository.save(user);
+
+        response.setStatus(200);
+        response.setMessage("Cập nhật thông tin cá nhân thành công");
+
+
+        return response;
+    }
+
+    @Transactional
+    public ResponseBodyDTO  handleUpdateAvatar ( HttpSession session , MultipartFile avatarFile ){
+        InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
+        UserEntity user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
+        ResponseBodyDTO response = new ResponseBodyDTO();
+
+        if (Objects.equals(avatarFile.getOriginalFilename(), "") || avatarFile.isEmpty()){
+            response.setStatus(500);
+            response.setMessage("Ảnh cập nhật bị trống");
+            return response;
+
+        }
+
+        String avatarNew = this.uploadService.handleUploadFile(avatarFile , "profile");
+        user.setAvatar(avatarNew);
+        this.userRepository.save(user);
+
+        response.setStatus(200);
+        response.setMessage("Ảnh đại diện được cập nhật thành công");
+        return response;
+    }
+
+    @Transactional
+    public ResponseBodyDTO handleUpdatePassword (HttpSession session , ChangePasswordDTO changePasswordDTO){
+        InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
+        UserEntity user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
+        ResponseBodyDTO response = new ResponseBodyDTO();
+        boolean checkPass = this.passwordEncoder.matches(changePasswordDTO.getCurrentPassword().trim() , user.getPassword());
+        if (!checkPass){
+            response.setStatus(500);
+            response.setMessage("Mật khẩu nhập lại không đúng");
+            return response;
+        }
+
+
+        user.setPassword(this.passwordEncoder.encode(changePasswordDTO.getNewPassword().trim()));
+        this.userRepository.save(user);
+
+        response.setStatus(200);
+        response.setMessage("Cập nhật mật khẩu thành công");
+
+        return response;
+    }
+
 
 }

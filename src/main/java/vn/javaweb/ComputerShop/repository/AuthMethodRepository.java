@@ -14,5 +14,5 @@ public interface AuthMethodRepository  extends JpaRepository<AuthMethodEntity , 
 
     AuthMethodEntity findAuthMethodEntityByUser (UserEntity user);
 
-
+    boolean existsAuthMethodEntityByUser (UserEntity user);
 }
