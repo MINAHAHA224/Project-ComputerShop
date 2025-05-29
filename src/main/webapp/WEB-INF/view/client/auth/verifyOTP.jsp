@@ -1,506 +1,177 @@
-<%--<!-- verifyOTP.jsp -->--%> <%--<%@ page
-contentType="text/html;charset=UTF-8" language="java" %>--%> <%--<%@ taglib
-prefix="c" uri="http://java.sun.com/jstl/core" %>--%> <%--<!DOCTYPE html>--%>
-<%--
-<html lang="en">
-  --%> <%--<head>
-    --%> <%--
-    <meta charset="UTF-8" />
-    --%> <%--
-    <title>Xác nhận mã OTP</title>
-    --%> <%--
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
-    --%> <%--
-    <style>
-      --%>
-      <%--        .form-actions {--%>
-      <%--            display: flex;--%>
-      <%--            gap: 10px; /* Khoảng cách giữa các nút */--%>
-      <%--        }--%>
-      <%--        .form-actions button {--%>
-      <%--            flex-grow: 1; /* Các nút chia đều không gian */--%>
-      <%--        }--%>
-      <%--
-    </style>
-    --%> <%--</head
-  >--%> <%--
-  <body>
-    --%> <%--
-    <div class="container mt-5">
-      --%> <%--
-      <div class="row justify-content-center">
-        --%> <%--
-        <div class="col-md-6">
-          &lt;%&ndash; Tăng độ rộng một chút để chứa thông báo và nút
-          &ndash;%&gt;--%> <%--
-          <div class="card shadow-lg">
-            --%> <%--
-            <div class="card-header bg-primary text-white text-center">
-              --%> <%--
-              <h4>Xác nhận mã OTP</h4>
-              --%> <%--
-            </div>
-            --%> <%--
-            <div class="card-body">
-              --%> <%--
-              <c:if test="${not empty message}"
-                >--%> <%-- &lt;%&ndash; Kiểm tra message chứa "không đúng" để
-                dùng alert-danger, còn lại dùng alert-info &ndash;%&gt;--%> <%--
-                <c:choose
-                  >--%> <%--
-                  <c:when
-                    test="${message.contains('không đúng') or message.contains('lỗi xảy ra')}"
-                    >--%> <%--
-                    <div class="alert alert-danger my-2" role="alert">
-                      --%> <%-- ${message}--%> <%--
-                    </div>
-                    --%> <%-- </c:when
-                  >--%> <%--
-                  <c:otherwise
-                    >--%> <%--
-                    <div class="alert alert-info my-2" role="alert">
-                      --%> <%-- ${message}--%> <%--
-                    </div>
-                    --%> <%-- </c:otherwise
-                  >--%> <%-- </c:choose
-                >--%> <%-- </c:if
-              >--%> <%--
-              <p class="text-center">
-                Một mã OTP đã được gửi đến địa chỉ email:
-                <strong>${email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
-              </p>
-              --%> <%-- &lt;%&ndash; Controller sẽ đảm bảo ${email} có sẵn từ
-              flashAttribute hoặc được thêm vào model khi render lại
-              &ndash;%&gt;--%> <%--
-              <form action="<c:url value='/verifyOtp'/>" method="post">
-                --%> <%--
-                <!-- Trường ẩn để gửi email -->--%> <%--
-                <input type="hidden" name="email" value="${email}" />--%> <%--
-                <div class="mb-3">
-                  --%> <%--
-                  <label for="otp" class="form-label">Nhập mã OTP:</label>--%>
-                  <%--
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="otp"
-                    name="OTP"
-                    placeholder="Nhập mã OTP"
-                  />--%> <%-- &lt;%&ndash; name="OTP" khớp với
-                  @RequestParam(name = "OTP") trong controller.--%> <%-- Không
-                  cần required ở đây vì có thể người dùng nhấn "Gửi lại OTP"
-                  &ndash;%&gt;--%> <%--
-                </div>
-                --%> <%--
-                <div class="form-actions mb-3">
-                  --%> <%--
-                  <button
-                    type="submit"
-                    name="action"
-                    value="VERIFY-OTP"
-                    class="btn btn-primary"
-                  >
-                    Xác nhận OTP</button
-                  >--%> <%--
-                  <button
-                    type="submit"
-                    name="action"
-                    value="RESENT-OTP"
-                    class="btn btn-secondary"
-                    formnovalidate
-                  >
-                    Gửi lại OTP</button
-                  >--%> <%-- &lt;%&ndash; formnovalidate cho nút gửi lại để
-                  không check required của OTP input &ndash;%&gt;--%> <%--
-                </div>
-                --%> <%--
-                <div class="text-center">
-                  --%> <%--
-                  <a href="<c:url value='/forgotPassword'/>"
-                    >Quay lại nhập email</a
-                  >--%> <%--
-                </div>
-                --%> <%--
-              </form>
-              --%> <%--
-            </div>
-            --%> <%--
-          </div>
-          --%> <%--
-        </div>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%> <%--
-  </body>
-  --%> <%--
-</html>
---%>
-
-<!-- verifyOTP.jsp -->
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>--%>
-<%--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
-<%--<!DOCTYPE html>--%> <%--
-<html lang="en">
-  --%> <%--<head>
-    --%> <%--
-    <meta charset="UTF-8" />
-    --%> <%--
-    <title>Xác nhận mã OTP</title>
-    --%> <%--
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
-    --%> <%--
-    <style>
-      --%>
-      <%--        .form-actions {--%>
-      <%--            display: flex;--%>
-      <%--            gap: 10px; /* Khoảng cách giữa các nút */--%>
-      <%--        }--%>
-      <%--        .form-actions button {--%>
-      <%--            flex-grow: 1; /* Các nút chia đều không gian */--%>
-      <%--        }--%>
-      <%--        #resendOtpBtn:disabled {--%>
-      <%--            cursor: not-allowed;--%>
-      <%--        }--%>
-      <%--
-    </style>
-    --%> <%--</head
-  >--%> <%--
-  <body>
-    --%> <%--
-    <div class="container mt-5">
-      --%> <%--
-      <div class="row justify-content-center">
-        --%> <%--
-        <div class="col-md-6">
-          --%> <%--
-          <div class="card shadow-lg">
-            --%> <%--
-            <div class="card-header bg-primary text-white text-center">
-              --%> <%--
-              <h4>Xác nhận mã OTP</h4>
-              --%> <%--
-            </div>
-            --%> <%--
-            <div class="card-body">
-              --%> <%--
-              <c:if test="${not empty message}"
-                >--%> <%--
-                <c:choose
-                  >--%> <%--
-                  <c:when
-                    test="${message.contains('không đúng') or message.contains('lỗi xảy ra') or message.toLowerCase().contains('error')}"
-                    >--%> <%--
-                    <div class="alert alert-danger my-2" role="alert">
-                      --%> <%-- ${message}--%> <%--
-                    </div>
-                    --%> <%-- </c:when
-                  >--%> <%--
-                  <c:otherwise
-                    >--%> <%--
-                    <div class="alert alert-info my-2" role="alert">
-                      --%> <%-- ${message}--%> <%--
-                    </div>
-                    --%> <%-- </c:otherwise
-                  >--%> <%-- </c:choose
-                >--%> <%-- </c:if
-              >--%> <%--
-              <p class="text-center">
-                Một mã OTP đã được gửi đến địa chỉ email:
-                <strong>${email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
-              </p>
-              --%> <%--
-              <form
-                id="verifyOtpForm"
-                action="<c:url value='/verifyOtp'/>"
-                method="post"
-              >
-                --%> <%--
-                <input type="hidden" name="email" value="${email}" />--%> <%--
-                <div class="mb-3">
-                  --%> <%--
-                  <label for="otp" class="form-label">Nhập mã OTP:</label>--%>
-                  <%--
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="otp"
-                    name="OTP"
-                    placeholder="Nhập mã OTP"
-                  />--%> <%--
-                </div>
-                --%> <%--
-                <div class="form-actions mb-3">
-                  --%> <%--
-                  <button
-                    type="submit"
-                    name="action"
-                    value="VERIFY-OTP"
-                    class="btn btn-primary"
-                  >
-                    Xác nhận OTP</button
-                  >--%> <%--
-                  <button
-                    type="submit"
-                    id="resendOtpBtn"
-                    name="action"
-                    value="RESENT-OTP"
-                    class="btn btn-secondary"
-                    formnovalidate
-                  >
-                    --%> <%-- Gửi lại OTP <span id="countdownTimer"></span>--%>
-                    <%--</button
-                  >--%> <%--
-                </div>
-                --%> <%--
-                <div class="text-center">
-                  --%> <%--
-                  <a href="<c:url value='/forgotPassword'/>"
-                    >Quay lại nhập email</a
-                  >--%> <%--
-                </div>
-                --%> <%--
-              </form>
-              --%> <%--
-            </div>
-            --%> <%--
-          </div>
-          --%> <%--
-        </div>
-        --%> <%--
-      </div>
-      --%> <%--
-    </div>
-    --%> <%--
-    <script>
-      --%>
-      <%--    document.addEventListener('DOMContentLoaded', function () {--%>
-      <%--        const resendButton = document.getElementById('resendOtpBtn');--%>
-      <%--        const countdownTimerSpan = document.getElementById('countdownTimer');--%>
-      <%--        let countdownTime = 90; // 1 phút 30 giây = 90 giây--%>
-      <%--        let timerInterval;--%>
-
-      <%--        function startTimer() {--%>
-      <%--            resendButton.disabled = true;--%>
-      <%--            countdownTimerSpan.textContent = formatTime(countdownTime);--%>
-
-      <%--            timerInterval = setInterval(function () {--%>
-      <%--                countdownTime--;--%>
-      <%--                countdownTimerSpan.textContent = formatTime(countdownTime);--%>
-
-      <%--                if (countdownTime <= 0) {--%>
-      <%--                    clearInterval(timerInterval);--%>
-      <%--                    resendButton.disabled = false;--%>
-      <%--                    countdownTimerSpan.textContent = ''; // Xóa bộ đếm khi hết giờ--%>
-      <%--                    // Hoặc bạn có thể đổi lại text của nút--%>
-      <%--                    // resendButton.innerHTML = 'Gửi lại OTP';--%>
-      <%--                }--%>
-      <%--            }, 1000);--%>
-      <%--        }--%>
-
-      <%--        function formatTime(seconds) {--%>
-      <%--            const minutes = Math.floor(seconds / 60);--%>
-      <%--            const remainingSeconds = seconds % 60;--%>
-      <%--            const formattedMinutes = String(minutes).padStart(1, '0'); // Không cần padStart nếu chỉ là 1 chữ số phút--%>
-      <%--            const formattedSeconds = String(remainingSeconds).padStart(2, '0');--%>
-      <%--            return `(${formattedMinutes}:${formattedSeconds})`;--%>
-      <%--        }--%>
-
-      <%--        // Bắt đầu đếm ngược khi trang được tải--%>
-      <%--        startTimer();--%>
-
-      <%--        // Nếu người dùng click nút "Gửi lại OTP" và form được submit thành công (hoặc không thành công nhưng trang reload)--%>
-      <%--        // và server có gửi lại thông báo "Đã gửi lại OTP", thì chúng ta cũng nên reset và bắt đầu lại timer.--%>
-      <%--        // Điều này thường xảy ra khi trang được load lại sau khi nhấn "Gửi lại OTP".--%>
-      <%--        // Vì vậy, việc startTimer() trong DOMContentLoaded là đủ trong hầu hết các trường hợp--%>
-      <%--        // khi trang được render lại từ server.--%>
-
-      <%--        // Nếu bạn muốn xử lý việc click nút "Gửi lại OTP" mà không reload trang (dùng AJAX),--%>
-      <%--        // bạn sẽ cần gọi startTimer() sau khi gửi AJAX thành công.--%>
-      <%--        // Với cách submit form truyền thống, việc gọi startTimer() khi trang tải là phù hợp.--%>
-      <%--    });--%>
-      <%--
-    </script>
-    --%> <%--
-  </body>
-  --%> <%--
-</html>
---%>
-
 <!-- JSP Path: client/auth/verifyOTP.jsp -->
-<!-- verifyOTP.jsp -->
 <%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
-prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
+prefix="security" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
-    <meta charset="UTF-8" />
-    <title>Xác nhận mã OTP</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-    />
+    <meta charset="utf-8" />
+    <title>Xác Thực OTP - 3TLap</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <jsp:include page="../layout/common_head_links.jsp" />
+    <link href="<c:url value='/client/css/auth-pages.css'/>" rel="stylesheet" />
     <style>
+      .otp-input-group input {
+        text-align: center;
+        font-size: 1.5rem;
+        letter-spacing: 0.5rem;
+        border-radius: 0.375rem !important;
+      }
       .form-actions {
         display: flex;
-        gap: 10px; /* Khoảng cách giữa các nút */
+        gap: 0.75rem;
       }
-      .form-actions button {
-        flex-grow: 1; /* Các nút chia đều không gian */
+      .form-actions .btn {
+        flex: 1;
       }
-      #resendOtpBtn:disabled {
-        cursor: not-allowed;
+      #resendOtpBtn {
+        font-weight: 500;
+      }
+      #countdownTimer {
+        font-weight: 500;
+        color: var(--primary-color);
       }
     </style>
   </head>
-  <body>
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card shadow-lg">
-            <div class="card-header bg-primary text-white text-center">
-              <h4>Xác nhận mã OTP</h4>
+  <body class="auth-page-bg">
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+
+    <div class="auth-wrapper">
+      <div class="card auth-card" style="max-width: 500px">
+        <div class="card-header">
+          <a href="<c:url value='/'/>" class="logo-text-auth">3TLap</a>
+          <h3 class="font-weight-light my-1">Xác Thực Mã OTP</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted text-center mb-3">
+            Một mã OTP gồm 6 chữ số đã được gửi đến địa chỉ email:
+            <strong class="text-dark">${email}</strong>. Vui lòng kiểm tra và
+            nhập mã vào ô bên dưới.
+          </p>
+
+          <c:if test="${not empty messageError}">
+            <div class="alert alert-danger alert-auth my-3" role="alert">
+              ${messageError}
             </div>
-            <div class="card-body">
-              <c:if test="${not empty message}">
-                <c:choose>
-                  <c:when
-                    test="${message.contains('không đúng') or message.contains('lỗi xảy ra') or message.toLowerCase().contains('error')}"
-                  >
-                    <div class="alert alert-danger my-2" role="alert">
-                      ${message}
-                    </div>
-                  </c:when>
-                  <c:otherwise>
-                    <div class="alert alert-info my-2" role="alert">
-                      ${message}
-                    </div>
-                  </c:otherwise>
-                </c:choose>
-              </c:if>
+          </c:if>
+          <c:if
+            test="${not empty messageSuccess && not messageSuccess.contains('Xác thực mã OTP thành công')}"
+          >
+            <div class="alert alert-info alert-auth my-3" role="alert">
+              ${messageSuccess}
+            </div>
+          </c:if>
 
-              <p class="text-center">
-                Một mã OTP đã được gửi đến địa chỉ email:
-                <strong>${email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
-              </p>
+          <form
+            id="verifyOtpForm"
+            action="<c:url value='/verifyOtp'/>"
+            method="post"
+          >
+            <input type="hidden" name="email" value="${email}" />
+            <security:csrfInput />
 
-              <form
-                id="verifyOtpForm"
-                action="<c:url value='/verifyOtp'/>"
-                method="post"
+            <div class="form-floating mb-3 otp-input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="otp"
+                name="OTP"
+                placeholder="123456"
+                maxlength="6"
+                pattern="[A-Z0-9]{6}"
+                title="Mã OTP gồm 6 ký tự chữ hoa hoặc số."
+                required
+              />
+              <label for="otp">Nhập mã OTP</label>
+            </div>
+
+            <div class="form-actions mb-3">
+              <button
+                type="submit"
+                name="action"
+                value="VERIFY-OTP"
+                class="btn btn-primary btn-lg"
               >
-                <input type="hidden" name="email" value="${email}" />
-
-                <div class="mb-3">
-                  <label for="otp" class="form-label">Nhập mã OTP:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="otp"
-                    name="OTP"
-                    placeholder="123456"
-                  />
-                </div>
-
-                <div class="form-actions mb-3">
-                  <button
-                    type="submit"
-                    name="action"
-                    value="VERIFY-OTP"
-                    class="btn btn-primary"
-                  >
-                    Xác nhận OTP
-                  </button>
-                  <button
-                    type="submit"
-                    id="resendOtpBtn"
-                    name="action"
-                    value="RESENT-OTP"
-                    class="btn btn-secondary"
-                    formnovalidate
-                  >
-                    Gửi lại OTP <span id="countdownTimer"></span>
-                  </button>
-                </div>
-                <div class="text-center">
-                  <a href="<c:url value='/forgotPassword'/>"
-                    >Quay lại nhập email</a
-                  >
-                </div>
-              </form>
+                Xác Nhận
+              </button>
+              <button
+                type="submit"
+                id="resendOtpBtn"
+                name="action"
+                value="RESENT-OTP"
+                class="btn btn-outline-secondary btn-lg"
+                formnovalidate
+              >
+                Gửi lại OTP <span id="countdownTimer"></span>
+              </button>
             </div>
+          </form>
+          <div class="text-center mt-3">
+            <a
+              href="<c:url value='/forgotPassword'/>"
+              class="small text-muted text-decoration-none"
+            >
+              <i class="fas fa-arrow-left me-1"></i> Quay lại nhập email
+            </a>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="small">
+            Cần hỗ trợ?
+            <a
+              href="<c:url value='/contact-us'/>"
+              class="text-primary fw-medium"
+              >Liên hệ chúng tôi</a
+            >
           </div>
         </div>
       </div>
     </div>
 
+    <jsp:include page="../layout/common_scripts.jsp" />
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM fully loaded and parsed'); // DEBUG
-
         const resendButton = document.getElementById('resendOtpBtn');
         const countdownTimerSpan = document.getElementById('countdownTimer');
-
-        // DEBUG: Kiểm tra xem element có được tìm thấy không
-        if (!resendButton) {
-          console.error("Element with ID 'resendOtpBtn' not found!");
-          return;
-        }
-        if (!countdownTimerSpan) {
-          console.error("Element with ID 'countdownTimer' not found!");
-          return;
-        }
-        console.log('Elements found:', resendButton, countdownTimerSpan); // DEBUG
-
-        let countdownTime = 90; // 1 phút 30 giây = 90 giây
+        let countdownTime = 90;
         let timerInterval;
 
         function formatTime(seconds) {
           const minutes = Math.floor(seconds / 60);
           const remainingSeconds = seconds % 60;
-          // Đảm bảo phút không cần pad nếu là 0 hoặc 1 chữ số, giây luôn 2 chữ số
           const formattedMinutes = String(minutes);
           const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-          const timeString = `(${formattedMinutes}:${formattedSeconds})`;
-          // console.log(`formatTime: ${seconds}s -> ${timeString}`); // DEBUG (bỏ comment nếu cần)
-          return timeString;
+          return `(${formattedMinutes}:${formattedSeconds})`;
         }
 
         function startTimer() {
-          console.log(
-            'startTimer called. Initial countdownTime:',
-            countdownTime
-          ); // DEBUG
           resendButton.disabled = true;
+          countdownTime = 90;
           countdownTimerSpan.textContent = formatTime(countdownTime);
-          console.log(
-            'Initial time displayed:',
-            countdownTimerSpan.textContent
-          ); // DEBUG
 
           timerInterval = setInterval(function () {
             countdownTime--;
             countdownTimerSpan.textContent = formatTime(countdownTime);
-            // console.log("Timer tick. New time:", countdownTimerSpan.textContent, "Raw seconds:", countdownTime); // DEBUG (có thể hơi nhiều log)
-
             if (countdownTime <= 0) {
               clearInterval(timerInterval);
               resendButton.disabled = false;
-              countdownTimerSpan.textContent = ''; // Xóa bộ đếm khi hết giờ
-              console.log('Timer finished. Button enabled.'); // DEBUG
+              countdownTimerSpan.textContent = '';
             }
           }, 1000);
         }
-
-        // Bắt đầu đếm ngược khi trang được tải
-        startTimer();
+        if (resendButton && countdownTimerSpan) {
+          <c:choose>
+            <c:when test="${not empty messageSuccess and messageSuccess.contains('Mã OTP đã được gửi lại')}">
+              startTimer();
+            </c:when>
+            <c:otherwise>startTimer();</c:otherwise>
+          </c:choose>;
+        }
       });
     </script>
   </body>

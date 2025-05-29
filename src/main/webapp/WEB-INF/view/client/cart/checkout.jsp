@@ -143,11 +143,21 @@
                                     <form:input path="receiverName" cssClass="form-control" id="receiverName"/>
                                     <form:errors path="receiverName" cssClass="form-error"/>
                                 </div>
-                                <div class="col-12 mb-3">
-                                    <label for="receiverAddress" class="form-label">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
-                                    <form:input path="receiverAddress" cssClass="form-control" id="receiverAddress" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"/>
-                                    <form:errors path="receiverAddress" cssClass="form-error"/>
-                                </div>
+                       <div class="col-12 mb-3">
+    <label for="receiverAddressCheckout" class="form-label">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
+    <div class="address-autocomplete-wrapper position-relative">
+        <form:input type="text" 
+                    path="receiverAddress" 
+                    cssClass="form-control goong-address-input" 
+                    id="receiverAddressCheckout" 
+                    placeholder="Nhập địa chỉ..." 
+                    autocomplete="off"/>
+        <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="receiverAddressCheckout">
+
+        </div>
+    </div>
+    <form:errors path="receiverAddress" cssClass="form-error d-block"/> 
+</div>
                                 <div class="col-12 mb-3">
                                     <label for="receiverPhone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
                                     <form:input path="receiverPhone" cssClass="form-control" id="receiverPhone" type="tel"/>
@@ -217,6 +227,7 @@
 
     <jsp:include page="../layout/footer.jsp"/>
     <jsp:include page="../layout/common_scripts.jsp"/>
+    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
 
 </body>
 </html>

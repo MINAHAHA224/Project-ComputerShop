@@ -2,332 +2,426 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="utf-8">
-    <title>Thông Tin Cá Nhân - Laptopshop</title>
+    <title>Quản Lý Tài Khoản - 3TLap</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-            rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-          rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/css/style.css" rel="stylesheet">
+    <jsp:include page="../layout/common_head_links.jsp"/>
+    <link href="<c:url value='/client/css/auth-pages.css'/>" rel="stylesheet"/>
     <style>
-        .profile-avatar {
+        .profile-page-header {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('<c:url value="/client/img/profile-banner.jpg"/>');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .profile-sidebar .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.06);
+            border: none;
+        }
+        .profile-sidebar .profile-avatar {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            margin-top: -60px;
+            background-color: var(--white-color);
+        }
+        .profile-sidebar .card-title {
+            font-family: var(--font-primary);
+            font-weight: 600;
+            color: var(--text-color);
+            margin-top: 0.5rem;
+        }
+        .profile-sidebar .card-text.text-muted {
+            font-size: 0.9rem;
+        }
+        .profile-sidebar .nav-pills .nav-link {
+            color: var(--text-muted-color);
+            font-weight: 500;
+            border-radius: 0.375rem;
+            padding: 0.75rem 1rem;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+        .profile-sidebar .nav-pills .nav-link i {
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+        .profile-sidebar .nav-pills .nav-link:hover {
+            background-color: rgba(var(--primary-rgb), 0.08);
+            color: var(--primary-color);
+        }
+        .profile-sidebar .nav-pills .nav-link.active,
+        .profile-sidebar .nav-pills .show > .nav-link {
+            color: var(--white-color);
+            background-color: var(--primary-color);
+        }
+        .profile-sidebar .nav-pills .nav-link.active i {
+            color: var(--white-color);
+        }
+
+        .profile-content .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.06);
+            border: none;
+        }
+        .profile-content .card-header {
+            background-color: var(--light-bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+        .profile-content .card-header h4 {
+            font-family: var(--font-primary);
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            margin-bottom: 0;
+        }
+        .profile-content .card-body {
+            padding: 2rem 2.5rem;
+        }
+        .profile-content .form-label {
+            font-weight: 500;
+            color: var(--text-muted-color);
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .profile-content .form-control, .profile-content .form-select {
+            border-radius: 0.375rem;
+            border-color: var(--border-color);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+        }
+        .profile-content .form-control:focus, .profile-content .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.2);
+        }
+        .profile-content .form-control:disabled,
+        .profile-content .form-control[readonly] {
+            background-color: #e9ecef;
+            opacity: 0.7;
+        }
+        .profile-content .btn-primary {
+             font-weight: 500;
+        }
+        .avatar-upload-preview img {
             width: 150px;
             height: 150px;
             object-fit: cover;
             border: 3px solid #ddd;
         }
-        .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-            color: #fff;
-            background-color: var(--bs-primary); /* Sử dụng màu primary của template */
+        .custom-file-upload {
+            border: 1px solid var(--primary-color);
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s ease;
         }
-        .form-control:disabled, .form-control[readonly] {
-            background-color: #e9ecef;
-            opacity: 1;
+        .custom-file-upload:hover {
+             background-color: darken(var(--primary-color), 10%);
+        }
+        #avatarFile {
+            display: none;
+        }
+        .form-error {
+            color: var(--danger-color);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .alert-profile {
+            font-size: 0.9rem;
         }
     </style>
 </head>
 
-<body>
+<body class="auth-page-bg">
+    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
 
-<!-- Spinner Start -->
-<div id="spinner"
-     class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
-    <div class="spinner-grow text-primary" role="status"></div>
-</div>
-<!-- Spinner End -->
+    <jsp:include page="../layout/header.jsp"/>
 
-<%-- Include Header --%>
-<jsp:include page="../layout/header.jsp" />
+    <div class="container-fluid page-header profile-page-header py-5">
+        <h1 class="text-center text-white display-5">Tài Khoản Của Tôi</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="<c:url value='/'/>">Trang Chủ</a></li>
+            <li class="breadcrumb-item active text-white">Quản Lý Tài Khoản</li>
+        </ol>
+    </div>
 
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">Thông Tin Cá Nhân</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Trang chủ</a></li>
-        <li class="breadcrumb-item active text-white">Thông tin cá nhân</li>
-    </ol>
-</div>
-<!-- Single Page Header End -->
-
-
-<!-- User Profile Content Start -->
-<div class="container-fluid py-5">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col-md-3">
-                <!-- Profile Sidebar -->
-                <div class="card">
-                    <div class="card-body text-center">
-                        <img src="${pageContext.request.contextPath}/images/profile/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : 'default-avatar.png'}"
-                             alt="Ảnh đại diện"
-                             class="rounded-circle img-fluid profile-avatar mb-3">
-                        <h5 class="card-title">${userProfileUpdateDTO.fullName}</h5>
-                        <p class="card-text text-muted">${userProfileUpdateDTO.email}</p>
-                    </div>
-                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-info-tab" data-bs-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">
-                            <i class="fas fa-user me-2"></i>Thông tin tài khoản
-                        </a>
-                        <a class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false">
-                            <i class="fas fa-key me-2"></i>Đổi mật khẩu
-                        </a>
-                        <a class="nav-link" id="v-pills-avatar-tab" data-bs-toggle="pill" href="#v-pills-avatar" role="tab" aria-controls="v-pills-avatar" aria-selected="false">
-                            <i class="fas fa-image me-2"></i>Đổi ảnh đại diện
-                        </a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/order-history"> <%-- Link tới trang lịch sử đơn hàng --%>
-                            <i class="fas fa-history me-2"></i>Lịch sử đơn hàng
-                        </a>
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-3 profile-sidebar">
+                    <div class="card sticky-top" style="top: 100px;">
+                        <div class="card-body text-center position-relative pt-0">
+                            <img src="<c:url value='/images/avatar/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
+                                 alt="Ảnh đại diện"
+                                 class="rounded-circle img-fluid profile-avatar mb-2">
+                            <h5 class="card-title mt-2 mb-1">${userProfileUpdateDTO.fullName}</h5>
+                            <p class="card-text text-muted small">${userProfileUpdateDTO.email}</p>
+                        </div>
+                        <div class="nav flex-column nav-pills p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" id="v-pills-info-tab" data-bs-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">
+                                <i class="fas fa-user-edit"></i>Thông Tin Cá Nhân
+                            </a>
+                            <c:if test="${userProfileUpdateDTO.hasChangePass}">
+                                <a class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false">
+                                    <i class="fas fa-key"></i>Đổi Mật Khẩu
+                                </a>
+                            </c:if>
+                            <a class="nav-link" id="v-pills-avatar-tab" data-bs-toggle="pill" href="#v-pills-avatar" role="tab" aria-controls="v-pills-avatar" aria-selected="false">
+                                <i class="fas fa-image"></i>Thay Đổi Avatar
+                            </a>
+                            <a class="nav-link" href="<c:url value='/order-history'/>">
+                                <i class="fas fa-receipt"></i>Lịch Sử Đơn Hàng
+                            </a>
+                            <form:form method="post" action="/logout" cssClass="mt-2">
+                                <security:csrfInput />
+                                <button type="submit" class="nav-link text-danger w-100 text-start" style="background:none; border:none;">
+                                    <i class="fas fa-sign-out-alt"></i>Đăng Xuất
+                                </button>
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-9">
-                <!-- Profile Content -->
-                <div class="tab-content" id="v-pills-tabContent">
-                    <!-- Thông tin tài khoản Tab -->
-                    <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Cập nhật thông tin cá nhân</h4>
-                            </div>
-                            <div class="card-body">
-                                <%-- Thông báo thành công/lỗi (nếu có từ controller) --%>
-                                <c:if test="${not empty messageSuccess}">
-                                    <div class="alert alert-success" role="alert">${messageSuccess}</div>
-                                </c:if>
-                                <c:if test="${not empty messageError}">
-                                    <div class="alert alert-danger" role="alert">${messageError}</div>
-                                </c:if>
-
-                                <%-- Form cập nhật thông tin --%>
-                                <%-- Giả sử modelAttribute là "userProfileUpdateDTO" --%>
-                                <form:form method="POST" action="${pageContext.request.contextPath}/user/profile/update-info" modelAttribute="userProfileUpdateDTO">
-                                    <div class="mb-3 row">
-                                        <label for="email" class="col-sm-3 col-form-label">Email</label>
-                                        <div class="col-sm-9">
-                                                <%-- Email thường không cho sửa trực tiếp --%>
-                                            <form:input type="email" class="form-control" path="email" id="email" readonly="true" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label for="fullName" class="col-sm-3 col-form-label">Họ và tên</label>
-                                        <div class="col-sm-9">
-                                            <form:input type="text" class="form-control" path="fullName" id="fullName" />
-                                            <form:errors path="fullName" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label for="phone" class="col-sm-3 col-form-label">Số điện thoại</label>
-                                        <div class="col-sm-9">
-                                            <form:input type="tel" class="form-control" path="phone" id="phone" />
-                                            <form:errors path="phone" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label for="address" class="col-sm-3 col-form-label">Địa chỉ</label>
-                                        <div class="col-sm-9">
-                                            <form:textarea class="form-control" path="address" id="address" rows="3" />
-                                            <form:errors path="address" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu thay đổi</button>
-                                    </div>
-                                </form:form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Đổi mật khẩu Tab -->
-
-                    <div class="tab-pane fade" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Đổi mật khẩu</h4>
-                            </div>
-                            <div class="card-body">
-                                <%-- Thông báo thành công/lỗi (nếu có từ controller) --%>
-                                <c:if test="${not empty successMessage_password}">
-                                    <div class="alert alert-success" role="alert">${successMessage_password}</div>
-                                </c:if>
-                                <c:if test="${not empty errorMessage_password}">
-                                    <div class="alert alert-danger" role="alert">${errorMessage_password}</div>
-                                </c:if>
-
-                                <%-- Form đổi mật khẩu --%>
-                                <%-- Giả sử modelAttribute là "changePasswordDTO" --%>
-                                    <c:if test="${userProfileUpdateDTO.hasChangePass}">
-                                    <form:form method="POST" action="${pageContext.request.contextPath}/user/profile/change-password" modelAttribute="changePasswordDTO">
-                                    <div class="mb-3 row">
-                                        <label for="currentPassword" class="col-sm-4 col-form-label">Mật khẩu hiện tại</label>
-                                        <div class="col-sm-8">
-                                            <form:password class="form-control" path="currentPassword" id="currentPassword" />
-                                            <form:errors path="currentPassword" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label for="newPassword" class="col-sm-4 col-form-label">Mật khẩu mới</label>
-                                        <div class="col-sm-8">
-                                            <form:password class="form-control" path="newPassword" id="newPassword" />
-                                            <form:errors path="newPassword" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label for="confirmNewPassword" class="col-sm-4 col-form-label">Xác nhận mật khẩu mới</label>
-                                        <div class="col-sm-8">
-                                            <form:password class="form-control" path="confirmNewPassword" id="confirmNewPassword" />
-                                            <form:errors path="confirmNewPassword" cssClass="text-danger" />
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary rounded-pill px-4">Đổi mật khẩu</button>
-                                    </div>
-                                </form:form>
-                                    </c:if>
-                            </div>
-                            <c:if test="${not userProfileUpdateDTO.hasChangePass}">
-                                <div >
-                                    Tài khoản không thể đổi mật khẩu.
+                <div class="col-lg-9 profile-content">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Cập Nhật Thông Tin Cá Nhân</h4>
                                 </div>
-                            </c:if>
+                                <div class="card-body">
+                                    <c:if test="${not empty messageSuccess_info || (param.tab == 'info' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess)}">
+                                        <div class="alert alert-success alert-profile" role="alert">
+                                            ${messageSuccess_info}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty messageError_info || (param.tab == 'info' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError)}">
+                                        <div class="alert alert-danger alert-profile" role="alert">
+                                            ${messageError_info}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}
+                                        </div>
+                                    </c:if>
+
+                                    <form:form method="POST" action="${pageContext.request.contextPath}/user/profile/update-info" modelAttribute="userProfileUpdateDTO">
+                                        <div class="mb-3 row">
+                                            <label for="emailInfo" class="col-sm-3 col-form-label">Email</label>
+                                            <div class="col-sm-9">
+                                                <form:input type="email" cssClass="form-control" path="email" id="emailInfo" readonly="true" placeholder="Nhập email..." />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label for="fullNameInfo" class="col-sm-3 col-form-label">Họ và tên <span class="text-danger">*</span></label>
+                                            <div class="col-sm-9">
+                                                <form:input type="text" cssClass="form-control" path="fullName" id="fullNameInfo" placeholder="Nhập họ và tên..." />
+                                                <form:errors path="fullName" cssClass="form-error" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label for="phoneInfo" class="col-sm-3 col-form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                            <div class="col-sm-9">
+                                                <form:input type="tel" cssClass="form-control" path="phone" id="phoneInfo" placeholder="Nhập số điện thoại..." />
+                                                <form:errors path="phone" cssClass="form-error" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label for="addressInfo" class="col-sm-3 col-form-label">Địa chỉ</label>
+                                            <div class="col-sm-9">
+                                                <div class="address-autocomplete-wrapper position-relative">
+                                                    
+    <form:input type="text" cssClass="form-control goong-address-input" path="address" id="addressInfo" placeholder="Nhập địa chỉ..." autocomplete="off"/>
+    <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="addressInfo">
+    
+    </div>
+</div>
+<form:errors path="address" cssClass="form-error" />
+                                            </div>
+                                        </div>
+                                        <div class="text-end mt-4">
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">Lưu Thay Đổi</button>
+                                        </div>
+                                    </form:form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Đổi Mật Khẩu</h4>
+                                </div>
+                                <div class="card-body">
+                                     <c:if test="${not empty messageSuccess_password || (param.tab == 'password' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess)}">
+                                        <div class="alert alert-success alert-profile" role="alert">
+                                            ${messageSuccess_password}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty messageError_password || (param.tab == 'password' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError)}">
+                                        <div class="alert alert-danger alert-profile" role="alert">
+                                            ${messageError_password}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}
+                                        </div>
+                                    </c:if>
+                                    
+                                    <c:if test="${userProfileUpdateDTO.hasChangePass}">
+                                        <form:form method="POST" action="${pageContext.request.contextPath}/user/profile/change-password" modelAttribute="changePasswordDTO">
+                                            <div class="mb-3 row">
+                                                <label for="currentPassword" class="col-sm-4 col-form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                                                <div class="col-sm-8">
+                                                    <form:password cssClass="form-control" path="currentPassword" id="currentPassword" />
+                                                    <form:errors path="currentPassword" cssClass="form-error" />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="newPassword" class="col-sm-4 col-form-label">Mật khẩu mới <span class="text-danger">*</span></label>
+                                                <div class="col-sm-8">
+                                                    <form:password cssClass="form-control" path="newPassword" id="newPassword" />
+                                                    <form:errors path="newPassword" cssClass="form-error" />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="confirmNewPassword" class="col-sm-4 col-form-label">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                                                <div class="col-sm-8">
+                                                    <form:password cssClass="form-control" path="confirmNewPassword" id="confirmNewPassword" />
+                                                    <form:errors path="confirmNewPassword" cssClass="form-error" />
+                                                </div>
+                                            </div>
+                                            <form:errors path="*" cssClass="form-error alert alert-danger p-2 small" element="div"/>
+                                            <div class="text-end mt-4">
+                                                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">Đổi Mật Khẩu</button>
+                                            </div>
+                                        </form:form>
+                                    </c:if>
+                                    <c:if test="${not userProfileUpdateDTO.hasChangePass}">
+                                        <div class="alert alert-info">
+                                            Tài khoản của bạn được đăng nhập thông qua Google và không sử dụng mật khẩu riêng trên hệ thống của chúng tôi.
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="v-pills-avatar" role="tabpanel" aria-labelledby="v-pills-avatar-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Thay Đổi Ảnh Đại Diện</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <c:if test="${not empty messageSuccess_avatar || (param.tab == 'avatar' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess)}">
+                                        <div class="alert alert-success alert-profile" role="alert">
+                                            ${messageSuccess_avatar}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${not empty messageError_avatar || (param.tab == 'avatar' && not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError)}">
+                                        <div class="alert alert-danger alert-profile" role="alert">
+                                            ${messageError_avatar}
+                                            ${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}
+                                        </div>
+                                    </c:if>
+
+                                    <div class="avatar-upload-preview mb-3">
+                                        <img src="<c:url value='/images/avatar/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
+                                             alt="Ảnh đại diện hiện tại"
+                                             id="currentAvatarPreviewPage"
+                                             class="rounded-circle img-fluid profile-avatar mb-3">
+                                    </div>
+
+                                    <form:form method="POST" action="${pageContext.request.contextPath}/user/profile/update-avatar" enctype="multipart/form-data">
+                                        <security:csrfInput />
+                                        <div class="mb-3">
+                                            <label for="avatarFile" class="custom-file-upload">
+                                                <i class="fas fa-cloud-upload-alt me-2"></i> Chọn Ảnh Mới
+                                            </label>
+                                            <input type="file" name="avatarFile" id="avatarFile" accept="image/png, image/jpeg, image/gif" onchange="previewAvatarOnPage(event)">
+                                            <p class="text-muted small mt-2">Hỗ trợ: JPG, PNG, GIF. Kích thước tối đa: 2MB.</p>
+                                            <c:if test="${not empty avatarUploadError}">
+                                                <div class="form-error mt-1">${avatarUploadError}</div>
+                                            </c:if>
+                                        </div>
+                                        <div class="mt-4">
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">Cập Nhật Ảnh</button>
+                                        </div>
+                                    </form:form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-
-                    <!-- Đổi ảnh đại diện Tab -->
-                    <div class="tab-pane fade" id="v-pills-avatar" role="tabpanel" aria-labelledby="v-pills-avatar-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Thay đổi ảnh đại diện</h4>
-                            </div>
-                            <div class="card-body text-center">
-                                <%-- Thông báo thành công/lỗi (nếu có từ controller) --%>
-                                <c:if test="${not empty successMessage_avatar}">
-                                    <div class="alert alert-success" role="alert">${successMessage_avatar}</div>
-                                </c:if>
-                                <c:if test="${not empty errorMessage_avatar}">
-                                    <div class="alert alert-danger" role="alert">${errorMessage_avatar}</div>
-                                </c:if>
-
-                                <img src="${pageContext.request.contextPath}/images/profile/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : 'default-avatar.png'}"
-                                     alt="Ảnh đại diện hiện tại"
-                                     id="currentAvatarPreview"
-                                     class="rounded-circle img-fluid profile-avatar mb-3">
-
-                                <%-- Form upload ảnh đại diện --%>
-                                <form method="POST" action="${pageContext.request.contextPath}/user/profile/update-avatar" enctype="multipart/form-data">
-                                    <div class="mb-3">
-                                        <label for="avatarFile" class="form-label">Chọn ảnh mới (dưới 2MB)</label>
-                                        <input class="form-control" type="file" name="avatarFile" id="avatarFile" accept="image/png, image/jpeg, image/gif" onchange="previewAvatar(event)">
-                                        <%-- Hiển thị lỗi từ phía server nếu có --%>
-                                        <c:if test="${not empty avatarUploadError}">
-                                            <div class="text-danger mt-1">${avatarUploadError}</div>
-                                        </c:if>
-                                    </div>
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary rounded-pill px-4">Cập nhật ảnh</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- User Profile Content End -->
 
-
-<%-- Include Footer --%>
-<jsp:include page="../layout/footer.jsp" />
-
-<!-- Back to Top -->
-<a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
-        class="fa fa-arrow-up"></i></a>
-
-
-<!-- JavaScript Libraries -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/easing/easing.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/waypoints/waypoints.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/lightbox/js/lightbox.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/owlcarousel/owl.carousel.min.js"></script>
-
-<!-- Template Javascript -->
-<script src="${pageContext.request.contextPath}/client/js/main.js"></script>
-<script>
-    // JavaScript để preview ảnh đại diện khi người dùng chọn file
-    function previewAvatar(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-            var output = document.getElementById('currentAvatarPreview');
-            var sidebarAvatar = document.querySelector('.profile-sidebar .profile-avatar'); // Nếu bạn có avatar ở sidebar
-            output.src = reader.result;
-            if(sidebarAvatar) {
-                sidebarAvatar.src = reader.result;
+    <jsp:include page="../layout/footer.jsp"/>
+    <jsp:include page="../layout/common_scripts.jsp"/>
+    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
+    <script>
+        function previewAvatarOnPage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('currentAvatarPreviewPage');
+                var sidebarAvatar = document.querySelector('.profile-sidebar .profile-avatar');
+                if (output) output.src = reader.result;
+                if (sidebarAvatar) sidebarAvatar.src = reader.result;
+            };
+            if (event.target.files && event.target.files[0]) {
+                if(event.target.files[0].size > 2 * 1024 * 1024) {
+                    alert("Kích thước ảnh vượt quá 2MB. Vui lòng chọn ảnh nhỏ hơn.");
+                    event.target.value = "";
+                    return;
+                }
+                reader.readAsDataURL(event.target.files[0]);
             }
-        };
-        if (event.target.files[0]) {
-            reader.readAsDataURL(event.target.files[0]);
-        } else {
-            // Nếu người dùng hủy chọn file, có thể hiển thị lại ảnh cũ hoặc mặc định
-            // Ví dụ: output.src = "${pageContext.request.contextPath}/images/avatar/${not empty userProfile.avatar ? userProfile.avatar : 'default-avatar.png'}";
-        }
-    }
-
-    // Xử lý active tab khi có lỗi validation hoặc sau khi submit form
-    $(document).ready(function() {
-        // Kiểm tra xem có thông báo lỗi/thành công cho tab nào không để active tab đó
-        if ($('#v-pills-info .alert').length > 0 || $('#v-pills-info .text-danger').length > 0) {
-            $('#v-pills-info-tab').tab('show');
-        } else if ($('#v-pills-password .alert').length > 0 || $('#v-pills-password .text-danger').length > 0) {
-            $('#v-pills-password-tab').tab('show');
-        } else if ($('#v-pills-avatar .alert').length > 0 || $('#v-pills-avatar .text-danger').length > 0) {
-            $('#v-pills-avatar-tab').tab('show');
         }
 
-        // Giữ tab active sau khi reload trang (ví dụ sau khi submit form)
-        var hash = window.location.hash;
-        if (hash) {
-            $('a[href="' + hash + '"]').tab('show');
-        }
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var activeTab = urlParams.get('tab');
+            var hash = window.location.hash;
 
-        // Lưu hash vào URL khi click tab
-        $('.nav-pills a').on('shown.bs.tab', function (e) {
-            window.location.hash = e.target.hash;
-            // Xóa thông báo lỗi/thành công của các tab khác khi chuyển tab
-            $('.tab-pane.fade:not(.show) .alert').remove();
+            if (activeTab) {
+                $('#v-pills-' + activeTab + '-tab').tab('show');
+            } else if (hash) {
+                $('a[href="' + hash + '"]').tab('show');
+            }
+
+            $('#v-pills-tab a').on('shown.bs.tab', function (e) {
+                if (history.pushState) {
+                    history.pushState(null, null, e.target.hash);
+                } else {
+                    window.location.hash = e.target.hash;
+                }
+                $('.tab-pane.fade:not(.show) .alert').remove();
+            });
+
+            const successFlash = "${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}";
+            const errorFlash = "${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}";
+            const currentTab = window.location.hash || '#v-pills-info';
+
+            if (successFlash && $(currentTab + ' .alert-success').length === 0) {
+                 $(currentTab + ' .card-body').prepend('<div class="alert alert-success alert-profile" role="alert">' + successFlash + '</div>');
+            }
+            if (errorFlash && $(currentTab + ' .alert-danger').length === 0) {
+                 $(currentTab + ' .card-body').prepend('<div class="alert alert-danger alert-profile" role="alert">' + errorFlash + '</div>');
+            }
         });
-    });
-</script>
+    </script>
 </body>
 </html>
