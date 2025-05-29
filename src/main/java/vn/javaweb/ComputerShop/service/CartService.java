@@ -228,7 +228,7 @@ public class CartService {
             order.setTotalPrice(infoOrderRqDTO.getTotalPriceToSaveOrder());
             order.setStatus(OrderStatus.PENDING.toString());
             order.setTime(new Date());
-            order.setTypePayment("COD");
+            order.setTypePayment(infoOrderRqDTO.getPaymentMethod());
             order.setStatusPayment(PaymentStatus.UNPAID.toString());
 
             OrderEntity  orderNew = this.orderRepository.save(order);
@@ -262,7 +262,10 @@ public class CartService {
                     orderNew.setOrderDetails(orderDetails);
                     this.orderRepository.save(orderNew);
                     // step 2: update status of card
-                    cart.setStatus(CartStatus.ORDERED.toString());
+                    if ( infoOrderRqDTO.getPaymentMethod().equals("COD")){
+                        cart.setStatus(CartStatus.ORDERED.toString());
+                    }
+
                     this.cartRepository.save(cart);
 
                     // step 3 : update session
@@ -273,9 +276,12 @@ public class CartService {
 
 
                 response.setStatus(200);
-                response.setMessage("Tạo đơn hàng thành công");
+                response.setMessage("Đặt hàng thành công! Hóa đơn đã được gửi tới email của bạn.");
+                response.setData(orderNew);
+                if ( infoOrderRqDTO.getPaymentMethod().equals("COD")){
+                    mailerComponent.sendInvoiceEmail(orderNew);
+                }
 
-                mailerComponent.sendInvoiceEmail(orderNew);
             }
 
         // create new order

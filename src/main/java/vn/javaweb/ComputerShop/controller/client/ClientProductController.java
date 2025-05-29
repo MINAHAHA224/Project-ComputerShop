@@ -8,20 +8,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.javaweb.ComputerShop.domain.dto.request.CartDetailsListDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.InfoOrderRqDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpRedirectDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.*;
+import vn.javaweb.ComputerShop.domain.entity.OrderEntity;
 import vn.javaweb.ComputerShop.service.CartService;
 import vn.javaweb.ComputerShop.service.OrderService;
 import vn.javaweb.ComputerShop.service.ProductService;
 
-import org.springframework.web.bind.annotation.RequestParam;
+import vn.javaweb.ComputerShop.service.payment.MomoService;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class ClientProductController {
     private final CartService cartService;
     private final ProductService productService;
     private final OrderService orderService;
+    private final MomoService momoService;
 
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable Long id) {
@@ -76,7 +78,8 @@ public class ClientProductController {
 
     @PostMapping("/place-order")
     public String handlePlaceOrder(HttpSession session, Model model,
-            @Valid @ModelAttribute("infoOrderRqDTO") InfoOrderRqDTO infoOrderRqDTO, BindingResult bindingResult) {
+            @Valid @ModelAttribute("infoOrderRqDTO") InfoOrderRqDTO infoOrderRqDTO,
+            BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         List<FieldError> errors = bindingResult.getFieldErrors();
 
@@ -90,9 +93,52 @@ public class ClientProductController {
             model.addAttribute("infoOrderRqDTO", infoOrderRqDTO);
             return "client/cart/checkout";
         }
-        ResponseBodyDTO response = this.cartService.handleCreateOrder(session, infoOrderRqDTO);
 
-        return "client/cart/thanks";
+        String methodPayment = infoOrderRqDTO.getPaymentMethod();
+        ResponseBodyDTO orderCreationResponse = this.cartService.handleCreateOrder(session, infoOrderRqDTO);
+
+        if (orderCreationResponse.getStatus() != 200 || orderCreationResponse.getData() == null
+                || !(orderCreationResponse.getData() instanceof OrderEntity)) {
+            model.addAttribute("messageError", "Không thể tạo đơn hàng. " + orderCreationResponse.getMessage());
+            // Lấy lại dữ liệu cho trang checkout nếu cần
+            CheckoutRpDTO result = this.cartService.handleShowDataAfterCheckout(session);
+            model.addAttribute("cartDetails", result.getCartDetails());
+            model.addAttribute("totalPrice", result.getTotalPrice());
+            return "client/cart/checkout";
+        }
+
+        OrderEntity createdOrder = (OrderEntity) orderCreationResponse.getData();
+
+        if ("MOMO".equalsIgnoreCase(methodPayment)) {
+            MomoRpDTO momoResponse = this.momoService.generateMomoPayment(createdOrder);
+            if (momoResponse != null && momoResponse.getPayUrl() != null && momoResponse.getResultCode() == 0) {
+                // Chuyển hướng người dùng đến payUrl của Momo
+                return "redirect:" + momoResponse.getPayUrl();
+            } else {
+                String errorMessage = "Khởi tạo thanh toán Momo thất bại.";
+                if (momoResponse != null) {
+                    errorMessage += " Lỗi: " + momoResponse.getMessage() + " (Code: " + momoResponse.getResultCode()
+                            + ")";
+                }
+                // model.addAttribute("messageError", errorMessage);
+                // return "client/cart/thanks"; // Hoặc quay lại trang checkout với thông báo
+                // lỗi
+                redirectAttributes.addFlashAttribute("messageError", errorMessage);
+                return "redirect:/checkout"; // Quay lại trang checkout
+            }
+        } else if ("COD".equalsIgnoreCase(methodPayment)) {
+            // Xử lý COD
+            model.addAttribute("messageSuccess", "Đặt hàng COD thành công!");
+            // Gửi email hóa đơn nếu cần
+            // mailerComponent.sendInvoiceEmail(createdOrder);
+            session.setAttribute("latestOrderId", createdOrder.getId()); // Cho trang thanks
+            return "redirect:/order/thanks"; // Chuyển đến trang cảm ơn
+        } else {
+            // Các phương thức thanh toán khác
+            model.addAttribute("messageError", "Phương thức thanh toán không được hỗ trợ.");
+            return "client/cart/checkout";
+        }
+
     }
 
     @GetMapping("/order-history")
@@ -114,6 +160,21 @@ public class ClientProductController {
         ResponseBodyDTO response = this.cartService.handleAddProductDetailToCart(id, session, quantity);
         model.addAttribute("messageSuccess", response.getMessage());
         return "client/cart/show";
+    }
+
+    @GetMapping(value = "/thankyou")
+    public String getThanksPage(MomoRpDTO momoRpDTO,
+            Model model, RedirectAttributes redirectAttributes) {
+        ResponseBodyDTO response = this.orderService.handleCompleteOrderPaymentOnline(momoRpDTO);
+
+        if (response.getStatus() == 200) {
+            model.addAttribute("messageSuccess", response.getMessage());
+            return "client/cart/thanks";
+        } else {
+            redirectAttributes.addFlashAttribute("messageError", response.getMessage());
+            return "redirect:/cart";
+        }
+
     }
 
 }

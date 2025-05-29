@@ -81,7 +81,7 @@ public class AccessController {
 
     @PostMapping("/register")
     public String postRegister(Model model, @Valid @ModelAttribute("registerDTO") RegisterDTO registerDTO,
-                               BindingResult bindingResult) {
+            BindingResult bindingResult) {
         List<FieldError> errors = bindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println("--ER " + error.getField() + " - " + error.getDefaultMessage());
@@ -94,7 +94,7 @@ public class AccessController {
         ResponseBodyDTO handleRegister = this.userService.handleRegister(registerDTO);
         if (handleRegister.getStatus() == 200) {
             model.addAttribute("messageSuccess", handleRegister.getMessage());
-            return "redirect:/login"
+            return "redirect:/login";
         } else {
             model.addAttribute("messageError", handleRegister.getMessage());
             return "client/auth/register";
