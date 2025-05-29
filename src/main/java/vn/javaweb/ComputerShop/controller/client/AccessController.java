@@ -97,7 +97,7 @@ public class AccessController {
         ResponseBodyDTO handleRegister = this.userService.handleRegister(registerDTO);
         if (handleRegister.getStatus() == 200) {
             model.addAttribute("messageSuccess", handleRegister.getMessage());
-            return "client/auth/login";
+            return "redirect:/login";
         } else {
             model.addAttribute("messageError", handleRegister.getMessage());
             return "client/auth/register";
