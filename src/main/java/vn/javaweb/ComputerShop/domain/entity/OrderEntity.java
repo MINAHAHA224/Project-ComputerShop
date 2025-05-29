@@ -42,7 +42,7 @@ public class OrderEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order" , cascade = {CascadeType.REMOVE})
     List<OrderDetailEntity> orderDetails;
 
 

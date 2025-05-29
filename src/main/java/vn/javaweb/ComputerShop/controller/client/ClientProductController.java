@@ -171,9 +171,9 @@ public class ClientProductController {
 
 
     @GetMapping(value = "/thankyou")
-    public String getThanksPage (MomoRpRedirectDTO momoRpRedirectDTO ,
+    public String getThanksPage (MomoRpDTO momoRpDTO ,
                                  Model model , RedirectAttributes redirectAttributes){
-        ResponseBodyDTO response = this.orderService.handleCompleteOrderPaymentOnline (momoRpRedirectDTO);
+        ResponseBodyDTO response = this.orderService.handleCompleteOrderPaymentOnline (momoRpDTO);
 
         if ( response.getStatus() == 200){
             model.addAttribute("messageSuccess" , response.getMessage());

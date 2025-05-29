@@ -136,10 +136,12 @@ public class OrderService {
 
 
     @Transactional
-    public ResponseBodyDTO handleCompleteOrderPaymentOnline(MomoRpRedirectDTO momoRpRedirectDTO) {
+    public ResponseBodyDTO handleCompleteOrderPaymentOnline(MomoRpDTO momoRpDTO) {
         ResponseBodyDTO response = new ResponseBodyDTO();
-        if (momoRpRedirectDTO.getMessage().equals("Successful.")) {
-            OrderEntity orderEntity = this.orderRepository.findOrderEntityById(Long.valueOf(momoRpRedirectDTO.getOrderId()));
+
+        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(Long.valueOf(momoRpDTO.getOrderId()));
+        if (momoRpDTO.getResultCode() != 1006) {
+
             UserEntity user = orderEntity.getUser();
             CartEntity cart = this.cartRepository.findCartEntityByUserAndStatus(user, CartStatus.ACTIVE.toString()).get();
             cart.setStatus(CartStatus.ORDERED.toString());
@@ -148,10 +150,11 @@ public class OrderService {
             this.orderRepository.save(orderEntity);
 
             response.setStatus(200);
-            response.setMessage("");
+            response.setMessage(momoRpDTO.getMessage());
         } else {
+            this.orderRepository.deleteOrderEntityById(orderEntity.getId());
             response.setStatus(500);
-            response.setMessage("Đã có lỗi xảy ra trong quá trình thanh toán");
+            response.setMessage(momoRpDTO.getMessage());
 
         }
 
