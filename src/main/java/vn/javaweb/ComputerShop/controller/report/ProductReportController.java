@@ -26,16 +26,7 @@ public class ProductReportController {
 
     private final ExportExcelService exportExcelService;
 
-    // Trang chọn factory (nếu bạn muốn người dùng chọn trước khi xem)
-//    @GetMapping("/select")
-//    public String showFactorySelectionPage(Model model, HttpSession session) {
-//        InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO");
-//        // Lấy danh sách các factory để hiển thị trong dropdown
-//        List<String> factories = this.exportExcelService.getAllFactories();
-//        model.addAttribute("factories", factories);
-//        model.addAttribute("currentUser", informationDTO); // Cần cho thông tin người dùng
-//        return "admin/product/report_factory_select"; // JSP trang chọn factory
-//    }
+
 
     // Endpoint xem trước Excel
     @GetMapping("/excel/preview")
