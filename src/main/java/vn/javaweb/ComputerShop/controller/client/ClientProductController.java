@@ -37,6 +37,7 @@ public class ClientProductController {
     public String getProductPage(Model model, @PathVariable Long id) {
         ProductDetailRpDTO productDetail = this.productService.handleGetProductDetail(id);
         model.addAttribute("product", productDetail);
+        model.addAttribute("stockQuantity",productDetail.getQuantity());
         return "client/product/detail";
     }
 
@@ -52,7 +53,11 @@ public class ClientProductController {
         CartRpDTO result = this.cartService.handleGetCartDetail(session);
         model.addAttribute("cartDetails", result.getCartDetails());
         model.addAttribute("totalPrice", result.getTotalPrice());
+
         model.addAttribute("cartDetailsListDTO", new CartDetailsListDTO());
+
+
+
         return "client/cart/show";
     }
 
