@@ -567,6 +567,9 @@ public class UserService {
         String avatarNew = this.uploadService.handleUploadFile(avatarFile , "profile");
         user.setAvatar(avatarNew);
         this.userRepository.save(user);
+        // set session avatar
+        informationDTO.setAvatar(avatarNew);
+        session.setAttribute("informationDTO" ,informationDTO );
 
         response.setStatus(200);
         response.setMessage("Ảnh đại diện được cập nhật thành công");

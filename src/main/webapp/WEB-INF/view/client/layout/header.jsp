@@ -1,149 +1,99 @@
-<%--<%@page contentType="text/html" pageEncoding="UTF-8" %>--%>
-<%--    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
-<%--        <!-- Navbar start -->--%>
-<%--        <div class="container-fluid fixed-top">--%>
-<%--            <div class="container px-0">--%>
-<%--                <nav class="navbar navbar-light bg-white navbar-expand-xl">--%>
-<%--                    <a href="/" class="navbar-brand">--%>
-<%--                        <h1 class="text-primary display-6">Laptopshop</h1>--%>
-<%--                    </a>--%>
-<%--                    <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"--%>
-<%--                        data-bs-target="#navbarCollapse">--%>
-<%--                        <span class="fa fa-bars text-primary"></span>--%>
-<%--                    </button>--%>
-<%--                    <div class="collapse navbar-collapse bg-white justify-content-between mx-5" id="navbarCollapse">--%>
-<%--                        <div class="navbar-nav">--%>
-<%--                            <a href="/" class="nav-item nav-link active">Trang Chủ</a>--%>
-<%--                            <a href="/products" class="nav-item nav-link">Sản Phẩm</a>--%>
-
-<%--                        </div>--%>
-<%--                        <div class="d-flex m-3 me-0">--%>
-<%--                            <c:if test="${not empty pageContext.request.userPrincipal}">--%>
-<%--                                <a href="/cart" class="position-relative me-4 my-auto">--%>
-<%--                                    <i class="fa fa-shopping-bag fa-2x"></i>--%>
-<%--                                    <span--%>
-<%--                                        class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"--%>
-<%--                                        style="top: -5px; left: 15px; height: 20px; min-width: 20px;">--%>
-<%--                                        ${sessionScope.sum}--%>
-<%--                                    </span>--%>
-<%--                                </a>--%>
-<%--                                <div class="dropdown my-auto">--%>
-<%--                                    <a href="#" class="dropdown" role="button" id="dropdownMenuLink"--%>
-<%--                                        data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="dropdown"--%>
-<%--                                        aria-expanded="false">--%>
-<%--                                        <i class="fas fa-user fa-2x"></i>--%>
-<%--                                    </a>--%>
-
-<%--                                    <ul class="dropdown-menu dropdown-menu-end p-4" aria-labelledby="dropdownMenuLink">--%>
-<%--                                        <li class="d-flex align-items-center flex-column" style="min-width: 300px;">--%>
-<%--                                            <img style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden;"--%>
-<%--                                                src="/images/avatar/${sessionScope.avatar}" />--%>
-<%--                                            <div class="text-center my-3">--%>
-<%--                                                <c:out value="${sessionScope.fullName}" />--%>
-<%--                                            </div>--%>
-<%--                                        </li>--%>
-
-<%--                                        <li><a class="dropdown-item" href="#">Quản lý tài khoản</a></li>--%>
-
-<%--                                        <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>--%>
-<%--                                        <li>--%>
-<%--                                            <hr class="dropdown-divider">--%>
-<%--                                        </li>--%>
-<%--                                        <li>--%>
-<%--                                            <form method="post" action="/logout">--%>
-<%--                                                <input type="hidden" name="${_csrf.parameterName}"--%>
-<%--                                                    value="${_csrf.token}" />--%>
-<%--                                                <button class="dropdown-item">Đăng xuất</button>--%>
-<%--                                            </form>--%>
-<%--                                        </li>--%>
-<%--                                    </ul>--%>
-<%--                                </div>--%>
-<%--                            </c:if>--%>
-<%--                            <c:if test="${empty pageContext.request.userPrincipal}">--%>
-<%--                                <a href="/login" class="position-relative me-4 my-auto">--%>
-<%--                                    Đăng nhập--%>
-<%--                                </a>--%>
-<%--                            </c:if>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                </nav>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        <!-- Navbar End -->--%>
-
-
-
-
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
-<!-- Navbar start -->
-<div class="container-fluid fixed-top">
+<!-- Navbar Start -->
+<div class="container-fluid fixed-top px-0">
     <div class="container px-0">
-        <nav class="navbar navbar-light bg-white navbar-expand-xl">
-            <a href="/" class="navbar-brand">
-                <h1 class="text-primary display-6">Laptopshop</h1>
+        <nav class="navbar navbar-light navbar-expand-sm">
+            <a href="<c:url value='/home' />" class="navbar-brand">
+                <h1 class="text-primary display-6" style="font-family: 'Poppins', sans-serif; font-weight: 700;">3TLap</h1>
             </a>
             <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse">
+                    data-bs-target="#navbarCollapseTop">
                 <span class="fa fa-bars text-primary"></span>
             </button>
-            <div class="collapse navbar-collapse bg-white justify-content-between mx-5" id="navbarCollapse">
-
-                <!-- Main navigation links -->
-                <div class="navbar-nav">
-                    <a href="/" class="nav-item nav-link active">Trang Chủ</a>
-                    <a href="/products" class="nav-item nav-link">Sản Phẩm</a>
+            <div class="collapse navbar-collapse" id="navbarCollapseTop">
+                <div class="navbar-nav mx-auto">
+                    <a href="<c:url value='/home' />" class="nav-item nav-link">Trang Chủ</a>
+                    <a href="<c:url value='/products' />" class="nav-item nav-link">Sản Phẩm</a>
+                    <%-- <a href="<c:url value='/promotions' />" class="nav-item nav-link">Khuyến Mãi</a> --%>
+                    <%-- <a href="<c:url value='/blog' />" class="nav-item nav-link">Blog</a> --%>
+                    <a href="<c:url value='/contact-us' />" class="nav-item nav-link">Liên Hệ</a>
+                    <a href="<c:url value='/about-us' />" class="nav-item nav-link">Về Chúng Tôi</a>
                 </div>
+                <div class="d-flex align-items-center">
+                
+                    <form action="<c:url value='/search-results'/>" method="get" class="d-flex me-3 search-form-placeholder">
+                        <input class="form-control form-control-sm rounded-pill" type="search" placeholder="Tìm kiếm laptop..." aria-label="Search" name="keyword">
+                        <button class="btn btn-outline-primary btn-sm rounded-pill ms-1" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
 
-                <!-- Right navigation section -->
-                <div class="d-flex m-3 me-0">
-
-                    <!-- Nếu người dùng đã đăng nhập -->
-                    <c:if test="${ not empty sessionScope.informationDTO.id }">
-                        <a href="/cart" class="position-relative me-4 my-auto">
-                            <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                                  style="top: -5px; left: 15px; height: 20px; min-width: 20px;">
-                                    ${sessionScope.informationDTO.sum}
-                            </span>
-                        </a>
-
-                        <div class="dropdown my-auto">
-                            <a href="#" class="dropdown" role="button" id="dropdownMenuLink"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user fa-2x"></i>
+                    <!-- Cart Icon -->
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.informationDTO.id}">
+                            <a href="<c:url value='/cart' />" class="position-relative me-3 my-auto header-action-icon">
+                                <i class="fa fa-shopping-bag fa-lg"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <c:out value="${not empty sessionScope.informationDTO.sum ? sessionScope.informationDTO.sum : 0}" />
+                                    <span class="visually-hidden">items in cart</span>
+                                </span>
                             </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="<c:url value='/login' />" class="position-relative me-3 my-auto header-action-icon">
+                                <i class="fa fa-shopping-bag fa-lg"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    0
+                                    <span class="visually-hidden">items in cart</span>
+                                </span>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
 
-                            <ul class="dropdown-menu dropdown-menu-end p-4" aria-labelledby="dropdownMenuLink">
-                                <li class="d-flex align-items-center flex-column" style="min-width: 300px;">
-                                    <img style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden;"
-                                         src="/images/avatar/${sessionScope.informationDTO.avatar}" />
-                                    <div class="text-center my-3">
-                                        <c:out value="${sessionScope.informationDTO.fullName}" />
-                                    </div>
-                                </li>
-                                <li><a class="dropdown-item" href="/account-management">Quản lý tài khoản</a></li>
-                                <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form method="post" action="/logout">
+                    <!-- User Account Dropdown / Login Link -->
+                               <div class="user-actions-container">
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.informationDTO.id}">
+                                <div class="dropdown my-auto">
+                                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle header-action-icon" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <c:choose>
+                                            <c:when test="${not empty sessionScope.informationDTO.avatar}">
+                                                <img src="<c:url value='/images/profile/${sessionScope.informationDTO.avatar}'/>" alt="Avatar" width="30" height="30" class="rounded-circle me-2">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fas fa-user-circle fa-lg me-2"></i>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="d-none d-sm-inline"><c:out value="${sessionScope.informationDTO.fullName}" /></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                                        <li><h6 class="dropdown-header">Chào, <c:out value="${sessionScope.informationDTO.fullName}" /></h6></li>
+                                        <c:if test="${ sessionScope.informationDTO.role eq 'ADMIN'}">
+                                            <li><a class="dropdown-item" href="<c:url value='/admin'/>"><i class="fas fa-server me-2"></i>Quản lý hệ thống</a></li>
+                                        </c:if>
 
-                                        <button class="dropdown-item">Đăng xuất</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </c:if>
+                                        <li><a class="dropdown-item" href="<c:url value='/account-management'/>"><i class="fas fa-cog me-2"></i>Quản lý tài khoản</a></li>
+                                        <li><a class="dropdown-item" href="<c:url value='/order-history'/>"><i class="fas fa-history me-2"></i>Lịch sử mua hàng</a></li>
 
-                    <!-- Nếu người dùng chưa đăng nhập -->
-                    <c:if test="${ empty sessionScope.informationDTO.id }">
-                        <a href="/login" class="position-relative me-4 my-auto">
-                            Đăng nhập
-                        </a>
-                    </c:if>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" action="<c:url value='/logout'/>" class="d-inline">
+                                                <security:csrfInput />
+                                                <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="login-register-buttons d-flex"> 
+                                    <a href="<c:url value='/login'/>" class="btn btn-outline-primary btn-sm rounded-pill me-2">Đăng nhập</a>
+                                    <a href="<c:url value='/register'/>" class="btn btn-primary btn-sm rounded-pill">Đăng ký</a>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div> 
                 </div>
             </div>
         </nav>

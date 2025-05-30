@@ -49,7 +49,7 @@ public class ProductService {
         } catch (Exception e) {
             page = 1;
         }
-        Pageable pageable = PageRequest.of(page - 1, 6);
+        Pageable pageable = PageRequest.of(page - 1, 7);
 
         ProductFilterRpDTO result = new ProductFilterRpDTO();
         Page<ProductRpDTO> listProduct = this.productRepository.findProductFilter(productFilterDTO, pageable);
@@ -228,6 +228,7 @@ public class ProductService {
         productDetailRpDTO.setShortDesc(entity.getShortDesc());
         productDetailRpDTO.setPrice(entity.getPrice());
         productDetailRpDTO.setFactory(entity.getFactory());
+        productDetailRpDTO.setQuantity(entity.getQuantity());
         return productDetailRpDTO;
     }
 

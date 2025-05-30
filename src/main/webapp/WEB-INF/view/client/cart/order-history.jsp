@@ -3,191 +3,228 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title> Lịch sử mua hàng - Laptopshop</title>
+    <title>Lịch Sử Đơn Hàng - 3TLap</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta content="Lịch sử mua hàng, đơn hàng laptop, theo dõi đơn hàng, 3TLap" name="keywords">
+    <meta content="Xem lại và theo dõi tất cả các đơn hàng bạn đã đặt tại 3TLap." name="description">
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-            rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-          rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="${pageContext.request.contextPath}/client/css/style.css" rel="stylesheet">
+    <jsp:include page="../layout/common_head_links.jsp"/>
     <style>
-        /* Thêm style để các dòng thông tin order dễ phân biệt hơn */
-        .order-summary-row td {
-            font-weight: bold;
-            background-color: #f8f9fa; /* Màu nền nhẹ cho dòng tóm tắt order */
+        .order-history-page-header {
+            background: linear-gradient(rgba(0,0,0,0.58), rgba(0,0,0,0.58)), url('<c:url value="/client/img/order-history-banner.jpg"/>');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
-        .order-summary-row td:first-child {
-            border-top-left-radius: 5px;
+        .order-card {
+            background-color: var(--white-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.125rem 0.35rem rgba(0,0,0,.065);
         }
-        .order-summary-row td:last-child {
-            border-top-right-radius: 5px;
+        .order-card-header {
+            padding: 1rem 1.25rem;
+            background-color: var(--light-bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: calc(0.5rem - 1px);
+            border-top-right-radius: calc(0.5rem - 1px);
         }
-        .order-detail-row:last-child td:first-child {
-            border-bottom-left-radius: 5px;
+        .order-card-header .order-id {
+            font-family: var(--font-primary);
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
         }
-        .order-detail-row:last-child td:nth-last-child(2) { /* Nth last child before the empty TD */
-            border-bottom-right-radius: 5px;
+        .order-card-header .order-date {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
         }
-
+        .order-card-body {
+            padding: 1.25rem;
+        }
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .order-summary-item strong {
+            color: var(--text-color);
+        }
+        .order-status-badge {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.3em 0.7em;
+        }
+        .order-details-table {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .order-details-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: var(--text-muted-color);
+            font-size: 0.85rem;
+        }
+        .order-details-table img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 0.25rem;
+        }
+        .order-details-table .product-name-history a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .order-details-table .product-name-history a:hover {
+            color: var(--primary-color);
+        }
+        .btn-toggle-details {
+            font-size: 0.85rem;
+        }
+        .no-orders-message {
+            min-height: 40vh;
+        }
     </style>
 </head>
 
 <body>
-
-<!-- Spinner Start -->
-<div id="spinner"
-     class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
-    <div class="spinner-grow text-primary" role="status"></div>
-</div>
-<!-- Spinner End -->
-
-<jsp:include page="../layout/header.jsp" />
-
-<!-- Cart Page Start -->
-<div class="container-fluid py-5">
-    <div class="container py-5">
-        <div class="mb-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Lịch sử mua hàng</li>
-                </ol>
-            </nav>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Sản phẩm</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Giá cả</th>
-                    <th scope="col">Số lượng</th>
-                    <th scope="col">Thành tiền</th>
-                    <th scope="col">Trạng thái</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:if test="${empty orders}">
-                    <tr>
-                        <td colspan="6" class="text-center">
-                            Không có đơn hàng nào được tạo.
-                        </td>
-                    </tr>
-                </c:if>
-                <c:forEach var="order" items="${orders}">
-                    <%-- Dòng hiển thị thông tin chung của Order --%>
-                    <tr class="order-summary-row">
-                        <td colspan="2">Mã đơn: <strong>#${order.id}</strong></td>
-                        <td colspan="1">
-                            Tổng tiền: <fmt:formatNumber type="number" value="${order.totalPrice}" /> đ
-                        </td>
-                        <td colspan="2"></td> <%-- Giữ cho cột số lượng và thành tiền trống ở dòng này --%>
-                        <td colspan="1">
-                            <c:choose>
-                                <c:when test="${order.status == 'PENDING'}">Chờ xác nhận</c:when>
-                                <c:when test="${order.status == 'CONFIRMED'}">Đã xác nhận đơn</c:when>
-                                <c:when test="${order.status == 'SHIPPED'}">Đã giao cho bên vận chuyển</c:when>
-                                <c:when test="${order.status == 'DELIVERED'}">Giao hàng thành công</c:when>
-                                <c:when test="${order.status == 'CANCELLED'}">Hủy đơn hàng</c:when>
-                                <c:otherwise>Không rõ trạng thái</c:otherwise>
-                            </c:choose>
-                        </td>
-                    </tr>
-                    <%-- Dòng hiển thị chi tiết các sản phẩm trong Order --%>
-                    <c:forEach var="orderDetail" items="${order.orderDetails}" varStatus="loop">
-                        <tr class="order-detail-row ${loop.last ? 'border-bottom' : ''}">
-                            <th scope="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="${pageContext.request.contextPath}/images/product/${orderDetail.productImage}"
-                                         class="img-fluid me-5 rounded-circle"
-                                         style="width: 80px; height: 80px;" alt="${orderDetail.productName}">
-                                </div>
-                            </th>
-                            <td>
-                                <p class="mb-0 mt-4">
-                                    <a href="${pageContext.request.contextPath}/product/${orderDetail.productId}" target="_blank">
-                                            ${orderDetail.productName}
-                                    </a>
-                                </p>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">
-                                    <fmt:formatNumber type="number" value="${orderDetail.price}" /> đ
-                                </p>
-                            </td>
-                            <td>
-                                    <%-- Sửa lại thành hiển thị text, không phải input --%>
-                                <p class="mb-0 mt-4 text-center">
-                                        ${orderDetail.productQuantity}
-                                </p>
-                            </td>
-                            <td>
-                                <p class="mb-0 mt-4">
-                                    <fmt:formatNumber type="number"
-                                                      value="${orderDetail.price * orderDetail.productQuantity}" /> đ
-                                </p>
-                            </td>
-                            <td></td> <%-- Cột trạng thái để trống cho dòng chi tiết sản phẩm --%>
-                        </tr>
-                    </c:forEach>
-                    <%-- Thêm một dòng trống để ngăn cách các order nếu muốn --%>
-                    <c:if test="${!empty orders}">
-                        <tr><td colspan="6" style="border:0; height: 20px;"></td></tr>
-                    </c:if>
-                </c:forEach>
-
-                </tbody>
-            </table>
-        </div>
-
+    <div id="spinner"
+         class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
     </div>
-</div>
-<!-- Cart Page End -->
 
+    <jsp:include page="../layout/header.jsp"/>
 
-<jsp:include page="../layout/footer.jsp" />
+    <div class="container-fluid page-header order-history-page-header py-5">
+        <h1 class="text-center text-white display-6">Lịch Sử Đơn Hàng</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="<c:url value='/'/>">Trang Chủ</a></li>
+            <li class="breadcrumb-item active text-white">Lịch Sử Đơn Hàng</li>
+        </ol>
+    </div>
 
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <c:if test="${empty orders}">
+                <div class="text-center py-5 no-orders-message">
+                    <i class="fas fa-box-open fa-5x text-muted mb-3"></i>
+                    <h3 class="mb-3">Bạn chưa có đơn hàng nào.</h3>
+                    <p class="text-muted mb-4">Hãy bắt đầu mua sắm để xem lịch sử đơn hàng của bạn tại đây.</p>
+                    <a href="<c:url value='/products'/>" class="btn btn-primary rounded-pill py-3 px-5">Bắt Đầu Mua Sắm</a>
+                </div>
+            </c:if>
 
-<!-- Back to Top -->
-<a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
-        class="fa fa-arrow-up"></i></a>
+            <c:if test="${not empty orders}">
+                <div class="row">
+                    <div class="col-12">
+                        <c:forEach var="order" items="${orders}" varStatus="orderLoop">
+                            <div class="order-card wow fadeInUp" data-wow-delay="${orderLoop.index * 0.1}s">
+                                <div class="order-card-header">
+                                    <div>
+                                        <span class="order-id">Đơn hàng #${order.id}</span>
+                                        <span class="order-date ms-2">- Ngày đặt: <fmt:formatDate value="${order.time}" pattern="dd/MM/yyyy HH:mm"/></span>
+                                    </div>
+                                    <div>
+                                        <span class="badge rounded-pill 
+                                            <c:choose>
+                                                <c:when test='${order.status == "PENDING"}'>bg-warning text-dark</c:when>
+                                                <c:when test='${order.status == "CONFIRMED"}'>bg-info text-dark</c:when>
+                                                <c:when test='${order.status == "SHIPPED"}'>bg-primary</c:when>
+                                                <c:when test='${order.status == "DELIVERED"}'>bg-success</c:when>
+                                                <c:when test='${order.status == "CANCELLED"}'>bg-danger</c:when>
+                                                <c:otherwise>bg-secondary</c:otherwise>
+                                            </c:choose> 
+                                            order-status-badge">
+                                            <c:choose>
+                                                <c:when test="${order.status == 'PENDING'}">Chờ xác nhận</c:when>
+                                                <c:when test="${order.status == 'CONFIRMED'}">Đã xác nhận</c:when>
+                                                <c:when test="${order.status == 'SHIPPED'}">Đang giao</c:when>
+                                                <c:when test="${order.status == 'DELIVERED'}">Đã giao</c:when>
+                                                <c:when test="${order.status == 'CANCELLED'}">Đã hủy</c:when>
+                                                <c:otherwise>${order.status}</c:otherwise>
+                                            </c:choose>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="order-card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                        </div>
+                                        <div class="col-md-4 text-md-end">
+                                            <div class="order-summary-item">
+                                                <span>Tổng tiền:</span>
+                                                <strong><fmt:formatNumber type="number" value="${order.totalPrice}"/> đ</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <button class="btn btn-outline-primary btn-sm btn-toggle-details mt-2" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#orderDetails-${order.id}" aria-expanded="false" aria-controls="orderDetails-${order.id}">
+                                        Xem chi tiết <i class="fas fa-chevron-down ms-1"></i>
+                                    </button>
 
+                                    <div class="collapse mt-3" id="orderDetails-${order.id}">
+                                        <h6 class="mb-2">Chi tiết sản phẩm:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm order-details-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 10%;">Ảnh</th>
+                                                        <th style="width: 40%;">Tên sản phẩm</th>
+                                                        <th class="text-center" style="width: 15%;">Số lượng</th>
+                                                        <th class="text-end" style="width: 15%;">Đơn giá</th>
+                                                        <th class="text-end" style="width: 20%;">Thành tiền</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="detail" items="${order.orderDetails}">
+                                                        <tr>
+                                                            <td>
+                                                                <img src="<c:url value='/images/product/${detail.productImage}'/>" alt="${detail.productName}">
+                                                            </td>
+                                                            <td class="product-name-history">
+                                                                <a href="<c:url value='/product/${detail.productId}'/>">${detail.productName}</a>
+                                                            </td>
+                                                            <td class="text-center">${detail.productQuantity}</td>
+                                                            <td class="text-end"><fmt:formatNumber type="number" value="${detail.price}"/> đ</td>
+                                                            <td class="text-end"><fmt:formatNumber type="number" value="${detail.price * detail.productQuantity}"/> đ</td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:if>
+        </div>
+    </div>
 
-<!-- JavaScript Libraries -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/easing/easing.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/waypoints/waypoints.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/lightbox/js/lightbox.min.js"></script>
-<script src="${pageContext.request.contextPath}/client/lib/owlcarousel/owl.carousel.min.js"></script>
-
-<!-- Template Javascript -->
-<script src="${pageContext.request.contextPath}/client/js/main.js"></script>
+    <jsp:include page="../layout/footer.jsp"/>
+    <jsp:include page="../layout/common_scripts.jsp"/>
+    <script>
+        $(document).ready(function () {
+            $('.btn-toggle-details').on('click', function () {
+                var icon = $(this).find('i');
+                if (icon.hasClass('fa-chevron-down')) {
+                    icon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                } else {
+                    icon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>

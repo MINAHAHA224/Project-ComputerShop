@@ -176,4 +176,13 @@ public class ClientPageController {
 
 
 
+    @GetMapping(value = "/contact-us")
+    public String getContactPage ( Model model) {
+        return "client/contact/show";
+    }
+
+    @GetMapping(value = "/about-us")
+    public String getAboutUsPage ( Model model) {
+        return "client/about/show";
+    }
 }

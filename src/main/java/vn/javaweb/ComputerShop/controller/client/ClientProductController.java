@@ -54,18 +54,28 @@ public class ClientProductController {
 
     @GetMapping("/cart")
     public String getCartPage(Model model, HttpSession  session) {
+
         CartRpDTO result = this.cartService.handleGetCartDetail(session);
         model.addAttribute("cartDetails", result.getCartDetails());
         model.addAttribute("totalPrice", result.getTotalPrice());
+
+        model.addAttribute("cartDetailsListDTO",new CartDetailsListDTO());
 
         return "client/cart/show";
     }
 
     @PostMapping("/delete-cart-product/{id}")
-    public String deleteCartDetail(@PathVariable("id") Long id, HttpSession session ,Model model) {
+    public String deleteCartDetail(@PathVariable("id") Long id,
+                                   HttpSession session ,
+                                   Model model , RedirectAttributes redirectAttributes) {
         ResponseBodyDTO result = this.cartService.handleDeleteProductInCart(id , session);
-        model.addAttribute("messageSuccess" ,result.getMessage() );
-        return "client/cart/show";
+        if ( result.getStatus() == 200 ){
+            redirectAttributes.addFlashAttribute("messageSuccess" ,result.getMessage() );
+        }else {
+            redirectAttributes.addFlashAttribute("messageError" ,result.getMessage() );
+        }
+
+        return "redirect:/cart";
     }
 
     @PostMapping("/confirm-checkout")

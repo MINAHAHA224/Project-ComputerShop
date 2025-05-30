@@ -79,8 +79,8 @@ public class SecurityConfiguration {
                         .invalidSessionUrl("/logout?expired")
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false))
-                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true));
-
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+                .exceptionHandling(ex -> ex.accessDeniedPage("/accessDeny"));
                 // cơ chế remember me
 //                .rememberMe(rememberme -> rememberme.rememberMeServices(rememberMeServices()));
 

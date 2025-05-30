@@ -1,40 +1,76 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- JSP Path: client/auth/forgotPassword.jsp -->
+<%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
+prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Quên mật khẩu - Nhập Email</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-lg">
-                <c:if test="${not empty message}"> <%-- Sửa thành not empty cho an toàn hơn --%>
-                    <div class="alert alert-danger my-2 mx-3" role="alert"> <%-- Thêm mx-3 cho đẹp hơn --%>
-                            ${message}
-                    </div>
-                </c:if>
-                <div class="card-header bg-primary text-white text-center">
-                    <h4>Quên mật khẩu</h4>
-                </div>
-                <div class="card-body">
-                    <%-- Sử dụng c:url để đảm bảo đường dẫn đúng, nhất là khi có context path --%>
-                    <form action="<c:url value='/forgotPassword'/>" method="post">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Nhập địa chỉ Email của bạn:</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="example@gmail.com" required value="${email}">
-                            <%-- Giữ lại email đã nhập nếu có lỗi: value="${param.email}" hoặc value="${email}" nếu bạn add lại vào model --%>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Gửi mã OTP</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Quên Mật Khẩu - 3TLap</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <jsp:include page="../layout/common_head_links.jsp" />
+    <link href="<c:url value='/client/css/auth-pages.css'/>" rel="stylesheet" />
+  </head>
+  <body class="auth-page-bg">
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
     </div>
-</div>
-</body>
+
+    <div class="auth-wrapper">
+      <div class="card auth-card">
+        <div class="card-header">
+          <a href="<c:url value='/'/>" class="logo-text-auth">3TLap</a>
+          <h3 class="font-weight-light my-1">Quên Mật Khẩu</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted text-center mb-4">
+            Nhập địa chỉ email đã đăng ký để nhận mã OTP đặt lại mật khẩu.
+          </p>
+          <c:if test="${not empty messageError}">
+            <div class="alert alert-danger alert-auth my-3" role="alert">
+              ${messageError}
+            </div>
+          </c:if>
+          <c:if test="${not empty messageSuccess}">
+            <div class="alert alert-success alert-auth my-3" role="alert">
+              ${messageSuccess}
+            </div>
+          </c:if>
+
+          <form action="<c:url value='/forgotPassword'/>" method="post">
+            <div class="form-floating mb-3">
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="example@gmail.com"
+                required
+                value="${email}"
+              />
+              <label for="email">Địa chỉ Email</label>
+            </div>
+            <div class="d-grid mt-4 mb-0">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Gửi Mã OTP
+              </button>
+            </div>
+            <security:csrfInput />
+          </form>
+        </div>
+        <div class="card-footer">
+          <div class="small">
+            <a href="<c:url value='/login'/>" class="text-primary fw-medium"
+              >Quay lại Đăng nhập</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <jsp:include page="../layout/common_scripts.jsp" />
+  </body>
 </html>
