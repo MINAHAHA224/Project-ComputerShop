@@ -31,7 +31,7 @@ uri="http://www.springframework.org/security/tags" %>
     <div class="auth-wrapper">
       <div class="card auth-card" style="max-width: 550px">
         <div class="card-header">
-          <a href="<c:url value='/'/>" class="logo-text-auth">3TLap</a>
+          <a href="<c:url value='/home'/>" class="logo-text-auth">3TLap</a>
           <h3 class="font-weight-light my-1">Tạo Tài Khoản Mới</h3>
         </div>
         <div class="card-body p-4">

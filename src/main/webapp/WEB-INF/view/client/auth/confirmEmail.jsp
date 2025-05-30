@@ -119,7 +119,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           <p>© ${java.time.Year.now()} 3TLap. Đã đăng ký Bản quyền.</p>
           <p>123 Đường ABC, Phường XYZ, Quận 1, TP. HCM | (+84) 1900 8888</p>
           <p>
-            <a href="<c:url value='/'/>" target="_blank">Website</a> |
+            <a href="<c:url value='/home'/>" target="_blank">Website</a> |
             <a href="<c:url value='/privacy-policy'/>" target="_blank"
               >Chính sách bảo mật</a
             >

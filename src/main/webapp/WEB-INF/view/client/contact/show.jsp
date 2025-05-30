@@ -99,7 +99,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
       <h1 class="text-center text-white display-5">Liên Hệ Với Chúng Tôi</h1>
       <ol class="breadcrumb justify-content-center mb-0">
         <li class="breadcrumb-item">
-          <a href="<c:url value='/'/>">Trang Chủ</a>
+          <a href="<c:url value='/home'/>">Trang Chủ</a>
         </li>
         <li class="breadcrumb-item active text-white">Liên Hệ</li>
       </ol>

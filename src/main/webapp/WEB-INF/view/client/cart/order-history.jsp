@@ -107,7 +107,7 @@
     <div class="container-fluid page-header order-history-page-header py-5">
         <h1 class="text-center text-white display-6">Lịch Sử Đơn Hàng</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="<c:url value='/'/>">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a href="<c:url value='/home'/>">Trang Chủ</a></li>
             <li class="breadcrumb-item active text-white">Lịch Sử Đơn Hàng</li>
         </ol>
     </div>
