@@ -1,12 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
 prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <div id="chatbot-widget-container" class="chatbot-closed">
-  <%-- Ban đầu ẩn hoặc thu nhỏ --%>
   <div id="chatbot-toggle-button">
-    <i class="fas fa-comments"></i> <%-- Icon chat --%>
-    <span class="chatbot-badge" style="display: none"></span> <%-- Badge thông
-    báo mới --%>
+    <i class="fas fa-comments"></i>
+    <span class="chatbot-badge" style="display: none"></span>
   </div>
 
   <div id="chatbot-window">
@@ -16,7 +13,6 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           src="<c:url value='/client/img/favicon_3tlap.png'/>"
           alt="3TLap Bot"
         />
-        <%-- Icon logo nhỏ của bạn --%>
       </div>
       <div class="chatbot-title-status">
         <span class="chatbot-title">3TLap Assistant</span>
@@ -26,11 +22,8 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
       <button id="chatbot-close-button-widget">
         <i class="fas fa-times"></i>
       </button>
-      <%-- Đổi ID để tránh xung đột --%>
     </div>
     <div id="chatbot-messages-container">
-      <%-- Tin nhắn sẽ được thêm vào đây bằng JS --%> <%-- Ví dụ tin nhắn chào
-      mừng ban đầu --%>
       <div class="chatbot-message bot">
         <div class="message-avatar">
           <img
@@ -45,9 +38,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         </div>
       </div>
     </div>
-    <div id="chatbot-suggested-questions" class="mt-2">
-      <%-- Các câu hỏi gợi ý sẽ được thêm vào đây --%>
-    </div>
+    <div id="chatbot-suggested-questions" class="mt-2"></div>
     <div class="chatbot-input-area">
       <textarea
         id="chatbot-input"

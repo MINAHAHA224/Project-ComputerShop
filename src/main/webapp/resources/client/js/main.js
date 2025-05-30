@@ -139,12 +139,10 @@
         link.removeClass('active'); // Remove 'active' class if the href does not match
       }
     });
-    // --- CHATBOT CONFIGURATION ---
     const CHATBOT_API_BASE_URL = 'http://8.34.124.122:20610';
     const CHATBOT_API_KEY = 'P39vB66xz1SFKwzKImvvYb3FMkzhUp26';
     let CURRENT_CHATBOT_NAME = 'testduythai';
 
-    // --- CHATBOT UI ELEMENTS ---
     const $widgetContainer = $('#chatbot-widget-container');
     const $toggleButton = $('#chatbot-toggle-button');
     const $chatWindow = $('#chatbot-window');
@@ -156,11 +154,8 @@
     const $minimizeButton = $('#chatbot-minimize-button');
     const $chatbotBadge = $('.chatbot-badge');
 
-    let chatHistory = []; // Lưu lịch sử chat cho session hiện tại (tối đa 5 cặp)
+    let chatHistory = [];
 
-    // --- CORE FUNCTIONS ---
-
-    // Function để lấy tên chatbot từ API key (API số 18)
     function initializeChatbot() {
       if (
         !CHATBOT_API_KEY ||
@@ -178,7 +173,7 @@
         .prop('disabled', false)
         .attr('placeholder', 'Nhập câu hỏi của bạn...');
       $sendButton.prop('disabled', false);
-      return; // Bỏ qua gọi API nếu đã biết tên
+      return;
     }
 
     function disableChatbot(message) {
@@ -198,7 +193,6 @@
           CHATBOT_API_KEY &&
           CHATBOT_API_KEY !== 'YOUR_ACTUAL_CHATBOT_API_KEY'
         ) {
-          // Chỉ gọi nếu chưa có tên và API key đã được set (tránh gọi lại mỗi lần mở)
           initializeChatbot();
         } else if (
           !CHATBOT_API_KEY ||
@@ -228,20 +222,12 @@
 
       let sourcesHtml = '';
       if (sources && sources.length > 0) {
-        sourcesHtml = '<div class="sources mt-2 pt-2 border-top">'; // Thêm border-top
+        sourcesHtml = '<div class="sources mt-2 pt-2 border-top">';
         sourcesHtml += '<strong>Nguồn tham khảo:</strong>';
         sources.forEach((source) => {
-          // Giả sử API sources trả về document_id là ID sản phẩm hoặc tên file có thể dùng để link
-          // Cần điều chỉnh logic tạo link cho phù hợp
-          let sourceLink = '#'; // Link mặc định
+          let sourceLink = '#';
           if (source.file_name) {
-            // Ưu tiên file_name nếu có
-            // Giả sử bạn có trang hiển thị tài liệu dựa trên tên file
-            // sourceLink = `<c:url value='/documents/${encodeURIComponent(CURRENT_CHATBOT_NAME)}/${encodeURIComponent(source.file_name)}'/>`;
-            // Hoặc nếu document_id là ID sản phẩm thì link tới sản phẩm
-            // sourceLink = `<c:url value='/product/${source.document_id}'/>`;
           } else if (source.document_id) {
-            // sourceLink = `<c:url value='/product/${source.document_id}'/>`;
           }
           sourcesHtml += `<a href="${sourceLink}" target="_blank" class="d-block text-truncate" title="File: ${
             source.file_name || 'N/A'
@@ -279,11 +265,10 @@
         `;
       if (isLoading) {
         if ($('#typing-indicator').length === 0) {
-          // Chỉ thêm nếu chưa có
           $messagesContainer.append(messageHtml);
         }
       } else {
-        $('#typing-indicator').remove(); // Xóa typing indicator trước khi thêm tin nhắn mới
+        $('#typing-indicator').remove();
         $messagesContainer.append(messageHtml);
       }
       $messagesContainer.scrollTop($messagesContainer[0].scrollHeight);
@@ -291,7 +276,7 @@
 
     function showTypingIndicator(show) {
       if (show) {
-        appendMessage('', 'bot', [], true); // true để báo là typing indicator
+        appendMessage('', 'bot', [], true);
       } else {
         $('#typing-indicator').remove();
       }
@@ -302,7 +287,6 @@
       if (questions && questions.length > 0) {
         questions.slice(0, 3).forEach((qText) => {
           if (qText && qText.trim() !== '') {
-            // Đảm bảo câu hỏi không rỗng
             const $btn = $(
               '<button type="button" class="suggested-question-btn"></button>'
             ).text(qText);
@@ -319,13 +303,11 @@
 
     function fetchSuggestedQuestions(previousResponse, context, originalQuery) {
       if (!CURRENT_CHATBOT_NAME) {
-        // Cần tên chatbot để gọi API này
         console.warn('Không có tên chatbot để gợi ý câu hỏi.');
         return;
       }
-      showTypingIndicator(true); // Cho biết đang xử lý
+      showTypingIndicator(true);
       fetch(`${CHATBOT_API_BASE_URL}/api/typesense/suggest_questions`, {
-        // API số 16
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -336,7 +318,7 @@
           context: context,
           chatbot_name: CURRENT_CHATBOT_NAME,
           query: 'tôi là duythai.' + originalQuery,
-          cloud_call: false, // Theo tài liệu
+          cloud_call: false,
         }),
       })
         .then((response) => response.json())

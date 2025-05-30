@@ -40,7 +40,7 @@ public class OrderService {
             result.setId(order.getId());
             result.setTotalPrice(order.getTotalPrice());
             result.setStatus(order.getStatus());
-
+            result.setTime(order.getTime());
             List<OrderDetailRpDTO> listOrderDetailRp = new ArrayList<>();
             for (OrderDetailEntity orderDetailEntity : order.getOrderDetails()) {
                 OrderDetailRpDTO orderDetailRpDTO = new OrderDetailRpDTO();

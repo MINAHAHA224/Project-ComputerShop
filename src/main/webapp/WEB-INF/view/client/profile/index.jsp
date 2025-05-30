@@ -167,7 +167,7 @@
                 <div class="col-lg-3 profile-sidebar">
                     <div class="card sticky-top" style="top: 100px;">
                         <div class="card-body text-center position-relative pt-0">
-                            <img src="<c:url value='/images/avatar/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
+                            <img src="<c:url value='/images/profile/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
                                  alt="Ảnh đại diện"
                                  class="rounded-circle img-fluid profile-avatar mb-2">
                             <h5 class="card-title mt-2 mb-1">${userProfileUpdateDTO.fullName}</h5>
@@ -338,7 +338,7 @@
                                     </c:if>
 
                                     <div class="avatar-upload-preview mb-3">
-                                        <img src="<c:url value='/images/avatar/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
+                                        <img src="<c:url value='/images/profile/${not empty userProfileUpdateDTO.avatar ? userProfileUpdateDTO.avatar : "default-avatar.png"}'/>"
                                              alt="Ảnh đại diện hiện tại"
                                              id="currentAvatarPreviewPage"
                                              class="rounded-circle img-fluid profile-avatar mb-3">

@@ -78,6 +78,51 @@
                                                         value="ACER">
                                                     <label class="form-check-label" for="factory-6">Acer</label>
                                                 </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-7"
+                                                           value="HP">
+                                                    <label class="form-check-label" for="factory-7">HP</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-8"
+                                                           value="SAMSUNG">
+                                                    <label class="form-check-label" for="factory-8">Samsung</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-9"
+                                                           value="MSI">
+                                                    <label class="form-check-label" for="factory-9">MSI</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-10"
+                                                           value="MICROSOFT">
+                                                    <label class="form-check-label" for="factory-10">Microsoft</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-11"
+                                                           value="GIGABYTE">
+                                                    <label class="form-check-label" for="factory-11">Gigabyte</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-12"
+                                                           value="RAZER">
+                                                    <label class="form-check-label" for="factory-12">Razer</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-13"
+                                                           value="HUAWEI">
+                                                    <label class="form-check-label" for="factory-13">Huawei</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-14"
+                                                           value="XIAOMI">
+                                                    <label class="form-check-label" for="factory-14">Xiaomi</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="factory-15"
+                                                           value="GOOGLE">
+                                                    <label class="form-check-label" for="factory-15">Google</label>
+                                                </div>
 
                                             </div>
                                             <div class="col-12" id="targetFilter">
@@ -109,6 +154,36 @@
                                                     <input class="form-check-input" type="checkbox" id="target-5"
                                                         value="DOANH-NHAN">
                                                     <label class="form-check-label" for="target-5">Doanh nhân</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-6"
+                                                           value="LAP-TRINH">
+                                                    <label class="form-check-label" for="target-6">Lập trình</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-7"
+                                                           value="SANG-TAO-NOI-DUNG">
+                                                    <label class="form-check-label" for="target-7">Sáng tạo nội dung</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-8"
+                                                           value="MAY-TRAM-WORKSTATION">
+                                                    <label class="form-check-label" for="target-8">Máy trạm / Workstation</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-9"
+                                                           value="CAO-CAP-SANG-TRONG">
+                                                    <label class="form-check-label" for="target-9">Cao cấp - Sang trọng</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-10"
+                                                           value="2-TRONG-1-XOAY-GAP">
+                                                    <label class="form-check-label" for="target-10">2 trong 1 / Xoay gập</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="target-11"
+                                                           value="HOC-TAP-CO-BAN">
+                                                    <label class="form-check-label" for="target-11">Học tập cơ bản</label>
                                                 </div>
 
 

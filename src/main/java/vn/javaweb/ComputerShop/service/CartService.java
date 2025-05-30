@@ -48,6 +48,7 @@ public class CartService {
                 cartDetailRpDTO.setId(cartDetailOfUser.getId());
                 cartDetailRpDTO.setPrice(cartDetailOfUser.getPrice());
                 cartDetailRpDTO.setQuantity(cartDetailOfUser.getQuantity());
+                cartDetailRpDTO.setStockQuantity(cartDetailOfUser.getQuantity());
                 TotalPrice = TotalPrice + (cartDetailOfUser.getPrice() * cartDetailOfUser.getQuantity());
 
                 cartDetailRpDTO.setProductId(cartDetailOfUser.getProduct().getId());

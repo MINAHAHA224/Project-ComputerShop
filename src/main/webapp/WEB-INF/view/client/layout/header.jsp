@@ -59,7 +59,7 @@
                                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle header-action-icon" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         <c:choose>
                                             <c:when test="${not empty sessionScope.informationDTO.avatar}">
-                                                <img src="<c:url value='/images/avatar/${sessionScope.informationDTO.avatar}'/>" alt="Avatar" width="30" height="30" class="rounded-circle me-2">
+                                                <img src="<c:url value='/images/profile/${sessionScope.informationDTO.avatar}'/>" alt="Avatar" width="30" height="30" class="rounded-circle me-2">
                                             </c:when>
                                             <c:otherwise>
                                                 <i class="fas fa-user-circle fa-lg me-2"></i>
@@ -69,8 +69,13 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
                                         <li><h6 class="dropdown-header">Chào, <c:out value="${sessionScope.informationDTO.fullName}" /></h6></li>
+                                        <c:if test="${ sessionScope.informationDTO.role eq 'ADMIN'}">
+                                            <li><a class="dropdown-item" href="<c:url value='/admin'/>"><i class="fas fa-server me-2"></i>Quản lý hệ thống</a></li>
+                                        </c:if>
+
                                         <li><a class="dropdown-item" href="<c:url value='/account-management'/>"><i class="fas fa-cog me-2"></i>Quản lý tài khoản</a></li>
                                         <li><a class="dropdown-item" href="<c:url value='/order-history'/>"><i class="fas fa-history me-2"></i>Lịch sử mua hàng</a></li>
+
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form method="post" action="<c:url value='/logout'/>" class="d-inline">

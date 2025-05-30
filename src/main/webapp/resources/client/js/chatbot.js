@@ -1,10 +1,8 @@
 $(document).ready(function () {
-  // --- CHATBOT CONFIGURATION ---
-  const CHATBOT_API_BASE_URL = 'http://8.34.124.122:20610'; // URL API Chatbot của bạn
-  const CHATBOT_API_KEY = 'P39vB66xz1SFKwzKImvvYb3FMkzhUp26'; // !!!! THAY BẰNG API KEY THỰC TẾ CỦA BẠN !!!!
-  let CURRENT_CHATBOT_NAME = null; // Sẽ được lấy từ API hoặc bạn có thể đặt tên mặc định nếu biết
+  const CHATBOT_API_BASE_URL = 'http://8.34.124.122:20610';
+  const CHATBOT_API_KEY = 'P39vB66xz1SFKwzKImvvYb3FMkzhUp26';
+  let CURRENT_CHATBOT_NAME = null;
 
-  // --- CHATBOT UI ELEMENTS ---
   const $widgetContainer = $('#chatbot-widget-container');
   const $toggleButton = $('#chatbot-toggle-button');
   const $chatWindow = $('#chatbot-window');
@@ -16,11 +14,8 @@ $(document).ready(function () {
   const $minimizeButton = $('#chatbot-minimize-button');
   const $chatbotBadge = $('.chatbot-badge');
 
-  let chatHistory = []; // Lưu lịch sử chat cho session hiện tại (tối đa 5 cặp)
+  let chatHistory = [];
 
-  // --- CORE FUNCTIONS ---
-
-  // Function để lấy tên chatbot từ API key (API số 18)
   function initializeChatbot() {
     if (!CHATBOT_API_KEY || CHATBOT_API_KEY === 'YOUR_ACTUAL_CHATBOT_API_KEY') {
       console.error(
@@ -30,26 +25,15 @@ $(document).ready(function () {
       return;
     }
 
-    // Nếu bạn biết chắc chắn tên collection/chatbot cho API key này, có thể gán trực tiếp:
-    // CURRENT_CHATBOT_NAME = "tên_chatbot_của_bạn";
-    // console.log("Sử dụng chatbot (cấu hình cứng):", CURRENT_CHATBOT_NAME);
-    // $inputField.prop('disabled', false).attr('placeholder', 'Nhập câu hỏi của bạn...');
-    // $sendButton.prop('disabled', false);
-    // return; // Bỏ qua gọi API nếu đã biết tên
-
-    // Hoặc gọi API để lấy tên chatbot
     fetch(`${CHATBOT_API_BASE_URL}/typesense/get_chatbot_info`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Nếu API này yêu cầu CSRF từ phía Spring Boot (khá hiếm cho API gateway kiểu này), thêm vào:
-        // '<security:csrfHeaderName/>': '<security:csrfToken/>'
       },
       body: JSON.stringify({ api_key: CHATBOT_API_KEY }),
     })
       .then((response) => {
         if (!response.ok) {
-          // Thử parse lỗi JSON từ server API
           return response
             .json()
             .then((err) => {
@@ -59,7 +43,6 @@ $(document).ready(function () {
               );
             })
             .catch(() => {
-              // Nếu parse lỗi cũng thất bại (phản hồi không phải JSON)
               throw new Error(
                 `Không thể lấy thông tin chatbot. Status: ${response.status}`
               );
@@ -75,8 +58,6 @@ $(document).ready(function () {
             .prop('disabled', false)
             .attr('placeholder', 'Nhập câu hỏi của bạn...');
           $sendButton.prop('disabled', false);
-          // Bạn có thể cập nhật tiêu đề chatbox ở đây nếu muốn
-          // $('.chatbot-title').text(CURRENT_CHATBOT_NAME + " Assistant");
         } else {
           throw new Error('API không trả về tên chatbot.');
         }
@@ -90,7 +71,7 @@ $(document).ready(function () {
   function disableChatbot(message) {
     $inputField.prop('disabled', true).attr('placeholder', message);
     $sendButton.prop('disabled', true);
-    appendMessage(message, 'bot-error'); // Thêm class mới để style lỗi
+    appendMessage(message, 'bot-error');
   }
 
   function toggleChatbot() {
@@ -104,7 +85,6 @@ $(document).ready(function () {
         CHATBOT_API_KEY &&
         CHATBOT_API_KEY !== 'YOUR_ACTUAL_CHATBOT_API_KEY'
       ) {
-        // Chỉ gọi nếu chưa có tên và API key đã được set (tránh gọi lại mỗi lần mở)
         initializeChatbot();
       } else if (
         !CHATBOT_API_KEY ||
@@ -125,7 +105,7 @@ $(document).ready(function () {
     const avatarSrc =
       sender === 'user'
         ? $('body').data('user-avatar-url') ||
-          '<c:url value="/images/avatar/default-avatar.png"/>' // Lấy avatar từ data attribute của body
+          '<c:url value="/images/avatar/default-avatar.png"/>'
         : '<c:url value="/client/img/favicon_3tlap.png"/>';
     const senderName =
       sender === 'user'
@@ -134,20 +114,12 @@ $(document).ready(function () {
 
     let sourcesHtml = '';
     if (sources && sources.length > 0) {
-      sourcesHtml = '<div class="sources mt-2 pt-2 border-top">'; // Thêm border-top
+      sourcesHtml = '<div class="sources mt-2 pt-2 border-top">';
       sourcesHtml += '<strong>Nguồn tham khảo:</strong>';
       sources.forEach((source) => {
-        // Giả sử API sources trả về document_id là ID sản phẩm hoặc tên file có thể dùng để link
-        // Cần điều chỉnh logic tạo link cho phù hợp
-        let sourceLink = '#'; // Link mặc định
+        let sourceLink = '#';
         if (source.file_name) {
-          // Ưu tiên file_name nếu có
-          // Giả sử bạn có trang hiển thị tài liệu dựa trên tên file
-          // sourceLink = `<c:url value='/documents/${encodeURIComponent(CURRENT_CHATBOT_NAME)}/${encodeURIComponent(source.file_name)}'/>`;
-          // Hoặc nếu document_id là ID sản phẩm thì link tới sản phẩm
-          // sourceLink = `<c:url value='/product/${source.document_id}'/>`;
         } else if (source.document_id) {
-          // sourceLink = `<c:url value='/product/${source.document_id}'/>`;
         }
         sourcesHtml += `<a href="${sourceLink}" target="_blank" class="d-block text-truncate" title="File: ${
           source.file_name || 'N/A'
@@ -185,11 +157,10 @@ $(document).ready(function () {
         `;
     if (isLoading) {
       if ($('#typing-indicator').length === 0) {
-        // Chỉ thêm nếu chưa có
         $messagesContainer.append(messageHtml);
       }
     } else {
-      $('#typing-indicator').remove(); // Xóa typing indicator trước khi thêm tin nhắn mới
+      $('#typing-indicator').remove();
       $messagesContainer.append(messageHtml);
     }
     $messagesContainer.scrollTop($messagesContainer[0].scrollHeight);
@@ -197,7 +168,7 @@ $(document).ready(function () {
 
   function showTypingIndicator(show) {
     if (show) {
-      appendMessage('', 'bot', [], true); // true để báo là typing indicator
+      appendMessage('', 'bot', [], true);
     } else {
       $('#typing-indicator').remove();
     }
@@ -208,7 +179,6 @@ $(document).ready(function () {
     if (questions && questions.length > 0) {
       questions.slice(0, 3).forEach((qText) => {
         if (qText && qText.trim() !== '') {
-          // Đảm bảo câu hỏi không rỗng
           const $btn = $(
             '<button type="button" class="suggested-question-btn"></button>'
           ).text(qText);
@@ -225,24 +195,22 @@ $(document).ready(function () {
 
   function fetchSuggestedQuestions(previousResponse, context, originalQuery) {
     if (!CURRENT_CHATBOT_NAME) {
-      // Cần tên chatbot để gọi API này
       console.warn('Không có tên chatbot để gợi ý câu hỏi.');
       return;
     }
-    showTypingIndicator(true); // Cho biết đang xử lý
+    showTypingIndicator(true);
     fetch(`${CHATBOT_API_BASE_URL}/typesense/suggest_questions`, {
-      // API số 16
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        api_key: CHATBOT_API_KEY, // API này có thể không cần api_key trong header, kiểm tra lại docs
+        api_key: CHATBOT_API_KEY,
       },
       body: JSON.stringify({
         previous_response: previousResponse,
         context: context,
         chatbot_name: CURRENT_CHATBOT_NAME,
         query: originalQuery,
-        cloud_call: false, // Theo tài liệu
+        cloud_call: false,
       }),
     })
       .then((response) => response.json())
@@ -269,29 +237,20 @@ $(document).ready(function () {
       );
       return;
     }
-    // if (!CURRENT_CHATBOT_NAME) { // Được kiểm tra ở initializeChatbot
-    //     appendMessage("Không thể xác định chatbot. Vui lòng thử lại sau.", "bot-error");
-    //     return;
-    // }
 
     appendMessage(userQuery, 'user');
-    $inputField.val('').trigger('input'); // Xóa input và trigger input để reset chiều cao
+    $inputField.val('').trigger('input');
     $suggestedQuestionsContainer.empty();
     showTypingIndicator(true);
 
     const requestBody = {
       query: userQuery,
       chat_history: chatHistory,
-      top_k: 3, // Số sources
-      prompt_from_user: 'Trả lời như một chuyên viên tư vấn laptop tại 3TLap.', // Tùy chỉnh prompt
+      top_k: 3,
+      prompt_from_user: 'Trả lời như một chuyên viên tư vấn laptop tại 3TLap.',
     };
 
-    // API endpoint (chọn 1 trong 2, hoặc làm logic chọn dựa trên điều kiện nào đó)
-    const queryEndpoint = `${CHATBOT_API_BASE_URL}/typesense/query`; // API 13
-    // const queryEndpoint = `${CHATBOT_API_BASE_URL}/typesense/query_ver_thai`; // API 14 (nếu muốn dùng phiên bản này)
-    // if (queryEndpoint.includes('query_ver_thai')) {
-    //     requestBody.cloud_call = true; // Ví dụ thêm trường cho API ver_thai
-    // }
+    const queryEndpoint = `${CHATBOT_API_BASE_URL}/typesense/query`;
 
     fetch(queryEndpoint, {
       method: 'POST',
@@ -340,10 +299,9 @@ $(document).ready(function () {
       });
   }
 
-  // --- EVENT LISTENERS ---
   $toggleButton.on('click', toggleChatbot);
   $closeButtonWidget.on('click', toggleChatbot);
-  $minimizeButton.on('click', toggleChatbot); // Hiện tại minimize cũng là close
+  $minimizeButton.on('click', toggleChatbot);
 
   $sendButton.on('click', sendMessage);
   $inputField.on('keypress', function (e) {
@@ -353,20 +311,10 @@ $(document).ready(function () {
     }
   });
   $inputField.on('input', function () {
-    // Tự động điều chỉnh chiều cao textarea
     this.style.height = 'auto';
     this.style.height = this.scrollHeight + 'px';
   });
 
-  // --- INITIALIZATION ---
-  // Lấy thông tin user từ thẻ body (nếu có, để hiển thị avatar người dùng)
-  // Bạn cần thêm data-attributes vào thẻ <body> trong layout chính của client
-  // ví dụ: <body data-user-avatar-url="<c:url value='/images/avatar/${sessionScope.informationDTO.avatar}'/>" data-user-fullname="<c:out value='${sessionScope.informationDTO.fullName}'/>">
-
-  // Khởi tạo chatbot khi trang tải, hoặc khi người dùng mở widget lần đầu
-  // initializeChatbot(); // Gọi ở đây nếu muốn khởi tạo ngay, hoặc trong toggleChatbot
-  // Tạm thời, chúng ta sẽ gọi khi người dùng mở chat lần đầu để tránh gọi API không cần thiết
-  // và để người dùng cung cấp API key trước
   if (!CHATBOT_API_KEY || CHATBOT_API_KEY === 'YOUR_ACTUAL_CHATBOT_API_KEY') {
     disableChatbot('Trợ lý ảo chưa được cấu hình (thiếu API Key).');
   }

@@ -18,6 +18,6 @@ public class CartDetailRpDTO {
     private Double price;
     // total price
 
-
+    private Long stockQuantity;
 
 }
