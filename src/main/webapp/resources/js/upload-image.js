@@ -1,3 +1,5 @@
+
+// src/main/webapp/resources/js/upload-image.js
 function displaySelectedImage(event, elementId) {
     const selectedImage = document.getElementById(elementId);
     const fileInput = event.target;

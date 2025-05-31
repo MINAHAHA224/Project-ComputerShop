@@ -1,173 +1,146 @@
+
+<!-- JSP Path: src/main/webapp/WEB-INF/view/admin/product/productExcelPreview.jsp -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Xem Trước - Danh Sách Sản Phẩm</title>
-    <%-- Link CSS của bạn, có thể dùng lại CSS của trang list hoặc admin --%>
-    <link href="<c:url value='/css/styles.css'/>" rel="stylesheet" /> <%-- Điều chỉnh path --%>
+    <title>Xem Trước - Báo Cáo Sản Phẩm - 3TLap Admin</title>
+    <jsp:include page="../layout/common_admin_head.jsp"/>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .preview-page-container { padding: 20px; }
-        .preview-container {
-            border: 1px solid #ccc;
-            padding: 20px;
-            background-color: #f9f9f9;
-            margin-top: 20px;
-        }
-        .report-title { font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px; }
-        .report-info { margin-bottom: 15px; }
-        .report-info span { font-weight: bold; }
-        .preview-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-        .preview-table th, .preview-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
-            vertical-align: middle;
-        }
-        .preview-table th {
-            background-color: #e9e9e9;
-            font-weight: bold;
-            text-align: center;
-        }
-        .preview-table td.number { text-align: right; }
+        .preview-page-container { padding: 1.5rem; }
+        .report-header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--current-admin-divider-color); }
+        .report-title-preview { font-family: var(--admin-font-primary); font-size: 1.5rem; font-weight: 600; color: var(--current-admin-text-primary); margin-bottom: 0; }
+        .report-info-preview { margin-bottom: 1rem; font-size: 0.85rem; color: var(--current-admin-text-secondary); }
+        .report-info-preview strong { color: var(--current-admin-text-primary); font-weight: 500;}
+        
+        .filter-section-preview { margin-bottom: 1.5rem; padding: 1rem 1.5rem; background-color: var(--current-admin-card-bg); border: 1px solid var(--current-admin-border-color); border-radius: 0.375rem; box-shadow: 0 0.1rem 0.3rem var(--current-admin-shadow-color-soft); }
+        .filter-section-preview .form-label { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .filter-section-preview .form-select { font-size: 0.9rem; padding: 0.4rem 0.8rem; background-color: var(--current-admin-bg); color: var(--current-admin-text-primary); border-color: var(--current-admin-border-color); }
+        .filter-section-preview .btn-filter { font-size: 0.9rem; padding: 0.4rem 1rem; }
+
+        .preview-table-container { background-color: var(--current-admin-card-bg); padding: 1.5rem; border-radius: 0.375rem; box-shadow: 0 0.1rem 0.3rem var(--current-admin-shadow-color-soft); border: 1px solid var(--current-admin-border-color); }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+        .preview-table th, .preview-table td { border: 1px solid var(--current-admin-divider-color); padding: 0.6rem; text-align: left; vertical-align: middle; color: var(--current-admin-text-secondary); }
+        .preview-table th { background-color: rgba(0,0,0,0.05); font-weight: 500; color: var(--current-admin-text-primary); text-align: center; }
+        body.theme-dark .preview-table th { background-color: rgba(255,255,255,0.04); }
         .preview-table td.center { text-align: center; }
+        .preview-table td.number { text-align: right; }
 
-        .action-buttons { margin-top: 20px; text-align: right; }
-        .btn {
-            padding: 10px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .btn-download { background-color: #28a745; }
-        .btn-back { background-color: #6c757d; }
-        .btn-filter { background-color: #007bff; }
-
-        .filter-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .filter-section label { margin-right: 10px; font-weight: bold; }
-        .filter-section select, .filter-section button {
-            padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; margin-right: 10px;
-        }
+        .action-buttons-preview { margin-top: 1.5rem; text-align: right; }
+        .action-buttons-preview .btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; margin-left: 0.5rem;}
+        .action-buttons-preview .btn-success { background-color: var(--admin-success-accent) !important; border-color: var(--admin-success-accent) !important; }
     </style>
 </head>
-<body>
-<jsp:include page="../layout/header.jsp" /> <%-- Header của admin --%>
-<div id="layoutSidenav">
-    <jsp:include page="../layout/navbar.jsp" /> <%-- Navbar của admin --%>
-    <div id="layoutSidenav_content">
-        <main>
-            <div class="container-fluid px-4 preview-page-container">
-                <h1 class="mt-4">Xem Trước Báo Cáo Sản Phẩm</h1>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a href="<c:url value='/admin'/>">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Xem Trước</li>
-                </ol>
+<body class="sb-nav-fixed admin-body-3tlap">
+    <c:set var="breadcrumbCurrentPage" value="Xem Trước Báo Cáo Sản Phẩm" scope="request"/>
+    <jsp:include page="../layout/header.jsp"/>
 
-                <div class="filter-section">
-                    <form action="<c:url value='/admin/product/report/excel/preview'/>" method="get">
-                        <label for="factoryFilter">Lọc theo hãng:</label>
-                        <select name="factory" id="factoryFilter">
-                            <option value="">-- Tất cả các hãng --</option>
-                            <c:forEach var="fac" items="${factories}">
-                                <option value="${fac}" ${fac == selectedFactory ? 'selected' : ''}>
-                                    <c:out value="${fac}"/>
-                                </option>
-                            </c:forEach>
-                        </select>
-                        <button type="submit" class="btn btn-filter">Lọc</button>
-                    </form>
-                </div>
+    <div id="layoutSidenav">
+        <jsp:include page="../layout/navbar.jsp"/>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4 preview-page-container">
+                    <div class="report-header-controls">
+                        <h1 class="report-title-preview">Báo Cáo Danh Sách Sản Phẩm</h1>
+                        <a href="<c:url value='/admin/product'/>" class="btn btn-sm btn-outline-secondary admin-btn-action">
+                            <i class="fas fa-arrow-left me-1"></i> Quay Lại DS Sản Phẩm
+                        </a>
+                    </div>
+                     <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item"><a href="<c:url value='/admin'/>">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="<c:url value='/admin/product'/>">Sản Phẩm</a></li>
+                        <li class="breadcrumb-item active">Xem Trước Báo Cáo</li>
+                    </ol>
 
-                <div class="preview-container">
-                    <div class="report-title">
-                        DANH SÁCH SẢN PHẨM
-                        <c:if test="${not empty selectedFactory}">
-                            (HÃNG: <c:out value="${selectedFactory}"/>)
+                    <div class="filter-section-preview">
+                        <form action="<c:url value='/admin/product/report/excel/preview'/>" method="get" class="row gx-3 gy-2 align-items-end">
+                            <div class="col-md-4">
+                                <label for="factoryFilterPreview" class="form-label">Lọc theo hãng:</label>
+                                <select name="factory" id="factoryFilterPreview" class="form-select">
+                                    <option value="">-- Tất cả các hãng --</option>
+                                    <c:forEach var="fac" items="${factories}">
+                                        <option value="${fac}" ${fac == selectedFactory ? 'selected' : ''}>
+                                            <c:out value="${fac}"/>
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="col-md-auto">
+                                <button type="submit" class="btn btn-primary btn-filter"><i class="fas fa-filter me-1"></i> Lọc</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="preview-table-container">
+                        <div class="report-info-preview">
+                            <p class="mb-1"><strong>Người lập báo cáo:</strong> 
+                                <c:choose>
+                                    <c:when test="${not empty currentUser.fullName}"><c:out value="${currentUser.fullName}"/></c:when>
+                                    <c:otherwise><c:out value="${currentUser.email}"/></c:otherwise>
+                                </c:choose>
+                            </p>
+                            <p class="mb-0"><strong>Ngày in:</strong> <c:out value="${printDate}"/></p>
+                            <c:if test="${not empty selectedFactory}">
+                                <p class="mb-0 mt-1"><strong>Lọc theo hãng:</strong> <span class="badge bg-info text-dark">${selectedFactory}</span></p>
+                            </c:if>
+                        </div>
+
+                        <c:if test="${not empty message}">
+                            <div class="alert alert-info alert-profile my-3">${message}</div>
+                        </c:if>
+                        <c:if test="${not empty error_message}">
+                            <div class="alert alert-danger alert-profile my-3">${error_message}</div>
+                        </c:if>
+
+                        <c:if test="${not empty listProducts}">
+                            <div class="table-responsive">
+                                <table class="table preview-table">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Mã SP</th>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th class="text-end">Đơn Giá</th>
+                                            <th>Mô Tả Ngắn</th>
+                                            <th class="text-end">Tồn Kho</th>
+                                            <th class="text-end">Đã Bán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="product" items="${listProducts}" varStatus="status">
+                                            <tr>
+                                                <td class="center">${status.count}</td>
+                                                <td class="center">${product.id}</td>
+                                                <td><c:out value="${product.name}"/></td>
+                                                <td class="number"><fmt:formatNumber value="${product.price}" type="number" pattern="#,##0"/> đ</td>
+                                                <td><c:out value="${product.shortDesc}"/></td>
+                                                <td class="number">${product.quantity}</td>
+                                                <td class="number">${product.sold}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="action-buttons-preview">
+                                <a href="<c:url value='/admin/product/report/excel/download'><c:if test='${not empty selectedFactory}'><c:param name='factory' value='${selectedFactory}'/></c:if></c:url>" 
+                                   class="btn btn-success">
+                                   <i class="fas fa-file-excel me-1"></i> Tải xuống Excel
+                                </a>
+                            </div>
+                        </c:if>
+                         <c:if test="${empty listProducts && empty message && empty error_message}">
+                            <div class="alert alert-warning alert-profile my-3">Không có dữ liệu sản phẩm để hiển thị với bộ lọc hiện tại.</div>
                         </c:if>
                     </div>
-
-                    <div class="report-info">
-                        Người lập báo cáo: <span><c:out value="${currentUser.fullName}"/></span> <%-- Giả sử LoginDto có getUsername() --%>
-                    </div>
-                    <div class="report-info">
-                        Ngày in: <span><c:out value="${printDate}"/></span>
-                    </div>
-
-                    <c:if test="${not empty message}">
-                        <p style="color:blue; text-align: center;">${message}</p>
-                    </c:if>
-                    <c:if test="${not empty error_message}">
-                        <p style="color:red; text-align: center;">${error_message}</p>
-                    </c:if>
-
-                    <c:if test="${not empty listProducts}">
-                        <table class="preview-table">
-                            <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Mã SP</th>
-                                <th>Tên Sản Phẩm</th>
-                                <th>Đơn Giá</th>
-                                <th>Mô Tả Ngắn</th>
-                                <th>Tồn Kho</th>
-                                <th>Đã Bán</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="product" items="${listProducts}" varStatus="status">
-                                <tr>
-                                    <td class="center">${status.count}</td>
-                                    <td class="center">${product.id}</td>
-                                    <td><c:out value="${product.name}"/></td>
-                                    <td class="number">
-                                        <fmt:formatNumber value="${product.price}" type="number" pattern="#,##0"/> VNĐ
-                                    </td>
-                                    <td><c:out value="${product.shortDesc}"/></td>
-                                    <td class="number">${product.quantity}</td>
-                                    <td class="number">${product.sold}</td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
-
-                        <div class="action-buttons">
-                            <a href="<c:url value='/admin/product'/>" class="btn btn-back">Quay Lại Danh Sách</a> <%-- Hoặc /admin/dashboard --%>
-                            <a href="<c:url value='/admin/product/report/excel/download'>
-                                             <c:if test='${not empty selectedFactory}'><c:param name='factory' value='${selectedFactory}'/></c:if>
-                                         </c:url>" class="btn btn-download">Tải xuống Excel</a>
-                        </div>
-                    </c:if>
-                    <c:if test="${empty listProducts && empty message && empty error_message}">
-                        <p style="text-align: center;">Không có dữ liệu sản phẩm để hiển thị.</p>
-                        <div class="action-buttons">
-                            <a href="<c:url value='/admin/product'/>" class="btn btn-back">Quay Lại Danh Sách</a>
-                        </div>
-                    </c:if>
                 </div>
-            </div>
-        </main>
-        <jsp:include page="../layout/footer.jsp" /> <%-- Footer của admin --%>
+            </main>
+            <jsp:include page="../layout/footer.jsp"/>
+        </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script src="<c:url value='/js/scripts.js'/>"></script> <%-- Điều chỉnh path --%>
+    <jsp:include page="../layout/common_admin_scripts.jsp"/>
 </body>
 </html>

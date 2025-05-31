@@ -1,3 +1,5 @@
+<%--src/main/webapp/WEB-INF/view/client/layout/common_scripts.jsp--%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
 prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -13,3 +15,4 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- Template Main Javascript File -->
 <script src="<c:url value='/client/js/main.js'/>"></script>
+<script src="<c:url value='/client/js/chatbot.js'/>"></script>

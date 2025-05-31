@@ -1,3 +1,5 @@
+// src/main/webapp/resources/client/js/productDetail/productDetail.js
+
 (function ($) {
   'use strict';
 
