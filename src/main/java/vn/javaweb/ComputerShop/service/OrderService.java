@@ -139,7 +139,9 @@ public class OrderService {
     public ResponseBodyDTO handleCompleteOrderPaymentOnline(MomoRpDTO momoRpDTO) {
         ResponseBodyDTO response = new ResponseBodyDTO();
 
-        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(Long.valueOf(momoRpDTO.getOrderId()));
+        String prefixOrderId = momoRpDTO.getOrderId().substring(0, 2);
+        Long orderId = Long.valueOf(prefixOrderId);
+        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(orderId);
         if (momoRpDTO.getResultCode() != 1006) {
 
             UserEntity user = orderEntity.getUser();

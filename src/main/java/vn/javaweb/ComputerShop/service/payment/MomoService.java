@@ -1,5 +1,6 @@
 package vn.javaweb.ComputerShop.service.payment;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -44,8 +45,9 @@ public class MomoService {
     public MomoRpDTO generateMomoPayment(OrderEntity order) { // Hoặc String nếu chỉ trả về payUrl
 
         String requestId = UUID.randomUUID().toString();
-        String orderId = String.valueOf(order.getId()); // ID đơn hàng của bạn
-        Long amount = (long) order.getTotalPrice();
+        String orderId = String.valueOf(order.getId()) + UUID.randomUUID(); // ID đơn hàng của bạn
+//        (long) order.getTotalPrice()
+        Long amount =  10000L ;
         String orderInfo = "Thanh toan don hang LaptopShop " + orderId;
         String extraData = ""; // Để trống nếu không có, hoặc là một JSON string hợp lệ
         // Ví dụ: "{\"customerName\":\"Nguyen Van A\", \"loyaltyCode\":\"123\"}"

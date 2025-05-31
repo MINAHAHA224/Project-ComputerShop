@@ -49,9 +49,20 @@ public class ClientPageController {
     }
 
 
+    @GetMapping(value = "/")
+    public String getHome() {
+        return "redirect:/home";
+    }
+
+
+    @GetMapping(value = "/thanks")
+    public String getThankYouPage (Model model){
+
+        return "client/cart/thanks";
+    }
+
     @GetMapping("/accessDeny")
     public String getAccessDenyPage() {
-
         return "client/auth/deny";
     }
 
