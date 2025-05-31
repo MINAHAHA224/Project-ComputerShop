@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.javaweb.ComputerShop.component.MailerComponent;
+import vn.javaweb.ComputerShop.component.MessageService;
 import vn.javaweb.ComputerShop.domain.dto.request.InfoOrderRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.CartDetailRpDTO;
@@ -17,10 +18,7 @@ import vn.javaweb.ComputerShop.domain.enums.OrderStatus;
 import vn.javaweb.ComputerShop.domain.enums.PaymentStatus;
 import vn.javaweb.ComputerShop.repository.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class CartService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final MailerComponent mailerComponent;
+    private final MessageService messageService;
 
     public CartRpDTO handleGetCartDetail (HttpSession session){
         CartRpDTO result = new CartRpDTO();
@@ -67,7 +66,7 @@ public class CartService {
     }
 
     @Transactional
-    public ResponseBodyDTO handleDeleteProductInCart(Long id , HttpSession session){
+    public ResponseBodyDTO handleDeleteProductInCart(Long id , HttpSession session , Locale locale){
         String email = (String) session.getAttribute("email");
         InformationDTO informationDTO = (InformationDTO)session.getAttribute("informationDTO") ;
         ResponseBodyDTO response = new ResponseBodyDTO();
@@ -97,12 +96,12 @@ public class CartService {
         session.setAttribute("informationDTO" ,informationDTO );
 
         response.setStatus(200);
-        response.setMessage("Xóa sản phẩm thành công");
+        response.setMessage(messageService.getLocalizedMessage("cart.product.delete.success" , locale));
         return response;
     }
 
 
-    public ResponseBodyDTO handleAddOneProductToCart(HttpSession session, Long productId) {
+    public ResponseBodyDTO handleAddOneProductToCart(HttpSession session, Long productId , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
         InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO");
         int sumCurrent = informationDTO.getSum();
@@ -135,7 +134,7 @@ public class CartService {
 
 
             response.setStatus(200);
-            response.setMessage("Thêm sản phẩm vào giỏ hàng thành công");
+            response.setMessage(messageService.getLocalizedMessage("cart.product.add.success" , locale));
             return response;
 
         } else {
@@ -160,7 +159,7 @@ public class CartService {
                 // set lai session
                 session.setAttribute("informationDTO" , informationDTO);
                 response.setStatus(200);
-                response.setMessage("Thêm sản phẩm vào giỏ hàng thành công");
+                response.setMessage(messageService.getLocalizedMessage("cart.product.add.success" , locale));
                 return response;
             } else {
                 // con san pham no co roi thi thoi khong + 1 hien thi len gio hang cho du no add x10 so luon cua san pham do
@@ -172,7 +171,7 @@ public class CartService {
 
 
                 response.setStatus(200);
-                response.setMessage("Đã thêm số lượng sản phẩm");
+                response.setMessage(messageService.getLocalizedMessage("cart.product.add.quantityUpdated" , locale));
                 return response;
             }
         }
@@ -217,7 +216,7 @@ public class CartService {
 
 
     @Transactional
-    public ResponseBodyDTO handleCreateOrder(HttpSession session , InfoOrderRqDTO infoOrderRqDTO) {
+    public ResponseBodyDTO handleCreateOrder(HttpSession session , InfoOrderRqDTO infoOrderRqDTO , Locale locale) {
 
         ResponseBodyDTO response = new ResponseBodyDTO();
         String email = (String) session.getAttribute("email");
@@ -281,7 +280,7 @@ public class CartService {
 
 
                 response.setStatus(200);
-                response.setMessage("Đặt hàng thành công! Hóa đơn đã được gửi tới email của bạn.");
+                response.setMessage(messageService.getLocalizedMessage("order.create.success" , locale));
                 response.setData(orderNew);
                 if ( infoOrderRqDTO.getPaymentMethod().equals("COD")){
                     mailerComponent.sendInvoiceEmail(orderNew);
@@ -295,7 +294,7 @@ public class CartService {
 
     }
 
-    public ResponseBodyDTO handleAddProductDetailToCart( Long productId, HttpSession session, Long quantity) {
+    public ResponseBodyDTO handleAddProductDetailToCart(Long productId, HttpSession session, Long quantity , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
         InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO");
         int sumCurrent = informationDTO.getSum();
@@ -328,7 +327,7 @@ public class CartService {
 
 
             response.setStatus(200);
-            response.setMessage("Thêm sản phẩm vào giỏ hàng thành công");
+            response.setMessage(messageService.getLocalizedMessage("cart.product.delete.success" , locale));
             return response;
 
         } else {
@@ -353,7 +352,7 @@ public class CartService {
                 // set lai session
                 session.setAttribute("informationDTO" , informationDTO);
                 response.setStatus(200);
-                response.setMessage("Thêm sản phẩm vào giỏ hàng thành công");
+                response.setMessage(messageService.getLocalizedMessage("cart.product.add.success" , locale));
                 return response;
             } else {
                 // con san pham no co roi thi thoi khong + 1 hien thi len gio hang cho du no add x10 so luon cua san pham do
@@ -365,7 +364,7 @@ public class CartService {
 
 
                 response.setStatus(200);
-                response.setMessage("Đã thêm số lượng sản phẩm");
+                response.setMessage(messageService.getLocalizedMessage("cart.product.add.quantityUpdated" , locale));
                 return response;
             }
         }

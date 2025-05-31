@@ -47,7 +47,7 @@ public class AccessController {
     }
 
     @PostMapping("/login")
-    public String postLogin(Model model, HttpSession session
+    public String postLogin(Model model, HttpSession session , Locale locale
             , @Valid @ModelAttribute("loginDTO") LoginDTO loginDTO
             ,  RedirectAttributes redirectAttributes
             , BindingResult bindingResult) {
@@ -61,7 +61,7 @@ public class AccessController {
 
             return "client/auth/login";
         }
-        ResponseBodyDTO handleLogin = this.userService.handleLogin(loginDTO, session);
+        ResponseBodyDTO handleLogin = this.userService.handleLogin(loginDTO, session , locale);
         if (handleLogin.getStatus() == 200 && ((InformationDTO) handleLogin.getData()).getRole().equals("ADMIN")) {
             session.setAttribute("informationDTO", handleLogin.getData());
             model.addAttribute("messageSuccess" ,handleLogin.getMessage());
@@ -71,7 +71,7 @@ public class AccessController {
             redirectAttributes.addFlashAttribute("messageSuccess" ,handleLogin.getMessage());
             return "redirect:/home";
         } else {
-            model.addAttribute("messageError", handleLogin.getMessage());
+            redirectAttributes.addFlashAttribute("messageError", handleLogin.getMessage());
             return "redirect:/login";
 
         }
@@ -87,7 +87,7 @@ public class AccessController {
 
     @PostMapping("/register")
     public String postRegister(Model model, @Valid @ModelAttribute("registerDTO") RegisterDTO registerDTO,
-                               BindingResult bindingResult) {
+                               BindingResult bindingResult , Locale locale) {
         List<FieldError> errors = bindingResult.getFieldErrors();
         for (FieldError error : errors) {
             System.out.println("--ER " + error.getField() + " - " + error.getDefaultMessage());
@@ -97,7 +97,7 @@ public class AccessController {
             return "client/auth/register";
         }
 
-        ResponseBodyDTO handleRegister = this.userService.handleRegister(registerDTO);
+        ResponseBodyDTO handleRegister = this.userService.handleRegister(registerDTO , locale);
         if (handleRegister.getStatus() == 200) {
             model.addAttribute("messageSuccess", handleRegister.getMessage());
             return "redirect:/login";
@@ -134,8 +134,8 @@ public class AccessController {
     @PostMapping("/forgotPassword")
     public String postForgotPassword(Model model
             , @RequestParam(name = "email", required = true) String email
-            , RedirectAttributes redirectAttributes) {
-        ResponseBodyDTO sendOTPtoEmail = this.userService.handleSendOTP(email.trim());
+            , RedirectAttributes redirectAttributes , Locale locale) {
+        ResponseBodyDTO sendOTPtoEmail = this.userService.handleSendOTP(email.trim() , locale);
         if (sendOTPtoEmail.getStatus() != 200) {
             model.addAttribute("messageError", sendOTPtoEmail.getMessage());
             model.addAttribute("email", email.trim());
@@ -164,9 +164,9 @@ public class AccessController {
             , @RequestParam(name = "email", required = true) String email
             , @RequestParam(name = "OTP", required = false) String OTP
             , @RequestParam(name = "action", required = true) String action
-            , RedirectAttributes redirectAttributes) {
+            , RedirectAttributes redirectAttributes , Locale locale) {
         if (action.equals("VERIFY-OTP")) {
-            ResponseBodyDTO sendOTPtoEmail = this.userService.handleVerifyOTP(email, OTP);
+            ResponseBodyDTO sendOTPtoEmail = this.userService.handleVerifyOTP(email, OTP , locale);
             if (sendOTPtoEmail.getStatus() != 200) {
                 model.addAttribute("email", email);
                 model.addAttribute("messageError", sendOTPtoEmail.getMessage());
@@ -180,7 +180,7 @@ public class AccessController {
             }
         }
         if (action.equals("RESENT-OTP")) {
-            ResponseBodyDTO resentOtp = this.userService.handleSendOTP(email.trim());
+            ResponseBodyDTO resentOtp = this.userService.handleSendOTP(email.trim() , locale);
             model.addAttribute("email", email.trim());
             model.addAttribute("messageSuccess", resentOtp.getMessage());
             return "client/auth/verifyOTP";
@@ -203,7 +203,7 @@ public class AccessController {
 //    }
 
     @PostMapping(value = "/resetPassword")
-    public String postResetPassword(Model model
+    public String postResetPassword(Model model , Locale locale
             , @Valid @ModelAttribute("resetPasswordDTO") ResetPasswordDTO resetPasswordDTO
             , BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
@@ -217,7 +217,7 @@ public class AccessController {
             return "client/auth/resetPassword";
         }
 
-        ResponseBodyDTO handleResetPass = this.userService.handleResetPassword(resetPasswordDTO);
+        ResponseBodyDTO handleResetPass = this.userService.handleResetPassword(resetPasswordDTO , locale);
         if (handleResetPass.getStatus() == 200) {
             redirectAttributes.addFlashAttribute("messageSuccess", handleResetPass.getMessage());
             return "redirect:/login";

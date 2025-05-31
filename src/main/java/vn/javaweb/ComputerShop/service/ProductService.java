@@ -1,9 +1,6 @@
 package vn.javaweb.ComputerShop.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import vn.javaweb.ComputerShop.component.MessageService;
 import vn.javaweb.ComputerShop.domain.dto.request.*;
 import vn.javaweb.ComputerShop.domain.dto.response.*;
 import vn.javaweb.ComputerShop.domain.entity.CartDetailEntity;
@@ -35,6 +33,7 @@ public class ProductService {
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final UploadService uploadService;
+    private final MessageService messageService;
 
 
 
@@ -265,7 +264,7 @@ public class ProductService {
 //    }
 
     @Transactional
-    public ResponseBodyDTO handleConfirmCheckout(CartDetailsListDTO cartDetailsListDTO) {
+    public ResponseBodyDTO handleConfirmCheckout(CartDetailsListDTO cartDetailsListDTO , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
         List<CartDetailOneRqDTO> listResult = cartDetailsListDTO.getCartDetailOne();
         for  ( CartDetailOneRqDTO result : listResult){
@@ -274,7 +273,7 @@ public class ProductService {
             this.cartDetailRepository.save(cartDetail);
         }
         response.setStatus(200);
-        response.setMessage("Xác nhận thanh toán thành công");
+        response.setMessage(messageService.getLocalizedMessage("cart.checkout.confirm.success" , locale));
         return response;
     }
 

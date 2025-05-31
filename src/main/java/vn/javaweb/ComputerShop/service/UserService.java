@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import vn.javaweb.ComputerShop.component.GoogleOauth2;
 import vn.javaweb.ComputerShop.component.MailerComponent;
+import vn.javaweb.ComputerShop.component.MessageService;
 import vn.javaweb.ComputerShop.domain.dto.request.*;
 import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.UserDetailDTO;
@@ -47,6 +48,7 @@ public class UserService {
     private final UserOtpRepository userOtpRepository;
     private final MailerComponent mailerComponent;
     private final UploadService uploadService;
+    private final MessageService messageService;
 
 
 
@@ -54,7 +56,7 @@ public class UserService {
     private final GoogleOauth2 googleOauth2;
 
 
-    public ResponseBodyDTO handleLogin(LoginDTO loginDTO, HttpSession session) {
+    public ResponseBodyDTO handleLogin(LoginDTO loginDTO,HttpSession session , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
         String email = loginDTO.getEmail().trim();
         String password = loginDTO.getPassword().trim();
@@ -64,13 +66,13 @@ public class UserService {
             user = emailOnDb.get();
         } else {
             response.setStatus(500);
-            response.setMessage("Email chưa được đăng kí");
+            response.setMessage(messageService.getLocalizedMessage("user.login.error.emailNotRegistered"  ,locale ));
             return response;
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             response.setStatus(500);
-            response.setMessage("Mật khẩu không đúng");
+            response.setMessage(messageService.getLocalizedMessage("user.login.error.incorrectPassword"  ,locale ));
             return response;
         }
 
@@ -118,9 +120,9 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseBodyDTO handleRegister(RegisterDTO registerDTO) {
+    public ResponseBodyDTO handleRegister(RegisterDTO registerDTO , Locale  locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
-        response.setMessage("Đăng ký không thành công");
+        response.setMessage(messageService.getLocalizedMessage("user.register.error.generic",locale));
         try {
             UserEntity user = new UserEntity();
             user.setFullName(registerDTO.getFirstName() + " " + registerDTO.getLastName());
@@ -133,7 +135,7 @@ public class UserService {
 
             this.userRepository.save(user);
             response.setStatus(200);
-            response.setMessage("Đăng ký thành công");
+            response.setMessage(messageService.getLocalizedMessage("user.register.success",locale));
             return response;
         } catch (RuntimeException e) {
             System.out.println("--ER handleRegister " + e.getMessage());
@@ -248,10 +250,10 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseBodyDTO handleSendOTP(String email) {
+    public ResponseBodyDTO handleSendOTP(String email , Locale locale) {
         ResponseBodyDTO responseBodyDTO = new ResponseBodyDTO();
         responseBodyDTO.setStatus(500);
-        responseBodyDTO.setMessage("Đã có lỗi xảy ra trong quá trình xử lý mã OTP");
+        responseBodyDTO.setMessage(messageService.getLocalizedMessage("user.otp.error.genericProcessing",locale));
 
         // first  check email exist
 
@@ -281,7 +283,7 @@ public class UserService {
                     this.userOtpRepository.save(userOtp);
                     // set body
                     responseBodyDTO.setStatus(200);
-                    responseBodyDTO.setMessage("Mã OTP đã được gửi vào email của bạn ");
+                    responseBodyDTO.setMessage(messageService.getLocalizedMessage("user.otp.success.sentToEmail",locale));
                     return responseBodyDTO;
                 } catch (RuntimeException e) {
                     System.out.println("--ER handleSendOTP " + e.getMessage());
@@ -290,23 +292,23 @@ public class UserService {
                 }
             } else {
                 responseBodyDTO.setStatus(500);
-                responseBodyDTO.setMessage("Email đã được gửi mã OTP đang còn hiệu lực");
+                responseBodyDTO.setMessage(messageService.getLocalizedMessage("user.otp.error.alreadySentActive",locale));
                 return responseBodyDTO;
             }
 
         } else {
             responseBodyDTO.setStatus(500);
-            responseBodyDTO.setMessage("Email chưa được đăng ký  hoặc đã có lỗi xảy ra");
+            responseBodyDTO.setMessage(messageService.getLocalizedMessage("user.otp.error.emailNotRegisteredOrError",locale));
             return responseBodyDTO;
         }
     }
 
     @Transactional
-    public ResponseBodyDTO handleVerifyOTP(String email, String OTP) {
+    public ResponseBodyDTO handleVerifyOTP(String email, String OTP , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
 
         response.setStatus(500);
-        response.setMessage("Đã có lỗi xảy ra trong quá trình xử lý mã OTP");
+        response.setMessage(messageService.getLocalizedMessage("user.otp.error.genericProcessing",locale));
         Optional<UserEntity> user = this.userRepository.findUserEntityByEmail(email);
         if (user.isPresent()) {
             // check first email have OTP not yet Expired if has userOtpEnough = have data  otherwise has no data
@@ -330,7 +332,7 @@ public class UserService {
                         userOtpEnough.setUsed(true);
                         this.userOtpRepository.save(userOtpEnough);
                         response.setStatus(200);
-                        response.setMessage("Xác thực mã OTP thành công");
+                        response.setMessage(messageService.getLocalizedMessage("user.otp.success.verified",locale));
                         return response;
                     } catch (RuntimeException e) {
                         System.out.println("-- ER update userOtp " + e.getMessage());
@@ -340,7 +342,7 @@ public class UserService {
 
                 } else {
                     response.setStatus(500);
-                    response.setMessage("Mã OTP không đúng hoặc  đã được sử dụng");
+                    response.setMessage(messageService.getLocalizedMessage("user.otp.error.invalidOrExpiredOrUsed",locale));
                     return response;
                 }
 
@@ -348,12 +350,12 @@ public class UserService {
                 //  otherwise has no data , announcement error
             } else {
                 response.setStatus(500);
-                response.setMessage("Mã OTP đã hết hạn");
+                response.setMessage(messageService.getLocalizedMessage("user.otp.error.invalidOrExpiredOrUsed",locale));
 
             }
         } else {
             response.setStatus(500);
-            response.setMessage("Email không tồn tại");
+            response.setMessage(messageService.getLocalizedMessage("user.otp.error.emailNotFound",locale));
             return response;
         }
 
@@ -364,16 +366,16 @@ public class UserService {
 
 
     @Transactional
-    public ResponseBodyDTO handleResetPassword(ResetPasswordDTO resetPasswordDTO) {
+    public ResponseBodyDTO handleResetPassword(ResetPasswordDTO resetPasswordDTO , Locale locale) {
         ResponseBodyDTO response = new ResponseBodyDTO();
-        response.setMessage("Có lỗi xảy ra khi đặt lại mật khẩu");
+        response.setMessage(messageService.getLocalizedMessage("user.resetPassword.error.generic",locale));
         try {
             UserEntity user = this.userRepository.findUserEntityByEmail(resetPasswordDTO.getEmail().trim()).get();
             user.setPassword(passwordEncoder.encode(resetPasswordDTO.getPassword()));
             this.userRepository.save(user);
 
             response.setStatus(200);
-            response.setMessage("Đặt lại mật khẩu thành công");
+            response.setMessage(messageService.getLocalizedMessage("user.resetPassword.success",locale));
             return response;
         } catch (RuntimeException e) {
             System.out.println("--ER " + e.getMessage());
@@ -541,7 +543,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseBodyDTO handleUpdateProfile ( HttpSession  session , UserProfileUpdateDTO userProfileUpdateDTO){
+    public ResponseBodyDTO handleUpdateProfile ( HttpSession  session , UserProfileUpdateDTO userProfileUpdateDTO , Locale locale){
         ResponseBodyDTO response = new ResponseBodyDTO();
         InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO");
         UserEntity  user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
@@ -550,7 +552,7 @@ public class UserService {
         if (user.getPhone() == null ||!user.getPhone().equals(userProfileUpdateDTO.getPhone() )){
             if ( checkPhone){
                 response.setStatus(500);
-                response.setMessage("Số điện thoại đã được sử dụng ");
+                response.setMessage(messageService.getLocalizedMessage("user.profile.update.error.phoneExists",locale));
                 return response;
             }
             user.setPhone(userProfileUpdateDTO.getPhone().trim());
@@ -561,21 +563,21 @@ public class UserService {
         this.userRepository.save(user);
 
         response.setStatus(200);
-        response.setMessage("Cập nhật thông tin cá nhân thành công");
+        response.setMessage(messageService.getLocalizedMessage("user.profile.update.success",locale));
 
 
         return response;
     }
 
     @Transactional
-    public ResponseBodyDTO  handleUpdateAvatar ( HttpSession session , MultipartFile avatarFile ){
+    public ResponseBodyDTO  handleUpdateAvatar ( HttpSession session , MultipartFile avatarFile , Locale locale ){
         InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
         UserEntity user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
         ResponseBodyDTO response = new ResponseBodyDTO();
 
         if (Objects.equals(avatarFile.getOriginalFilename(), "") || avatarFile.isEmpty()){
             response.setStatus(500);
-            response.setMessage("Ảnh cập nhật bị trống");
+            response.setMessage(messageService.getLocalizedMessage("avatar.update.error.emptyFile",locale));
             return response;
 
         }
@@ -588,19 +590,19 @@ public class UserService {
         session.setAttribute("informationDTO" ,informationDTO );
 
         response.setStatus(200);
-        response.setMessage("Ảnh đại diện được cập nhật thành công");
+        response.setMessage(messageService.getLocalizedMessage("user.avatar.update.success",locale));
         return response;
     }
 
     @Transactional
-    public ResponseBodyDTO handleUpdatePassword (HttpSession session , ChangePasswordDTO changePasswordDTO){
+    public ResponseBodyDTO handleUpdatePassword (HttpSession session , ChangePasswordDTO changePasswordDTO , Locale locale){
         InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
         UserEntity user = this.userRepository.findUserEntityByEmail(informationDTO.getEmail()).get();
         ResponseBodyDTO response = new ResponseBodyDTO();
         boolean checkPass = this.passwordEncoder.matches(changePasswordDTO.getCurrentPassword().trim() , user.getPassword());
         if (!checkPass){
             response.setStatus(500);
-            response.setMessage("Mật khẩu nhập lại không đúng");
+            response.setMessage(messageService.getLocalizedMessage("user.password.update.error.newPasswordMismatch",locale));
             return response;
         }
 
@@ -609,7 +611,7 @@ public class UserService {
         this.userRepository.save(user);
 
         response.setStatus(200);
-        response.setMessage("Cập nhật mật khẩu thành công");
+        response.setMessage(messageService.getLocalizedMessage("user.password.update.success",locale));
 
         return response;
     }

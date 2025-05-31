@@ -1,6 +1,7 @@
 package vn.javaweb.ComputerShop.controller.client;
 
 import java.util.List;
+import java.util.Locale;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,8 @@ public class ClientProductController {
 
     @PostMapping("/add-product-to-cart/{id}")
     public String addProductToCart(@PathVariable("id") Long productId
-            , HttpSession session , Model model ) {
-        ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session , productId);
+            , HttpSession session , Model model , Locale locale ) {
+        ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session , productId , locale);
         model.addAttribute("messageSuccess" ,responseBodyDTO.getMessage() );
         return "redirect:/home";
     }
@@ -66,9 +67,9 @@ public class ClientProductController {
 
     @GetMapping("/delete-cart-product/{id}")
     public String deleteCartDetail(@PathVariable("id") Long id,
-                                   HttpSession session ,
+                                   HttpSession session ,Locale locale,
                                    Model model , RedirectAttributes redirectAttributes) {
-        ResponseBodyDTO result = this.cartService.handleDeleteProductInCart(id , session);
+        ResponseBodyDTO result = this.cartService.handleDeleteProductInCart(id , session,locale);
         if ( result.getStatus() == 200 ){
             redirectAttributes.addFlashAttribute("messageSuccess" ,result.getMessage() );
         }else {
@@ -79,9 +80,9 @@ public class ClientProductController {
     }
 
     @PostMapping("/confirm-checkout")
-    public String postConfirmCheckout(Model  model
+    public String postConfirmCheckout(Model  model , Locale locale
             ,@ModelAttribute("cartDetailsListDTO") CartDetailsListDTO cartDetailsListDTO , HttpSession session) {
-        ResponseBodyDTO response=  this.productService.handleConfirmCheckout(cartDetailsListDTO);
+        ResponseBodyDTO response=  this.productService.handleConfirmCheckout(cartDetailsListDTO , locale);
         model.addAttribute("messageSuccess" , response.getMessage());
 
         CheckoutRpDTO result = this.cartService.handleShowDataAfterCheckout(session);
@@ -94,7 +95,7 @@ public class ClientProductController {
 
 
     @PostMapping("/place-order")
-    public String handlePlaceOrder(HttpSession session, Model model,
+    public String handlePlaceOrder(HttpSession session, Model model,Locale locale,
                                    @Valid @ModelAttribute("infoOrderRqDTO")InfoOrderRqDTO infoOrderRqDTO ,
                                    BindingResult bindingResult , RedirectAttributes redirectAttributes) {
 
@@ -113,7 +114,7 @@ public class ClientProductController {
 
 
         String methodPayment = infoOrderRqDTO.getPaymentMethod();
-        ResponseBodyDTO orderCreationResponse = this.cartService.handleCreateOrder(session, infoOrderRqDTO);
+        ResponseBodyDTO orderCreationResponse = this.cartService.handleCreateOrder(session, infoOrderRqDTO,locale);
 
         if (orderCreationResponse.getStatus() != 200 || orderCreationResponse.getData() == null || !(orderCreationResponse.getData() instanceof OrderEntity)) {
             model.addAttribute("messageError", "Không thể tạo đơn hàng. " + orderCreationResponse.getMessage());
@@ -173,10 +174,10 @@ public class ClientProductController {
     @PostMapping("/add-product-from-view-detail")
     public String handleAddProductFromViewDetail(
             @RequestParam("id") Long id,
-            @RequestParam("quantity") Long quantity,
+            @RequestParam("quantity") Long quantity,Locale locale,
             HttpSession session , Model model , RedirectAttributes redirectAttributes) {
 
-      ResponseBodyDTO response =  this.cartService.handleAddProductDetailToCart( id, session, quantity);
+      ResponseBodyDTO response =  this.cartService.handleAddProductDetailToCart( id, session, quantity ,locale);
         redirectAttributes.addFlashAttribute("messageSuccess" , response.getMessage());
         return "redirect:/cart";
     }
