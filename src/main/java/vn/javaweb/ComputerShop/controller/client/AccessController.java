@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import vn.javaweb.ComputerShop.component.MessageService;
 import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.LoginDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.RegisterDTO;
@@ -26,6 +27,7 @@ import vn.javaweb.ComputerShop.domain.dto.response.ResponseBodyDTO;
 import vn.javaweb.ComputerShop.domain.entity.UserEntity;
 import vn.javaweb.ComputerShop.service.ProductService;
 import vn.javaweb.ComputerShop.service.UserService;
+import java.util.Locale;
 
 import java.util.List;
 import java.util.Map;
@@ -35,9 +37,10 @@ import java.util.Map;
 public class AccessController {
     private final UserService userService;
     private final ProductService productService;
+    private final MessageService messageService;
 
     @GetMapping("/login")
-    public String getLogin(Model model) {
+    public String getLogin(Model model , Locale locale) {
         LoginDTO loginDTO = new LoginDTO();
         model.addAttribute("loginDTO", loginDTO);
         return "client/auth/login";
@@ -46,7 +49,7 @@ public class AccessController {
     @PostMapping("/login")
     public String postLogin(Model model, HttpSession session
             , @Valid @ModelAttribute("loginDTO") LoginDTO loginDTO
-
+            ,  RedirectAttributes redirectAttributes
             , BindingResult bindingResult) {
 
 
@@ -65,11 +68,11 @@ public class AccessController {
             return "redirect:/admin";
         } else if (handleLogin.getStatus() == 200) {
             session.setAttribute("informationDTO", handleLogin.getData());
-            model.addAttribute("messageSuccess" ,handleLogin.getMessage());
-            return "client/homepage/show";
+            redirectAttributes.addFlashAttribute("messageSuccess" ,handleLogin.getMessage());
+            return "redirect:/home";
         } else {
             model.addAttribute("messageError", handleLogin.getMessage());
-            return "client/auth/login";
+            return "redirect:/login";
 
         }
     }

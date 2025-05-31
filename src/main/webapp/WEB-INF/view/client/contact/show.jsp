@@ -1,18 +1,20 @@
+<%--src/main/webapp/WEB-INF/view/client/contact/show.jsp--%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
 prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="vi">
   <head>
     <meta charset="utf-8" />
-    <title>Liên Hệ - 3TLap | Cửa Hàng Laptop Uy Tín</title>
+    <title><spring:message code="page.contact.meta.title"/></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta
-      content="Liên hệ 3TLap, địa chỉ cửa hàng laptop, số điện thoại laptopshop, email hỗ trợ"
+      content="<spring:message code="page.contact.meta.keywords"/>"
       name="keywords"
     />
     <meta
-      content="Thông tin liên hệ chính thức của 3TLap. Chúng tôi luôn sẵn sàng hỗ trợ bạn!"
+      content="<spring:message code="page.contact.meta.description"/>"
       name="description"
     />
 
@@ -96,12 +98,12 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <jsp:include page="../layout/header.jsp" />
 
     <div class="container-fluid page-header contact-page-header py-5">
-      <h1 class="text-center text-white display-5">Liên Hệ Với Chúng Tôi</h1>
+      <h1 class="text-center text-white display-5"><spring:message code="page.contact.header.title"/></h1>
       <ol class="breadcrumb justify-content-center mb-0">
         <li class="breadcrumb-item">
-          <a href="<c:url value='/'/>">Trang Chủ</a>
+          <a href="<c:url value='/'/>"><spring:message code="page.contact.breadcrumb.home"/></a>
         </li>
-        <li class="breadcrumb-item active text-white">Liên Hệ</li>
+        <li class="breadcrumb-item active text-white"><spring:message code="page.contact.breadcrumb.contact"/></li>
       </ol>
     </div>
 
@@ -110,11 +112,9 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <div class="row g-5">
           <div class="col-lg-7">
             <div class="contact-form-section">
-              <h3>Gửi Lời Nhắn Cho 3TLap</h3>
+              <h3><spring:message code="page.contact.form.title"/></h3>
               <p class="mb-4 text-center text-muted">
-                Chúng tôi luôn sẵn lòng lắng nghe ý kiến và giải đáp thắc mắc
-                của bạn. Vui lòng điền thông tin vào form dưới đây hoặc liên hệ
-                trực tiếp qua các kênh khác.
+                <spring:message code="page.contact.form.description"/>
               </p>
               <%-- FORM LIÊN HỆ (PLACEHOLDER) - Sẽ cần backend để xử lý... không
               cần cũng được hè hè --%>
@@ -127,10 +127,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                         type="text"
                         class="form-control"
                         id="name"
-                        placeholder="Họ và Tên"
+                        placeholder="<spring:message code="page.contact.form.placeholder.name"/>"
                         required
                       />
-                      <label for="name">Họ và Tên</label>
+                      <label for="name"><spring:message code="page.contact.form.label.name"/></label>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -139,10 +139,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                         type="email"
                         class="form-control"
                         id="email"
-                        placeholder="Địa chỉ Email"
+                        placeholder="<spring:message code="page.contact.form.placeholder.email"/>"
                         required
                       />
-                      <label for="email">Địa chỉ Email</label>
+                      <label for="email"><spring:message code="page.contact.form.label.email"/></label>
                     </div>
                   </div>
                   <div class="col-12">
@@ -151,22 +151,22 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                         type="text"
                         class="form-control"
                         id="subject"
-                        placeholder="Tiêu đề"
+                        placeholder="<spring:message code="page.contact.form.placeholder.subject"/>"
                         required
                       />
-                      <label for="subject">Tiêu đề</label>
+                      <label for="subject"><spring:message code="page.contact.form.label.subject"/></label>
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="form-floating">
                       <textarea
                         class="form-control"
-                        placeholder="Nội dung lời nhắn"
+                        placeholder="<spring:message code="page.contact.form.placeholder.message"/>"
                         id="message"
                         style="height: 150px"
                         required
                       ></textarea>
-                      <label for="message">Nội dung lời nhắn</label>
+                      <label for="message"><spring:message code="page.contact.form.label.message"/></label>
                     </div>
                   </div>
                   <div class="col-12 text-center">
@@ -174,7 +174,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                       class="btn btn-primary rounded-pill py-3 px-5"
                       type="submit"
                     >
-                      Gửi Lời Nhắn
+                      <spring:message code="page.contact.form.button.submit"/>
                     </button>
                   </div>
                 </div>
@@ -183,19 +183,19 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
 
           <div class="col-lg-5">
-            <h4 class="mb-4">Thông Tin Liên Hệ</h4>
+            <h4 class="mb-4"><spring:message code="page.contact.info.title"/></h4>
             <div class="contact-info-item">
               <div class="contact-info-icon">
                 <i class="fas fa-map-marker-alt"></i>
               </div>
               <div class="contact-info-content">
-                <h5>Địa Chỉ Cửa Hàng</h5>
-                <p>123 Đường ABC, Phường XYZ, Quận 1, TP. Hồ Chí Minh</p>
+                <h5><spring:message code="page.contact.info.address.title"/></h5>
+                <p><spring:message code="page.contact.info.address.line1"/></p>
                 <p>
                   <a
                     href="https://maps.google.com/?q=123+Đường+ABC,+Phường+XYZ,+Quận+1,+TP.+Hồ+Chí+Minh"
                     target="_blank"
-                    >Xem bản đồ</a
+                    ><spring:message code="page.contact.info.address.mapLink"/></a
                   >
                 </p>
               </div>
@@ -205,11 +205,11 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                 <i class="fas fa-envelope"></i>
               </div>
               <div class="contact-info-content">
-                <h5>Email Hỗ Trợ</h5>
+                <h5><spring:message code="page.contact.info.email.title"/></h5>
                 <p><a href="mailto:support@3tlap.vn">support@3tlap.vn</a></p>
                 <p>
-                  <a href="mailto:sales@3tlap.vn">sales@3tlap.vn</a> (Kinh
-                  doanh)
+                  <a href="mailto:sales@3tlap.vn">
+                    <spring:message code="page.contact.info.email.sales"/></a>
                 </p>
               </div>
             </div>
@@ -218,11 +218,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                 <i class="fas fa-phone-alt"></i>
               </div>
               <div class="contact-info-content">
-                <h5>Hotline Tư Vấn</h5>
-                <p><a href="tel:+8419008888">(+84) 1900 8888</a> (Tổng đài)</p>
+                <h5><spring:message code="page.contact.info.phone.title"/></h5>
+                <p><a href="tel:+8419008888"><spring:message code="page.contact.info.phone.general"/></a> </p>
                 <p>
-                  <a href="tel:+84901234567">(+84) 901 234 567</a> (Hỗ trợ kỹ
-                  thuật)
+                  <a href="tel:+84901234567"><spring:message code="page.contact.info.phone.techSupport"/></a>
                 </p>
               </div>
             </div>
@@ -231,9 +230,9 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                 <i class="fas fa-clock"></i>
               </div>
               <div class="contact-info-content">
-                <h5>Giờ Làm Việc</h5>
-                <p>Thứ 2 - Thứ 7: 08:00 - 21:00</p>
-                <p>Chủ Nhật: 09:00 - 18:00</p>
+                <h5><spring:message code="page.contact.info.hours.title"/></h5>
+                <p><spring:message code="page.contact.info.hours.weekdays"/></p>
+                <p><spring:message code="page.contact.info.hours.sunday"/></p>
               </div>
             </div>
           </div>
