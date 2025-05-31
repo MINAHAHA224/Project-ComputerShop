@@ -194,7 +194,9 @@
                                                            data-cart-detail-id="${cartDetail.id}"
                                                            data-cart-detail-price="${cartDetail.price}"
                                                            data-cart-detail-index="${status.index}"
+
                                                              data-cart-detail-stock="${cartDetail.stockQuantity}"
+
                                                            readonly>
                                                     <form:hidden path="cartDetailOne[${status.index}].quantity" value="${cartDetail.quantity}" cssClass="actual-quantity-input"/>
 
@@ -321,11 +323,11 @@
             const $input = $(this).closest('.quantity-input-group').find('.quantity-display');
             let currentValue = parseInt($input.val());
             // Nếu cần kiểm tra số lượng tồn kho, có thể bỏ comment dòng dưới
-            // const stockQuantity = parseInt($input.data('cart-detail-stock'));
-            // if (currentValue < stockQuantity) {
-            //     updateCartItem($input, currentValue + 1);
-            // }
-            updateCartItem($input, currentValue + 1);
+            const stockQuantity = parseInt($input.data('cart-detail-stock'));
+            if (currentValue < stockQuantity) {
+                updateCartItem($input, currentValue + 1);
+            }
+           
         });
 
         updateCartTotals();

@@ -38,16 +38,13 @@ public class ClientPageController {
     private final UserService userService;
     private final UploadService uploadService;
 
-
     @GetMapping("/home")
     public String getHomepage(Model model) {
         List<ProductRpDTO> listResult = this.productService.getAllProductView();
         model.addAttribute("products", listResult);
 
-
         return "client/homepage/show";
     }
-
 
     @GetMapping("/accessDeny")
     public String getAccessDenyPage() {
@@ -74,6 +71,16 @@ public class ClientPageController {
         return "client/product/show";
     }
 
+    @GetMapping("/contact-us")
+    public String getContactPage(Model model) {
+        return "client/contact/show";
+    }
+
+    @GetMapping("/about-us")
+    public String getAboutUsPage(Model model) {
+
+        return "client/about/show";
+    }
 
     @GetMapping(value = "/account-management")
     public String getAccountPage(Model model, HttpSession session) {
@@ -84,49 +91,46 @@ public class ClientPageController {
     }
 
     @PostMapping(value = "/user/profile/update-info")
-    public String postUpdateProfile (Model model ,
-                                     RedirectAttributes redirectAttributes ,
-                                     @Valid @ModelAttribute("userProfileUpdateDTO") UserProfileUpdateDTO userProfileUpdateDTO ,
-                                     BindingResult bindingResult , HttpSession session){
+    public String postUpdateProfile(Model model,
+            RedirectAttributes redirectAttributes,
+            @Valid @ModelAttribute("userProfileUpdateDTO") UserProfileUpdateDTO userProfileUpdateDTO,
+            BindingResult bindingResult, HttpSession session) {
 
-
-
-            if (bindingResult.hasErrors() ){
-                List<FieldError> errors = bindingResult.getFieldErrors();
-                for (FieldError error : errors ){
-                    System.out.println("-- ER  " + error.getField() + " - " + error.getDefaultMessage());
-                }
-
-                model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
-                model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
-                return "client/profile/index";
+        if (bindingResult.hasErrors()) {
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors) {
+                System.out.println("-- ER  " + error.getField() + " - " + error.getDefaultMessage());
             }
 
-        ResponseBodyDTO updateProfile = this.userService.handleUpdateProfile (session , userProfileUpdateDTO);
-
-        if (updateProfile.getStatus() != 200 ){
             model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
             model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
-            model.addAttribute("messageError" , updateProfile.getMessage());
             return "client/profile/index";
-        }else {
+        }
 
-            redirectAttributes.addFlashAttribute("messageSuccess" ,updateProfile.getMessage());
+        ResponseBodyDTO updateProfile = this.userService.handleUpdateProfile(session, userProfileUpdateDTO);
+
+        if (updateProfile.getStatus() != 200) {
+            model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
+            model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
+            model.addAttribute("messageError", updateProfile.getMessage());
+            return "client/profile/index";
+        } else {
+
+            redirectAttributes.addFlashAttribute("messageSuccess", updateProfile.getMessage());
             return "redirect:/account-management";
         }
 
     }
 
-
     @PostMapping(value = "/user/profile/change-password")
-    public String postUpdateChangePass (Model model , RedirectAttributes redirectAttributes,
-                                        @Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO ,
-                                        BindingResult bindingResult , HttpSession session){
-        if ( bindingResult.hasErrors()){
+    public String postUpdateChangePass(Model model, RedirectAttributes redirectAttributes,
+            @Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO,
+            BindingResult bindingResult, HttpSession session) {
+        if (bindingResult.hasErrors()) {
 
             List<FieldError> errors = bindingResult.getFieldErrors();
 
-            for (FieldError error : errors ){
+            for (FieldError error : errors) {
                 System.out.println("-- ER  " + error.getField() + " - " + error.getDefaultMessage());
             }
             UserProfileUpdateDTO userProfileUpdateDTO = this.userService.handleGetDataUserToProfile(session);
@@ -136,53 +140,41 @@ public class ClientPageController {
             return "client/profile/index";
         }
 
-        if (!changePasswordDTO.getNewPassword().trim().equals(changePasswordDTO.getConfirmNewPassword().trim()) ){
+        if (!changePasswordDTO.getNewPassword().trim().equals(changePasswordDTO.getConfirmNewPassword().trim())) {
             UserProfileUpdateDTO userProfileUpdateDTO = this.userService.handleGetDataUserToProfile(session);
             model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
             model.addAttribute("changePasswordDTO", changePasswordDTO);
-            model.addAttribute("messageError" , "Mật khẩu nhập lai không khớp");
+            model.addAttribute("messageError", "Mật khẩu nhập lai không khớp");
             return "client/profile/index";
         }
 
-        ResponseBodyDTO updatePassword  = this.userService.handleUpdatePassword (session , changePasswordDTO);
-        if (updatePassword.getStatus() != 200 ){
-            redirectAttributes.addFlashAttribute("messageError" , updatePassword.getMessage());
+        ResponseBodyDTO updatePassword = this.userService.handleUpdatePassword(session, changePasswordDTO);
+        if (updatePassword.getStatus() != 200) {
+            redirectAttributes.addFlashAttribute("messageError", updatePassword.getMessage());
             return "redirect:/account-management";
 
-        }else {
-            redirectAttributes.addFlashAttribute("messageSuccess" , updatePassword.getMessage());
+        } else {
+            redirectAttributes.addFlashAttribute("messageSuccess", updatePassword.getMessage());
             return "redirect:/account-management";
         }
-
 
     }
 
     @PostMapping(value = "/user/profile/update-avatar")
-    public String postUpdateAvatar (Model model ,
-                                   HttpSession session , RedirectAttributes redirectAttributes,
-                                   @RequestParam("avatarFile") MultipartFile avatarFile){
+    public String postUpdateAvatar(Model model,
+            HttpSession session, RedirectAttributes redirectAttributes,
+            @RequestParam("avatarFile") MultipartFile avatarFile) {
 
-       ResponseBodyDTO updateAvatar = this.userService.handleUpdateAvatar ( session , avatarFile);
+        ResponseBodyDTO updateAvatar = this.userService.handleUpdateAvatar(session, avatarFile);
 
-       if (updateAvatar.getStatus() != 200 ){
-           redirectAttributes.addFlashAttribute("messageError" , updateAvatar.getMessage());
-           return "redirect:/account-management";
+        if (updateAvatar.getStatus() != 200) {
+            redirectAttributes.addFlashAttribute("messageError", updateAvatar.getMessage());
+            return "redirect:/account-management";
 
-       }else {
-           redirectAttributes.addFlashAttribute("messageSuccess" , updateAvatar.getMessage());
-           return "redirect:/account-management";
-       }
+        } else {
+            redirectAttributes.addFlashAttribute("messageSuccess", updateAvatar.getMessage());
+            return "redirect:/account-management";
+        }
     }
 
-
-
-    @GetMapping(value = "/contact-us")
-    public String getContactPage ( Model model) {
-        return "client/contact/show";
-    }
-
-    @GetMapping(value = "/about-us")
-    public String getAboutUsPage ( Model model) {
-        return "client/about/show";
-    }
 }

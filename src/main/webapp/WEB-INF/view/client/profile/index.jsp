@@ -156,7 +156,7 @@
     <div class="container-fluid page-header profile-page-header py-5">
         <h1 class="text-center text-white display-5">Tài Khoản Của Tôi</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="<c:url value='/'/>">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a href="<c:url value='/home'/>">Trang Chủ</a></li>
             <li class="breadcrumb-item active text-white">Quản Lý Tài Khoản</li>
         </ol>
     </div>

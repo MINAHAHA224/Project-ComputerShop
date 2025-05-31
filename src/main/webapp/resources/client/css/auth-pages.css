@@ -1,4 +1,45 @@
-body.auth-page-bg { background-color: var(--light-bg-color); }
+html, body.auth-page-bg { 
+  background-color: var(--light-bg-color);  
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: transparent !important; 
+}
+
+.auth-video-background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -99!important;
+}
+
+#authVideoBackground {
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
+.auth-video-background-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -50;
+}
+
 
 .auth-wrapper {
   min-height: 100vh;
@@ -6,6 +47,9 @@ body.auth-page-bg { background-color: var(--light-bg-color); }
   align-items: center;
   justify-content: center;
   padding: 2rem 0.75rem;
+  position: relative; 
+  z-index: 1; 
+
 }
 
 .auth-card {
@@ -13,13 +57,14 @@ body.auth-page-bg { background-color: var(--light-bg-color); }
   max-width: 480px;
   border: none;
   border-radius: 0.75rem;
-  box-shadow: 0 0.75rem 1.75rem rgba(0,0,0,.08);
+  background-color: rgba(255, 255, 255, 0.9); 
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
   overflow: hidden;
 }
 
 .auth-card .card-header {
-  background-color: var(--primary-color);
-  color: var(--white-color);
+  color: var(--primary-color);
+  background-color: var(--white-color);
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
   padding: 1.25rem 1.5rem;
@@ -31,7 +76,7 @@ body.auth-page-bg { background-color: var(--light-bg-color); }
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 1.8rem;
-  color: var(--white-color);
+  color: var(--primary-color);
   text-decoration: none;
   display: block;
   margin-bottom: 0.25rem;
@@ -43,7 +88,7 @@ body.auth-page-bg { background-color: var(--light-bg-color); }
 .auth-card .card-header h3 {
   font-family: var(--font-primary);
   font-weight: 500;
-  color: var(--white-color);
+  color: var(--primary-color);
   font-size: 1.25rem;
   margin-top: 0.25rem;
   margin-bottom: 0;

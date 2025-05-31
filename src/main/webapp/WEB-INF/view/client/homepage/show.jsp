@@ -15,7 +15,11 @@
 
 </head>
 
-<body>
+
+<body data-user-avatar-url="<c:url value='/client/img/${not empty sessionScope.informationDTO.avatar ? sessionScope.informationDTO.avatar : "avatar.jpg"}'/>"
+      data-user-fullname="<c:out value='${sessionScope.informationDTO.fullName}'/>">
+
+
 
     <!-- Spinner Start -->
     <div id="spinner"
@@ -99,6 +103,9 @@
     <%-- Có thể thêm các section khác ở đây: CTA, Testimonials, Blog posts,... --%>
 
     <%-- Footer --%>
+
+    <jsp:include page="../layout/chatbot_widget.jsp" />
+
     <jsp:include page="../layout/footer.jsp" />
 
     <!-- Back to Top -->

@@ -1,128 +1,155 @@
+
+<!-- JSP Path: admin/user/update.jsp -->
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-            <!DOCTYPE html>
-            <html lang="en">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="" />
-                <meta name="author" content="" />
-                <title>User</title>
-                <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-            </head>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Cập Nhật Người Dùng - ${userUpdateRqDTO.fullName} - 3TLap Admin</title>
+    <jsp:include page="../layout/common_admin_head.jsp"/>
+    <style>
+        .avatar-preview-container { display: flex; justify-content: center; margin-bottom: 1rem; }
+        .avatar-preview-update {
+            width: 150px; height: 150px; object-fit: cover; border-radius: 50%;
+            border: 3px solid var(--current-admin-border-color);
+            background-color: var(--current-admin-card-bg);
+        }
+    </style>
+</head>
 
-            <body class="sb-nav-fixed">
-                <jsp:include page="../layout/header.jsp" />
-                <div id="layoutSidenav">
-                    <jsp:include page="../layout/navbar.jsp" />
-                    <div id="layoutSidenav_content">
-                        <main>
-                            <div class="container  mt-5">
+<body class="sb-nav-fixed admin-body-3tlap">
+    <c:set var="breadcrumbCurrentPage" value="Cập Nhật Người Dùng" scope="request"/>
+    <jsp:include page="../layout/header.jsp"/>
+
+    <div id="layoutSidenav">
+        <jsp:include page="../layout/navbar.jsp"/>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="main-content-title mt-4">Cập Nhật Thông Tin Người Dùng</h1>
+                     <div class="d-flex justify-content-between align-items-center mb-3">
+                        <ol class="breadcrumb mb-0 bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="<c:url value='/admin'/>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<c:url value='/admin/user'/>">Người Dùng</a></li>
+                            <li class="breadcrumb-item active">Cập Nhật: <c:out value="${userUpdateRqDTO.fullName}"/></li>
+                        </ol>
+                         <a href="<c:url value='/admin/user'/>" class="btn btn-outline-secondary btn-sm admin-btn-action">
+                            <i class="fas fa-arrow-left me-1"></i> Quay Lại Danh Sách
+                        </a>
+                    </div>
+
+                    <c:if test="${not empty messageSuccess}">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${messageSuccess}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty messageError}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${messageError}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+
+                    <div class="card admin-form-card">
+                        <div class="card-header">
+                            <h4>Chỉnh Sửa Thông Tin: <c:out value="${userUpdateRqDTO.fullName}"/> (ID: ${userUpdateRqDTO.id})</h4>
+                        </div>
+                        <div class="card-body">
+                            <form:form method="post" action="/admin/user/update" modelAttribute="userUpdateRqDTO" enctype="multipart/form-data">
+                                <security:csrfInput />
+                                <form:hidden path="id"/> 
+                                <form:hidden path="avatar"/> 
+
                                 <div class="row">
-
-                                    <div class="col-md-6 col-12 mx-auto">
-                                        <div class="header">
-                                            update
-                                        </div>
-                                        <form:form method="POST" enctype="multipart/form-data"
-                                            action="/admin/user/update" modelAttribute="userUpdateRqDTO" class="header_form">
-                                            <div class="mb-3" style="display: none;">
-                                                <label class="form-label">ID</label>
-                                                <form:input type="text" class="form-control" path="id" />
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="updateFullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                                <form:input path="fullName" cssClass="form-control" id="updateFullName"/>
+                                                <form:errors path="fullName" cssClass="form-error"/>
                                             </div>
-                                            <div class="mb-3">
-
-                                                <label class="form-label">Email address</label>
-                                                <form:input type="email" class="form-control"
-                                                    aria-describedby="emailHelp" path="email" disabled="true" />
-                                                <div id="emailHelp" class="form-text">We'll never share your email with
-                                                    anyone else.
-                                                </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="updateEmail" class="form-label">Email</label>
+                                                <form:input type="email" path="email" cssClass="form-control" id="updateEmail" readonly="true"/>
+                        
                                             </div>
-
-                                            <div class="mb-3">
-                                                <c:set var="errorFullname">
-                                                    <form:errors path="fullName" cssClass="invalid-feedback" />
-                                                </c:set>
-                                                <label class="form-label">Fullname</label>
-                                                <form:input type="text"
-                                                    class="form-control ${not empty errorFullname ? 'is-invalid' : ''}"
-                                                    path="fullName" />
-                                                ${errorFullname}
-
+                                            <div class="col-md-6 mb-3">
+                                                <label for="updatePhone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                                <form:input type="tel" path="phone" cssClass="form-control" id="updatePhone"/>
+                                                <form:errors path="phone" cssClass="form-error"/>
                                             </div>
-                                            <div class="mb-3">
-                                                <c:set var="errorAddress">
-                                                    <form:errors path="address" cssClass="invalid-feedback" />
-                                                </c:set>
-                                                <label class="form-label">Address</label>
-                                                <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" path="address" />
-                                                    ${errorAddress}
-                                            </div>
-                                            <div class="mb-3">
-                                                <c:set var="errorPhone">
-                                                    <form:errors path="phone" cssClass="invalid-feedback" />
-                                                </c:set>
-                                                <label class="form-label">Phone</label>
-                                                <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}" path="phone" />
-                                                    ${errorPhone}
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Role:</label>
-                                                <form:select class="form-select" path="roleName">
-                                                    <form:option value="ADMIN">ADMIN</form:option>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="updateRoleName" class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                                <form:select path="roleName" cssClass="form-select" id="updateRoleName">
                                                     <form:option value="USER">USER</form:option>
+                                                    <form:option value="ADMIN">ADMIN</form:option>
                                                 </form:select>
+                                                <form:errors path="roleName" cssClass="form-error"/>
                                             </div>
-                                            <div class="mb-3 ">
-                                                <h3>Current Images</h3>
-
-                                                <img id="selectedAvatar" src="/images/avatar/${userUpdateRqDTO.avatar}"
-                                                    class="rounded-circle"
-                                                    style="width: 200px; height: 200px; object-fit: cover;"
-                                                    alt="example placeholder" />
-                                                <div class="d-flex justify-content-center">
-                                                    <div data-mdb-ripple-init class="btn btn-primary btn-rounded">
-                                                        <label class="form-label text-white m-1"
-                                                            for="customFile2">Choose
-                                                            file</label>
-                                                        <input type="file" class="form-control d-none"
-                                                            name="avatarFile" id="customFile2"
-                                                            accept=".png, .jpg, .jpeg"
-                                                            onchange="displaySelectedImage(event, 'selectedAvatar')" />
-                                                    </div>
+                                            <div class="col-12 mb-3">
+                                                <label for="updateAddress" class="form-label">Địa chỉ</label>
+                                                 <div class="address-autocomplete-wrapper position-relative">
+                                                    <form:input path="address" cssClass="form-control goong-address-input" id="userUpdateAddress" placeholder="Nhập địa chỉ..." autocomplete="off"/>
+                                                    <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="userUpdateAddress"></div>
                                                 </div>
+                                                <form:errors path="address" cssClass="form-error"/>
                                             </div>
-                                            <div class="col-12 mb-5">
-                                                <button type="submit" class="btn btn-primary">Create</button>
-                                            </div>
-                                        </form:form>
+                                        </div>
                                     </div>
-
+                                     <div class="col-md-4">
+                                        <div class="mb-3 text-center">
+                                            <label class="form-label d-block">Ảnh đại diện hiện tại</label>
+                                            <div class="avatar-preview-container">
+                                                <img src="<c:url value='/images/profile/${not empty userUpdateRqDTO.avatar ? userUpdateRqDTO.avatar : "default-avatar.png"}'/>"
+                                                     alt="Ảnh đại diện"
+                                                     id="avatarPreviewUpdate" class="avatar-preview-update">
+                                            </div>
+                                            <label for="avatarFileUpdate" class="custom-file-upload-admin btn btn-sm btn-outline-secondary mt-2">
+                                                <i class="fas fa-upload"></i> Thay đổi ảnh
+                                            </label>
+                                            <input class="form-control d-none" type="file" name="avatarFile" id="avatarFileUpdate" accept="image/png, image/jpeg, image/gif" onchange="previewAvatarAdmin(event, 'avatarPreviewUpdate')">
+                                             <p class="text-muted small mt-1">Để trống nếu không muốn thay đổi ảnh.</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                            </div>
-                        </main>
-
-                        <jsp:include page="../layout/footer.jsp" />
+                                <hr class="my-4">
+                                <div class="text-end">
+                                    <a href="<c:url value='/admin/user'/>" class="btn btn-outline-secondary me-2 rounded-pill px-4">Hủy Bỏ</a>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Lưu Thay Đổi</button>
+                                </div>
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/chart-area-demo.js"></script>
-                <script src="/js/chart-bar-demo.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/datatables-simple-demo.js"></script>
-                <script src="/js/upload-image.js"></script>
-            </body>
+            </main>
+            <jsp:include page="../layout/footer.jsp"/>
+        </div>
+    </div>
 
-            </html>
+    <jsp:include page="../layout/common_admin_scripts.jsp"/>
+    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
+     <script>
+        function previewAvatarAdmin(event, previewElementId) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById(previewElementId);
+                if (output) output.src = reader.result;
+            };
+            if (event.target.files && event.target.files[0]) {
+                 if(event.target.files[0].size > 2 * 1024 * 1024) { 
+                    alert("Kích thước ảnh không được vượt quá 2MB.");
+                    event.target.value = ""; 
+                    return;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

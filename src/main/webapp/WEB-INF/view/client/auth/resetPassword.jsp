@@ -20,11 +20,19 @@ uri="http://www.springframework.org/security/tags" %>
     >
       <div class="spinner-grow text-primary" role="status"></div>
     </div>
-
+    <div class="auth-video-background-container">
+      <video autoplay muted loop playsinline id="authVideoBackground">
+        <source
+          src="<c:url value='/client/video/auth-background.mp4'/>"
+          type="video/mp4"
+        />
+        Trình duyệt của bạn không hỗ trợ thẻ video.
+      </video>
+    </div>
     <div class="auth-wrapper">
       <div class="card auth-card">
         <div class="card-header">
-          <a href="<c:url value='/'/>" class="logo-text-auth">3TLap</a>
+          <a href="<c:url value='/home'/>" class="logo-text-auth">3TLap</a>
           <h3 class="font-weight-light my-1">Tạo Mật Khẩu Mới</h3>
         </div>
         <div class="card-body">

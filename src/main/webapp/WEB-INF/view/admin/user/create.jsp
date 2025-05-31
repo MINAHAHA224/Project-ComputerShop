@@ -1,136 +1,166 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-            <!DOCTYPE html>
-            <html lang="en">
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
-                <meta name="author" content="Hỏi Dân IT" />
-                <title>Create User - Hỏi Dân IT</title>
-                <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                <script>
-                    $(document).ready(() => {
-                        const avatarFile = $("#avatarFile");
-                        avatarFile.change(function (e) {
-                            const imgURL = URL.createObjectURL(e.target.files[0]);
-                            $("#avatarPreview").attr("src", imgURL);
-                            $("#avatarPreview").css({ "display": "block" });
-                        });
-                    });
-                </script>
-            </head>
+       <!-- JSP Path: admin/user/create.jsp -->
+ <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
-            <body class="sb-nav-fixed">
-                <jsp:include page="../layout/header.jsp" />
-                <div id="layoutSidenav">
-                    <jsp:include page="../layout/navbar.jsp" />
-                    <div id="layoutSidenav_content">
-                        <main>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Tạo Người Dùng Mới - 3TLap Admin</title>
+    <jsp:include page="../layout/common_admin_head.jsp"/>
 
-                            <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage Users</h1>
-                                <ol class="breadcrumb mb-4">
-                                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
-                                </ol>
-                                <div class="mt-5">
-                                    <div class="row">
-                                        <div class="col-md-6 col-12 mx-auto">
-                                            <h3>Create a user</h3>
-                                            <hr />
-                                            <form:form method="post" enctype="multipart/form-data"
-                                                action="/admin/user/create" modelAttribute="userCreateRqDTO" class="row">
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorEmail">
-                                                        <form:errors path="email" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Email:</label>
-                                                    <form:input type="email"
-                                                        class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
-                                                        path="email" />
-                                                    ${errorEmail}
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorPassword">
-                                                        <form:errors path="password" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Password:</label>
-                                                    <form:input type="password"
-                                                        class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
-                                                        path="password" />
-                                                    ${errorPassword}
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorPhone">
-                                                        <form:errors path="phone" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Phone number:</label>
-                                                    <form:input type="text" class="form-control ${not empty errorPhone ? 'is-invalid' : ''}" path="phone" />
-                                                    ${errorPhone}
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorFullname">
-                                                        <form:errors path="fullName" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Full Name:</label>
-                                                    <form:input type="text"
-                                                        class="form-control ${not empty errorFullname ? 'is-invalid' : ''}"
-                                                        path="fullName" />
-                                                    ${errorFullname}
-                                                </div>
-                                                <div class="mb-3 col-12">
-                                                    <c:set var="errorAddress">
-                                                        <form:errors path="address" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control ${not empty errorAddress ? 'is-invalid' : ''}" path="address" />
-                                                        ${errorAddress}
-                                                </div>
+    <style>
+        .avatar-preview-container {
+            display: flex;
+            justify-content: center; 
+            margin-bottom: 1rem;
+        }
+        .avatar-preview-create {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--current-admin-border-color);
+            background-color: var(--current-admin-card-bg); 
+        }
+    </style>
+</head>
 
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label class="form-label">Role:</label>
-                                                    <form:select class="form-select" path="roleName">
-                                                        <form:option value="ADMIN">ADMIN</form:option>
-                                                        <form:option value="USER">USER</form:option>
-                                                    </form:select>
-                                                </div>
-                                                <div class="mb-3 col-12 col-md-6">
-                                                    <label for="avatarFile" class="form-label">Avatar:</label>
-                                                    <input class="form-control" type="file" id="avatarFile"
-                                                        accept=".png, .jpg, .jpeg" name="avatarFile">
-                                                </div>
-                                                <div class="col-12 mb-3">
-                                                    <img style="max-height: 250px; display: none;" alt="avatar preview"
-                                                        id="avatarPreview" />
-                                                </div>
-                                                <div class="col-12 mb-5">
-                                                    <button type="submit" class="btn btn-primary">Create</button>
-                                                </div>
-                                            </form:form>
+<body class="sb-nav-fixed admin-body-3tlap">
+    <c:set var="breadcrumbCurrentPage" value="Tạo Mới Người Dùng" scope="request"/>
+    <jsp:include page="../layout/header.jsp"/>
 
+    <div id="layoutSidenav">
+        <jsp:include page="../layout/navbar.jsp"/>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="main-content-title mt-4">Tạo Người Dùng Mới</h1>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <ol class="breadcrumb mb-0 bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="<c:url value='/admin'/>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<c:url value='/admin/user'/>">Người Dùng</a></li>
+                            <li class="breadcrumb-item active">Tạo Mới</li>
+                        </ol>
+                        <a href="<c:url value='/admin/user'/>" class="btn btn-outline-secondary btn-sm admin-btn-action">
+                            <i class="fas fa-arrow-left me-1"></i> Quay Lại Danh Sách
+                        </a>
+                    </div>
+
+                    <c:if test="${not empty messageSuccess}">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${messageSuccess}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty messageError}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${messageError}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+
+                    <div class="card admin-form-card">
+                        <div class="card-header">
+                            <h4>Thông Tin Người Dùng</h4>
+                        </div>
+                        <div class="card-body">
+                            <form:form method="post" action="/admin/user/create" modelAttribute="userCreateRqDTO" enctype="multipart/form-data">
+                                <security:csrfInput />
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                                <form:input path="fullName" cssClass="form-control" id="fullName"/>
+                                                <form:errors path="fullName" cssClass="form-error"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                                <form:input type="email" path="email" cssClass="form-control" id="email"/>
+                                                <form:errors path="email" cssClass="form-error"/>
+                                            </div>
+                                             <div class="col-md-6 mb-3">
+                                                <label for="password" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                                <form:password path="password" cssClass="form-control" id="password"/>
+                                                <form:errors path="password" cssClass="form-error"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                                <form:input type="tel" path="phone" cssClass="form-control" id="phone"/>
+                                                <form:errors path="phone" cssClass="form-error"/>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label for="address" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                                                <div class="address-autocomplete-wrapper position-relative">
+                                                    <form:input path="address" cssClass="form-control goong-address-input" id="userCreateAddress" placeholder="Nhập địa chỉ..." autocomplete="off"/>
+                                                    <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="userCreateAddress"></div>
+                                                </div>
+                                                <form:errors path="address" cssClass="form-error"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="roleName" class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                                <form:select path="roleName" cssClass="form-select" id="roleName">
+                                                    <form:option value="USER">USER</form:option>
+                                                    <form:option value="ADMIN">ADMIN</form:option>
+                                                </form:select>
+                                                <form:errors path="roleName" cssClass="form-error"/>
+                                            </div>
                                         </div>
-
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3 text-center">
+                                            <label class="form-label d-block">Ảnh đại diện</label>
+                                            <div class="avatar-preview-container">
+                                                <img src="<c:url value='/images/avatar/default-avatar.jpg'/>" 
+                                                     alt="Xem trước ảnh đại diện"
+                                                     id="avatarPreviewCreate" class="avatar-preview-create">
+                                            </div>
+                                            <label for="avatarFile" class="custom-file-upload-admin btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-upload"></i> Tải ảnh lên
+                                            </label>
+                                            <input class="form-control d-none" type="file" name="avatarFile" id="avatarFile" accept="image/png, image/jpeg, image/gif" onchange="previewAvatarAdmin(event, 'avatarPreviewCreate')">
+                                            <p class="text-muted small mt-1">PNG, JPG, GIF (Tối đa 2MB)</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </main>
-
-                        <jsp:include page="../layout/footer.jsp" />
+                                <hr class="my-4">
+                                <div class="text-end">
+                                    <a href="<c:url value='/admin/user'/>" class="btn btn-outline-secondary me-2 rounded-pill px-4">Hủy Bỏ</a>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Tạo Người Dùng</button>
+                                </div>
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
+            </main>
+            <jsp:include page="../layout/footer.jsp"/>
+        </div>
+    </div>
 
-
-            </body>
-
-            </html>
+    <jsp:include page="../layout/common_admin_scripts.jsp"/>
+    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script> <%-- Dùng chung file JS autocomplete --%>
+    <script>
+        function previewAvatarAdmin(event, previewElementId) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById(previewElementId);
+                if (output) output.src = reader.result;
+            };
+            if (event.target.files && event.target.files[0]) {
+                if(event.target.files[0].size > 2 * 1024 * 1024) { 
+                    alert("Kích thước ảnh không được vượt quá 2MB.");
+                    event.target.value = ""; 
+                    return;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

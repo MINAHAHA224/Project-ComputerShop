@@ -14,7 +14,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <div class="col-lg-4">
           <%-- Tăng độ rộng cho phần logo/brand --%>
           <a
-            href="<c:url value='/' />"
+            href="<c:url value='/home' />"
             class="d-flex align-items-center text-decoration-none"
           >
             <%-- Logo Placeholder - Sẽ được style bằng CSS. Bạn có thể thay bằng
@@ -161,7 +161,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <div class="row">
       <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
         <span class="text-light"
-          ><a href="<c:url value='/'/>" class="text-primary"
+          ><a href="<c:url value='/home'/>" class="text-primary"
             ><i class="fas fa-copyright text-primary me-2"></i>3TLap</a
           >
           Đã đăng ký Bản quyền.</span

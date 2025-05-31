@@ -33,89 +33,84 @@ public class ClientProductController {
     private final OrderService orderService;
     private final MomoService momoService;
 
-
-
-
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable Long id) {
         ProductDetailRpDTO productDetail = this.productService.handleGetProductDetail(id);
         model.addAttribute("product", productDetail);
-        model.addAttribute("stockQuantity",productDetail.getQuantity());
+        model.addAttribute("stockQuantity", productDetail.getQuantity());
         return "client/product/detail";
     }
 
     @PostMapping("/add-product-to-cart/{id}")
-    public String addProductToCart(@PathVariable("id") Long productId
-            , HttpSession session , Model model ) {
-        ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session , productId);
-        model.addAttribute("messageSuccess" ,responseBodyDTO.getMessage() );
+    public String addProductToCart(@PathVariable("id") Long productId, HttpSession session, Model model) {
+        ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session, productId);
+        model.addAttribute("messageSuccess", responseBodyDTO.getMessage());
         return "redirect:/home";
     }
 
     @GetMapping("/cart")
-    public String getCartPage(Model model, HttpSession  session) {
 
+    public String getCartPage(Model model, HttpSession session) {
         CartRpDTO result = this.cartService.handleGetCartDetail(session);
         model.addAttribute("cartDetails", result.getCartDetails());
         model.addAttribute("totalPrice", result.getTotalPrice());
 
-        model.addAttribute("cartDetailsListDTO",new CartDetailsListDTO());
+        model.addAttribute("cartDetailsListDTO", new CartDetailsListDTO());
 
         return "client/cart/show";
     }
 
     @PostMapping("/delete-cart-product/{id}")
     public String deleteCartDetail(@PathVariable("id") Long id,
-                                   HttpSession session ,
-                                   Model model , RedirectAttributes redirectAttributes) {
-        ResponseBodyDTO result = this.cartService.handleDeleteProductInCart(id , session);
-        if ( result.getStatus() == 200 ){
-            redirectAttributes.addFlashAttribute("messageSuccess" ,result.getMessage() );
-        }else {
-            redirectAttributes.addFlashAttribute("messageError" ,result.getMessage() );
+            HttpSession session,
+            Model model, RedirectAttributes redirectAttributes) {
+        ResponseBodyDTO result = this.cartService.handleDeleteProductInCart(id, session);
+        if (result.getStatus() == 200) {
+            redirectAttributes.addFlashAttribute("messageSuccess", result.getMessage());
+        } else {
+            redirectAttributes.addFlashAttribute("messageError", result.getMessage());
         }
 
         return "redirect:/cart";
+
     }
 
     @PostMapping("/confirm-checkout")
-    public String postConfirmCheckout(Model  model
-            ,@ModelAttribute("cartDetailsListDTO") CartDetailsListDTO cartDetailsListDTO , HttpSession session) {
-        ResponseBodyDTO response=  this.productService.handleConfirmCheckout(cartDetailsListDTO);
-        model.addAttribute("messageSuccess" , response.getMessage());
+    public String postConfirmCheckout(Model model,
+            @ModelAttribute("cartDetailsListDTO") CartDetailsListDTO cartDetailsListDTO, HttpSession session) {
+        ResponseBodyDTO response = this.productService.handleConfirmCheckout(cartDetailsListDTO);
+        model.addAttribute("messageSuccess", response.getMessage());
 
         CheckoutRpDTO result = this.cartService.handleShowDataAfterCheckout(session);
         model.addAttribute("cartDetails", result.getCartDetails());
         model.addAttribute("totalPrice", result.getTotalPrice());
-        model.addAttribute("infoOrderRqDTO" , result.getInfoOrderRqDTO());
+        model.addAttribute("infoOrderRqDTO", result.getInfoOrderRqDTO());
         return "client/cart/checkout";
     }
 
-
-
     @PostMapping("/place-order")
     public String handlePlaceOrder(HttpSession session, Model model,
-                                   @Valid @ModelAttribute("infoOrderRqDTO")InfoOrderRqDTO infoOrderRqDTO ,
-                                   BindingResult bindingResult , RedirectAttributes redirectAttributes) {
+            @Valid @ModelAttribute("infoOrderRqDTO") InfoOrderRqDTO infoOrderRqDTO,
+            BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         List<FieldError> errors = bindingResult.getFieldErrors();
 
-        if ( bindingResult.hasErrors()){
-            for ( FieldError error : errors){
-                System.out.println("--ER " + error.getField() +" -- " + error.getDefaultMessage());
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : errors) {
+                System.out.println("--ER " + error.getField() + " -- " + error.getDefaultMessage());
             }
             CheckoutRpDTO result = this.cartService.handleShowDataAfterCheckout(session);
             model.addAttribute("cartDetails", result.getCartDetails());
             model.addAttribute("totalPrice", result.getTotalPrice());
-            model.addAttribute("infoOrderRqDTO" , infoOrderRqDTO);
+            model.addAttribute("infoOrderRqDTO", infoOrderRqDTO);
             return "client/cart/checkout";
         }
-
 
         String methodPayment = infoOrderRqDTO.getPaymentMethod();
         ResponseBodyDTO orderCreationResponse = this.cartService.handleCreateOrder(session, infoOrderRqDTO);
 
-        if (orderCreationResponse.getStatus() != 200 || orderCreationResponse.getData() == null || !(orderCreationResponse.getData() instanceof OrderEntity)) {
+        if (orderCreationResponse.getStatus() != 200 || orderCreationResponse.getData() == null
+                || !(orderCreationResponse.getData() instanceof OrderEntity)) {
             model.addAttribute("messageError", "Không thể tạo đơn hàng. " + orderCreationResponse.getMessage());
             // Lấy lại dữ liệu cho trang checkout nếu cần
             CheckoutRpDTO result = this.cartService.handleShowDataAfterCheckout(session);
@@ -134,10 +129,12 @@ public class ClientProductController {
             } else {
                 String errorMessage = "Khởi tạo thanh toán Momo thất bại.";
                 if (momoResponse != null) {
-                    errorMessage += " Lỗi: " + momoResponse.getMessage() + " (Code: " + momoResponse.getResultCode() + ")";
+                    errorMessage += " Lỗi: " + momoResponse.getMessage() + " (Code: " + momoResponse.getResultCode()
+                            + ")";
                 }
                 // model.addAttribute("messageError", errorMessage);
-                // return "client/cart/thanks"; // Hoặc quay lại trang checkout với thông báo lỗi
+                // return "client/cart/thanks"; // Hoặc quay lại trang checkout với thông báo
+                // lỗi
                 redirectAttributes.addFlashAttribute("messageError", errorMessage);
                 return "redirect:/checkout"; // Quay lại trang checkout
             }
@@ -154,14 +151,10 @@ public class ClientProductController {
             return "client/cart/checkout";
         }
 
-
-
     }
 
-
-
     @GetMapping("/order-history")
-    public String getOrderHistoryPage(Model model , HttpSession session) {
+    public String getOrderHistoryPage(Model model, HttpSession session) {
 
         List<OrderRpDTO> orders = this.orderService.handleGetDataOrderOfUser(session);
 
@@ -174,24 +167,23 @@ public class ClientProductController {
     public String handleAddProductFromViewDetail(
             @RequestParam("id") Long id,
             @RequestParam("quantity") Long quantity,
-            HttpSession session , Model model) {
+            HttpSession session, Model model) {
 
-      ResponseBodyDTO response =  this.cartService.handleAddProductDetailToCart( id, session, quantity);
-        model.addAttribute("messageSuccess" , response.getMessage());
+        ResponseBodyDTO response = this.cartService.handleAddProductDetailToCart(id, session, quantity);
+        model.addAttribute("messageSuccess", response.getMessage());
         return "client/cart/show";
     }
 
-
     @GetMapping(value = "/thankyou")
-    public String getThanksPage (MomoRpDTO momoRpDTO ,
-                                 Model model , RedirectAttributes redirectAttributes){
-        ResponseBodyDTO response = this.orderService.handleCompleteOrderPaymentOnline (momoRpDTO);
+    public String getThanksPage(MomoRpDTO momoRpDTO,
+            Model model, RedirectAttributes redirectAttributes) {
+        ResponseBodyDTO response = this.orderService.handleCompleteOrderPaymentOnline(momoRpDTO);
 
-        if ( response.getStatus() == 200){
-            model.addAttribute("messageSuccess" , response.getMessage());
+        if (response.getStatus() == 200) {
+            model.addAttribute("messageSuccess", response.getMessage());
             return "client/cart/thanks";
-        }else {
-            redirectAttributes.addFlashAttribute("messageError" , response.getMessage());
+        } else {
+            redirectAttributes.addFlashAttribute("messageError", response.getMessage());
             return "redirect:/cart";
         }
 

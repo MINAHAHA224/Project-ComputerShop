@@ -1,120 +1,322 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-            <!DOCTYPE html>
-            <html lang="en">
+<!-- JSP Path: admin/product/show.jsp -->
+<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fmt"
+uri="http://java.sun.com/jsp/jstl/fmt" %> <%@ taglib prefix="security"
+uri="http://www.springframework.org/security/tags" %>
 
-            <head>
-                <meta charset="utf-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-                <meta name="description" content="" />
-                <meta name="author" content="" />
-                <title>User</title>
-                <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-                <link href="/css/styles.css" rel="stylesheet" />
-                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-            </head>
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Quản Lý Sản Phẩm - 3TLap Admin</title>
+    <jsp:include page="../layout/common_admin_head.jsp" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .product-thumbnail-admin {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 0.25rem;
+        border: 1px solid var(--current-admin-border-color);
+        background-color: var(--white-color); /* Nền trắng để ảnh nổi bật */
+      }
+      body.theme-dark .product-thumbnail-admin {
+        background-color: var(
+          --current-admin-card-bg
+        ); /* Nền tối hơn cho ảnh trong dark mode */
+      }
+      .table-actions .btn {
+        margin-right: 0.3rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+      }
+      .table-actions .btn i {
+        margin-right: 0;
+      }
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
 
-            <body class="sb-nav-fixed">
-                <jsp:include page="../layout/header.jsp" />
-                <div id="layoutSidenav">
-                    <jsp:include page="../layout/navbar.jsp" />
-                    <div id="layoutSidenav_content">
-                        <main>
+  <body class="sb-nav-fixed admin-body-3tlap">
+    <c:set
+      var="breadcrumbCurrentPage"
+      value="Quản Lý Sản Phẩm"
+      scope="request"
+    />
+    <jsp:include page="../layout/header.jsp" />
 
-                            <div class="container mt-5">
-                                <div class="row">
-                                    <div class="col-12 mx-auto">
-                                        <div class="d-flex justify-content-between">
-                                            <h3>Table product</h3>
-                                            <a href="/admin/product/create" class="btn btn-primary">Create a product</a>
-                                        </div>
+    <div id="layoutSidenav">
+      <jsp:include page="../layout/navbar.jsp" />
+      <div id="layoutSidenav_content">
+        <main>
+          <div class="container-fluid px-4">
+            <h1 class="main-content-title mt-4">Danh Sách Sản Phẩm</h1>
 
-                                        <hr />
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Price</th>
-                                                    <th>Factory</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <c:forEach var="product" items="${listProduct}">
-                                                    <tr>
-                                                        <th>${product.id}</th>
-                                                        <td>${product.name}</td>
-                                                        <td>
-                                                            <fmt:formatNumber type="number" value="${product.price}" />
-                                                            đ
-                                                        </td>
-                                                        <td>${product.factory}</td>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <ol class="breadcrumb mb-0 bg-transparent p-0">
+                <li class="breadcrumb-item">
+                  <a href="<c:url value='/admin'/>">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Sản Phẩm</li>
+              </ol>
+              <a
+                href="<c:url value='/admin/product/create'/>"
+                class="btn btn-primary btn-sm admin-btn-create"
+              >
+                <i class="fas fa-plus me-1"></i> Thêm Sản Phẩm Mới
+              </a>
+            </div>
 
-                                                        <td>
-                                                            <a href="/admin/product/${product.id}"
-                                                                class=" btn btn-success">Detail</a>
-                                                            <a href="/admin/product/update/${product.id}"
-                                                                class="btn btn-warning  mx-2">Update</a>
-                                                            <a href="/admin/product/delete/${product.id}"
-                                                                class="btn btn-danger">Delete</a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
+            <c:if test="${not empty messageSuccess}">
+              <div
+                class="alert alert-success alert-dismissible fade show"
+                role="alert"
+              >
+                ${messageSuccess}<button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </c:if>
+            <c:if test="${not empty messageError}">
+              <div
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+              >
+                ${messageError}<button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </c:if>
 
+            <div class="card mb-4 admin-table-card">
+              <div class="card-header">
+                <i class="fas fa-laptop me-1"></i>
+                Danh sách chi tiết sản phẩm
+              </div>
+              <div class="card-body">
+                <table id="productsTable" class="table table-hover">
+                  <thead>
+                    <tr>
+                      <%-- Có thể thêm ảnh sau --%>
+                      <th style="width: 5%">ID</th>
+                      <%--
+                      <th style="width: 10%">Ảnh</th>
+                      --%>
+                      <th style="width: 30%">Tên Sản Phẩm</th>
+                      <th style="width: 15%">Giá</th>
+                      <th style="width: 15%">Hãng</th>
+                      <%--
+                      <th>Số lượng</th>
+                      <th>Đã bán</th>
+                      --%>
+                      <th class="text-center" style="width: 25%">Hành Động</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach var="product" items="${listProduct}">
+                      <tr>
+                        <td>${product.id}</td>
+                        <%--
+                        <td>
+                          <img src="<c:url
+                            value='/images/product/${not empty product.image ? product.image : "default-product.png"}'
+                          />" alt="${product.name}"
+                          class="product-thumbnail-admin">
+                        </td>
+                        --%>
+                        <td><c:out value="${product.name}" /></td>
+                        <td>
+                          <fmt:formatNumber
+                            type="number"
+                            value="${product.price}"
+                          />
+                          đ
+                        </td>
+                        <td><c:out value="${product.factory}" /></td>
+                        <%--
+                        <td>${product.quantity}</td>
+                        <td>${product.sold}</td>
+                        --%>
+                        <td class="text-center table-actions">
+                          <a
+                            href="<c:url value='/admin/product/${product.id}'/>"
+                            class="btn btn-info btn-sm"
+                            title="Xem chi tiết"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </a>
+                          <a
+                            href="<c:url value='/admin/product/update/${product.id}'/>"
+                            class="btn btn-warning btn-sm"
+                            title="Cập nhật"
+                          >
+                            <i class="fas fa-edit"></i>
+                          </a>
+                          <button
+                            type="button"
+                            class="btn btn-danger btn-sm"
+                            title="Xóa"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteProductModal"
+                            data-product-id="${product.id}"
+                            data-product-name="${product.name}"
+                          >
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
 
+                <c:if test="${totalPages > 1}">
+                  <nav aria-label="Product navigation">
+                    <ul class="pagination justify-content-center mt-4">
+                      <li
+                        class="page-item ${currentPage == 1 ? 'disabled' : ''}"
+                      >
+                        <a
+                          class="page-link"
+                          href="<c:url value='/admin/product?page=${currentPage - 1}'/>"
+                          >Trước</a
+                        >
+                      </li>
+                      <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li
+                          class="page-item ${currentPage == i ? 'active' : ''}"
+                        >
+                          <a
+                            class="page-link"
+                            href="<c:url value='/admin/product?page=${i}'/>"
+                            >${i}</a
+                          >
+                        </li>
+                      </c:forEach>
+                      <li
+                        class="page-item ${currentPage == totalPages ? 'disabled' : ''}"
+                      >
+                        <a
+                          class="page-link"
+                          href="<c:url value='/admin/product?page=${currentPage + 1}'/>"
+                          >Sau</a
+                        >
+                      </li>
+                    </ul>
+                  </nav>
+                </c:if>
+              </div>
+            </div>
+          </div>
+        </main>
+        <jsp:include page="../layout/footer.jsp" />
+      </div>
+    </div>
 
-                                            </tbody>
-                                        </table>
-                                        <nav aria-label="Page navigation example">
-                                            <ul class="pagination justify-content-center">
-                                                <li class="page-item">
-                                                    <a class="${ currentPage eq 1 ? 'disabled page-link ' : 'page-link'}"
-                                                        href="/admin/product?page=${currentPage - 1}"
-                                                        aria-label="Previous">
-                                                        <span aria-hidden="true">&laquo;</span>
-                                                    </a>
-                                                </li>
-                                                <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
-                                                    <li class="page-item">
-                                                        <a class="${ currentPage eq (loop.index +1) ? 'active page-link ' : 'page-link'}"
-                                                            href="/admin/product?page=${loop.index +1}">${loop.index +1}
-                                                        </a>
-                                                    </li>
+    <!-- Delete Modal -->
+    <div
+      class="modal fade"
+      id="deleteProductModal"
+      tabindex="-1"
+      aria-labelledby="deleteProductModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content admin-modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteProductModalLabel">
+              Xác Nhận Xóa Sản Phẩm
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Bạn có chắc chắn muốn xóa sản phẩm
+            <strong id="productNameToDelete"></strong> (ID:
+            <span id="productIdToDelete"></span>)? <br />Việc này sẽ xóa vĩnh
+            viễn sản phẩm khỏi hệ thống.
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Hủy Bỏ
+            </button>
+            <%-- Form này action sẽ được set bằng JS --%>
+            <form id="deleteProductForm" method="get" action="">
+              <button type="submit" class="btn btn-danger">Xác Nhận Xóa</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                                                </c:forEach>
+    <jsp:include page="../layout/common_admin_scripts.jsp" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const productsTable = document.getElementById('productsTable');
+        var totalPages = <c:out value="${totalPages}" />;
+        if (productsTable && totalPages <= 1) {
+          // Chỉ dùng SimpleDataTables nếu không phân trang từ backend hoặc chỉ có 1 trang
+          new simpleDatatables.DataTable(productsTable, {
+            perPage: 10, // Số lượng item mỗi trang mặc định
+            perPageSelect: [5, 10, 20, 50],
+            labels: {
+              placeholder: 'Tìm kiếm trong bảng...',
+              perPage: '{select} sản phẩm mỗi trang',
+              noRows: 'Không tìm thấy sản phẩm nào',
+              info: 'Hiển thị {start} đến {end} của {rows} sản phẩm',
+            },
+          });
+        }
 
-                                                <li class="page-item">
-                                                    <a class="${ currentPage eq totalPages ? 'disabled page-link ' : 'page-link'}"
-                                                        href="/admin/product?page=${currentPage + 1}" aria-label="Next">
-                                                        <span aria-hidden="true">&raquo;</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
+        var deleteProductModal = document.getElementById('deleteProductModal');
+        if (deleteProductModal) {
+          deleteProductModal.addEventListener(
+            'show.bs.modal',
+            function (event) {
+              var button = event.relatedTarget;
+              var productId = button.getAttribute('data-product-id');
+              var productName = button.getAttribute('data-product-name');
 
-                                </div>
-
-                            </div>
-
-                        </main>
-
-                        <jsp:include page="../layout/footer.jsp" />
-                    </div>
-                </div>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/scripts.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/chart-area-demo.js"></script>
-                <script src="/js/chart-bar-demo.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-                    crossorigin="anonymous"></script>
-                <script src="/js/datatables-simple-demo.js"></script>
-            </body>
-
-            </html>
+              deleteProductModal.querySelector(
+                '#productIdToDelete'
+              ).textContent = productId;
+              deleteProductModal.querySelector(
+                '#productNameToDelete'
+              ).textContent = productName;
+              deleteProductModal.querySelector('#deleteProductForm').action =
+                '<c:url value="/admin/product/delete"/>/' + productId;
+            }
+          );
+        }
+      });
+    </script>
+  </body>
+</html>

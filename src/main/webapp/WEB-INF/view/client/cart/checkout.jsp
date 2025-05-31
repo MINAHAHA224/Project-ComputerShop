@@ -116,7 +116,7 @@
     <div class="container-fluid page-header checkout-page-header py-5">
         <h1 class="text-center text-white display-6">Xác Nhận & Thanh Toán</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="<c:url value='/'/>">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a href="<c:url value='/home'/>">Trang Chủ</a></li>
             <li class="breadcrumb-item"><a href="<c:url value='/cart'/>">Giỏ Hàng</a></li>
             <li class="breadcrumb-item active text-white">Thanh Toán</li>
         </ol>

@@ -33,7 +33,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Entity
 @Table(name = "users")
-public class UserEntity implements Serializable, UserDetails  {
+public class UserEntity implements Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -44,7 +44,6 @@ public class UserEntity implements Serializable, UserDetails  {
     private String address;
     private String phone;
     private String avatar;
-
 
     // roleId
     // User many -> to one -> role
@@ -61,13 +60,12 @@ public class UserEntity implements Serializable, UserDetails  {
     private AuthMethodEntity authMethodEntity;
 
     @OneToMany(mappedBy = "user")
-    private List<UserOtpEntity>  userOtpEntities;
-
+    private List<UserOtpEntity> userOtpEntities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add( new SimpleGrantedAuthority("ROLE_" + this.role.getName().toUpperCase()));
+        authorityList.add(new SimpleGrantedAuthority("ROLE_" + this.role.getName().toUpperCase()));
         return authorityList;
     }
 
