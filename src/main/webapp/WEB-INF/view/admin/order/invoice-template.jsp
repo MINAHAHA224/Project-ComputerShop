@@ -6,7 +6,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Hóa Đơn Điện Tử - Laptopshop</title>
+    <title>Hóa Đơn Điện Tử - 3TLap</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
         .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
@@ -29,7 +29,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Laptopshop</h1>
+        <h1>3TLap</h1>
         <p>Cảm ơn bạn đã mua hàng!</p>
     </div>
 
@@ -95,7 +95,7 @@
     </div>
 
     <div class="footer">
-        <p>Cảm ơn quý khách đã tin tưởng và mua sắm tại Laptopshop.</p>
+        <p>Cảm ơn quý khách đã tin tưởng và mua sắm tại 3TLap.</p>
         <p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ chúng tôi.</p>
     </div>
 </div>

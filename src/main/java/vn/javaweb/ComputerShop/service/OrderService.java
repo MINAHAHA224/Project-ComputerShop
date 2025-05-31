@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
+import vn.javaweb.ComputerShop.component.MailerComponent;
 import vn.javaweb.ComputerShop.domain.dto.request.OrderUpdateRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpRedirectDTO;
@@ -27,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
+    private final MailerComponent mailerComponent;
 
 
     public List<OrderRpDTO> handleGetDataOrderOfUser(HttpSession session) {
@@ -153,6 +155,9 @@ public class OrderService {
 
             response.setStatus(200);
             response.setMessage(momoRpDTO.getMessage());
+
+            // send mail invoice
+            mailerComponent.sendInvoiceEmail(orderEntity);
         } else {
             this.orderRepository.deleteOrderEntityById(orderEntity.getId());
             response.setStatus(500);

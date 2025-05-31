@@ -192,6 +192,22 @@ public class UserService {
 
             session.setAttribute("email", user.getEmail());
 
+
+            Authentication BybassAuthenticationForLoginGoogle = new UsernamePasswordAuthenticationToken(email, null ,user.getAuthorities());
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(BybassAuthenticationForLoginGoogle);
+            SecurityContextHolder.setContext(context);
+
+            // gắn vào HttpSession để Spring Security nhận diện
+            session.setAttribute("SPRING_SECURITY_CONTEXT", context);
+
+
+            // can not get principle for login by Google
+//            String testEmailFromSecurity = SecurityUtils.getPrincipal(); // Đây là username (email)
+//            System.out.println("Logged in user (from SecurityUtils after setAuthentication): " + testEmailFromSecurity);
+//            System.out.println("Authorities in SecurityContext: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+
+
         } else {
             try {
                 // save user first
