@@ -66,10 +66,10 @@ public class SecurityConfiguration {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD,
                                 DispatcherType.INCLUDE)
                         .permitAll()
-                        .requestMatchers("/home", "/login", "/register", "/client/**", "/css/**", "/js/**",
+                        .requestMatchers("/","/home", "/product" , "/product/**", "/login", "/register", "/client/**", "/css/**", "/js/**",
                                 "/images/**")
                         .permitAll()
-
+                        .requestMatchers("add-product-to-cart/**" , "/add-product-from-view-detail").hasRole("USER")
                         .requestMatchers("/admin" , "/admin/**").hasRole("ADMIN")
 
                         .anyRequest().permitAll())
@@ -80,20 +80,14 @@ public class SecurityConfiguration {
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false))
                 .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
-                .exceptionHandling(ex -> ex.accessDeniedPage("/accessDeny"));
-                // cơ chế remember me
-//                .rememberMe(rememberme -> rememberme.rememberMeServices(rememberMeServices()));
+                .exceptionHandling(ex -> ex
+                        // use for user had login
+                        .accessDeniedHandler( (request, response, accessDeniedException) -> response.sendRedirect("/accessDeny"))
+                        // use for user not yet login
+                        .authenticationEntryPoint(((request, response, authException) -> response.sendRedirect("/login") ))
+                );
 
-//                .formLogin(formLogin -> formLogin
-//                        .loginPage("/login")
-//                        .failureUrl("/login?error")
-//                        // cái này dùng để chuyển trang khi đăng nhập thành công
-//                        // tức là đoạn này đã đăng nhập thành công rồi tức là đã có ROLE rồi
-//                        // ROLE_USER hay Admin thôi
-//                        .successHandler(customSuccessHandler())
-//                        .permitAll())
-//                // nếu mà Role_User mà vào trang admin thì nó đẩy ra trang này /accessDeny
-//                .exceptionHandling(ex -> ex.accessDeniedPage("/accessDeny"));
+
         return http.build();
     }
 

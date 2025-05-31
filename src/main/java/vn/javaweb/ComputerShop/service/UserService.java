@@ -83,7 +83,7 @@ public class UserService {
             );
             Authentication authenticationResult = authenticationManager.authenticate(authenticationToken);
             //add data into SecurityContextHolder to view used to authorized
-             SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+//             SecurityContextHolder.getContext().setAuthentication(authenticationResult);
             // set session boi vi neu sai security rieng ma ko sai qua form login
         // thi thang Spring security no se ko tu di check , ma minh phai set session cho no no moi check
         SecurityContext context = SecurityContextHolder.createEmptyContext();
