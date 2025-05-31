@@ -79,6 +79,9 @@ public class CartService {
         try {
             this.cartDetailRepository.deleteCartDetailEntityByCartAndProduct(cart ,product );
 
+            //set lai sum cua cart trong database
+            cart.setSum(cart.getSum()-1);
+            this.cartRepository.save(cart  );
         }catch (RuntimeException e){
             System.out.println("--ER  handleDeleteProductInCart "+ e.getMessage());
             e.printStackTrace();
@@ -86,7 +89,8 @@ public class CartService {
         }
         //handle delete
 
-        // set lai infor
+
+        // set lai sum trong infor
         int currentSum = informationDTO.getSum();
         informationDTO.setSum(currentSum-1);
         // set lai session

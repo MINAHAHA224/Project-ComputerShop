@@ -1,5 +1,5 @@
 
-<!-- JSP Path: client/cart/show.jsp -->
+<!-- JSP Path: src/main/webapp/WEB-INF/view/client/cart/show.jsp -->
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -211,12 +211,13 @@
                                                 </p>
                                             </td>
                                             <td class="text-center">
-                                                <form:form action="/delete-cart-product/${cartDetail.productId}" method="post" cssClass="d-inline">
-                                                     <security:csrfInput />
-                                                    <button type="submit" class="btn btn-remove-product" title="Xóa sản phẩm">
-                                                        <i class="fas fa-trash-alt fa-lg"></i>
-                                                    </button>
-                                                </form:form>
+                                                <a href="<c:url value='/delete-cart-product/${cartDetail.productId}'/>"  class="d-inline btn btn-remove-product">
+                                                    <i class="fas fa-trash-alt fa-lg"></i>
+<%--                                                    Toi qua la thong minh hehehe--%>
+<%--                                                    <button  class="btn btn-remove-product" title="Xóa sản phẩm" >--%>
+<%--                                                        <i class="fas fa-trash-alt fa-lg"></i>--%>
+<%--                                                    </button>--%>
+                                                </a>
                                             </td>
                                         </tr>
                                     </c:forEach>
