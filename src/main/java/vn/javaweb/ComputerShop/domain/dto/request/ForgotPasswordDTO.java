@@ -13,11 +13,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ForgotPasswordDTO {
-    @NotBlank(message = "Email không được để trống.")
-    @Email(message = "Email không đúng định dạng.")
+    @NotBlank(message = "{ForgotPasswordDTO.email.NotBlank}")
+    @Email(message = "{ForgotPasswordDTO.email.Email}")
     @Pattern(
             regexp = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",
-            message = "Email phải có dạng @<subdomain>.<domain>."
+            message = "{ForgotPasswordDTO.email.Pattern}"
     )
     private String email;
 }

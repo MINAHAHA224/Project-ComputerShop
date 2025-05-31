@@ -22,7 +22,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
     public boolean isValid(RegisterDTO registerDTO, ConstraintValidatorContext context) {
 
         if (!StringUtils.hasText(registerDTO.getFirstName())) {
-            context.buildConstraintViolationWithTemplate("Họ không được để trống")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.firstName.NotBlank}")
                     .addPropertyNode("firstName")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -30,7 +30,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
         }
 
         if (!StringUtils.hasText(registerDTO.getLastName())) {
-            context.buildConstraintViolationWithTemplate("Tên không được để trống")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.lastName.NotBlank}")
                     .addPropertyNode("lastName")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -38,7 +38,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
         }
 
         if (!StringUtils.hasText(registerDTO.getEmail())) {
-            context.buildConstraintViolationWithTemplate("Email không được để trống")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.email.NotBlank}")
                     .addPropertyNode("email")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -49,7 +49,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
 
 
         if (!Pattern.matches(EMAIL_REGEX, registerDTO.getEmail())) {
-            context.buildConstraintViolationWithTemplate("Email phải có dạng @<subdomain>.<domain>.")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.email.Pattern}")
                     .addPropertyNode("email")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -58,14 +58,14 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
 
         try {
             if (this.userRepository.existsUserEntityByEmail(registerDTO.getEmail())) {
-                context.buildConstraintViolationWithTemplate("Email đã tồn tại")
+                context.buildConstraintViolationWithTemplate("{RegisterDTO.email.Exists}")
                         .addPropertyNode("email")
                         .addConstraintViolation()
                         .disableDefaultConstraintViolation();
                 return false;
             }
         } catch (Exception e) {
-            context.buildConstraintViolationWithTemplate("Có lỗi xảy ra khi kiểm tra email.")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.email.CheckError}")
                     .addPropertyNode("email")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -74,7 +74,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
 
         if (registerDTO.getPassword().length() < 6 || registerDTO.getPassword().length() > 20 ||
                 registerDTO.getConfirmPassword().length() < 6 || registerDTO.getConfirmPassword().length() > 20) {
-            context.buildConstraintViolationWithTemplate("Mật khẩu và xác nhận mật khẩu phải từ 6 đến 20 ký tự.")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.password.Length}")
                     .addPropertyNode("password")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -82,7 +82,7 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, R
         }
 
         if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
-            context.buildConstraintViolationWithTemplate("Mật khẩu không khớp.")
+            context.buildConstraintViolationWithTemplate("{RegisterDTO.password.Mismatch}")
                     .addPropertyNode("confirmPassword")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();

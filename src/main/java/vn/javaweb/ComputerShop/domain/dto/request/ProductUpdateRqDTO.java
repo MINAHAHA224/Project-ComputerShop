@@ -11,37 +11,38 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @Validated
 public class ProductUpdateRqDTO {
-    private Long id ;
+    private Long id; // Không có validation
 
-    private String image;
-    @NotBlank(message = "Tên sản phẩm không được để trống")
-    @Size(max = 100, message = "Tên sản phẩm tối đa 100 ký tự")
+    private String image; // Không có validation
+
+    @NotBlank(message = "{ProductUpdateRqDTO.name.NotBlank}")
+    @Size(max = 100, message = "{ProductUpdateRqDTO.name.Size}")
     private String name;
 
-    @NotBlank(message = "Tên nhà máy không được để trống")
-    @Size(max = 100, message = "Tên nhà máy tối đa 100 ký tự")
+    @NotBlank(message = "{ProductUpdateRqDTO.factory.NotBlank}")
+    @Size(max = 100, message = "{ProductUpdateRqDTO.factory.Size}")
     private String factory;
 
-    @NotNull(message = "Giá không được để trống")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
+    @NotNull(message = "{ProductUpdateRqDTO.price.NotNull}")
+    @DecimalMin(value = "0.0", inclusive = false, message = "{ProductUpdateRqDTO.price.DecimalMin}")
     private Double price;
 
-    @NotBlank(message = "Mô tả chi tiết không được để trống")
+    @NotBlank(message = "{ProductUpdateRqDTO.detailDesc.NotBlank}")
     private String detailDesc;
 
-    @NotBlank(message = "Mô tả ngắn không được để trống")
-    @Size(max = 255, message = "Mô tả ngắn tối đa 255 ký tự")
+    @NotBlank(message = "{ProductUpdateRqDTO.shortDesc.NotBlank}")
+    @Size(max = 255, message = "{ProductUpdateRqDTO.shortDesc.Size}")
     private String shortDesc;
 
-    @NotNull(message = "Số lượng không được để trống")
-    @Min(value = 1, message = "Số lượng phải lớn hơn 0")
+    @NotNull(message = "{ProductUpdateRqDTO.quantity.NotNull}")
+    @Min(value = 1, message = "{ProductUpdateRqDTO.quantity.Min}")
     private Long quantity;
 
-    @NotBlank(message = "Mục tiêu không được để trống")
+    @NotBlank(message = "{ProductUpdateRqDTO.target.NotBlank}")
     private String target;
 
-    @NotNull(message = "Số lượng đã bán không được để trống")
-    @Min(value = 0, message = "Số lượng đã bán phải lớn hơn hoặc bằng 0")
+    @NotNull(message = "{ProductUpdateRqDTO.sold.NotNull}")
+    @Min(value = 0, message = "{ProductUpdateRqDTO.sold.Min}")
     private Long sold;
 
 }

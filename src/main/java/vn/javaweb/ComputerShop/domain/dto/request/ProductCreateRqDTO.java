@@ -11,27 +11,27 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @Validated
 public class ProductCreateRqDTO {
-    @NotBlank(message = "Tên sản phẩm không được để trống")
-    @Size(max = 100, message = "Tên sản phẩm tối đa 100 ký tự")
+    @NotBlank(message = "{ProductCreateRqDTO.name.NotBlank}")
+    @Size(max = 100, message = "{ProductCreateRqDTO.name.Size}")
     private String name;
 
-    @Positive(message = "Giá phải lớn hơn 0")
+    @Positive(message = "{ProductCreateRqDTO.price.Positive}")
     private double price;
 
-    @NotBlank(message = "Mô tả chi tiết không được để trống")
+    @NotBlank(message = "{ProductCreateRqDTO.detailDesc.NotBlank}")
     private String detailDesc;
 
-    @NotBlank(message = "Mô tả ngắn không được để trống")
-    @Size(max = 255, message = "Mô tả ngắn tối đa 255 ký tự")
+    @NotBlank(message = "{ProductCreateRqDTO.shortDesc.NotBlank}")
+    @Size(max = 255, message = "{ProductCreateRqDTO.shortDesc.Size}")
     private String shortDesc;
 
-    @NotNull(message = "Số lượng không được để trống")
-    @Min(value = 1, message = "Số lượng phải ít nhất là 1")
+    @NotNull(message = "{ProductCreateRqDTO.quantity.NotNull}")
+    @Min(value = 1, message = "{ProductCreateRqDTO.quantity.Min}")
     private Long quantity;
 
-    @NotBlank(message = "Tên nhà máy không được để trống")
+    @NotBlank(message = "{ProductCreateRqDTO.factory.NotBlank}")
     private String factory;
 
-    @NotBlank(message = "Mục tiêu không được để trống")
+    @NotBlank(message = "{ProductCreateRqDTO.target.NotBlank}")
     private String target;
 }

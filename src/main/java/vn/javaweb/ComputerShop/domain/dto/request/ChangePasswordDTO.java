@@ -11,14 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class ChangePasswordDTO {
-    @NotBlank(message = "Mật khẩu hiện tại không được để trống")
+    @NotBlank(message = "{ChangePasswordDTO.currentPassword.NotBlank}")
     private String currentPassword;
 
-    @NotBlank(message = "Mật khẩu mới không được để trống")
-    @Size(min = 6, message = "Mật khẩu mới phải có ít nhất 6 ký tự")
+    @NotBlank(message = "{ChangePasswordDTO.newPassword.NotBlank}")
+    @Size(min = 6, message = "{ChangePasswordDTO.newPassword.Size}")
     private String newPassword;
 
-    @NotBlank(message = "Xác nhận mật khẩu mới không được để trống")
+    @NotBlank(message = "{ChangePasswordDTO.confirmNewPassword.NotBlank}")
     private String confirmNewPassword;
 
 

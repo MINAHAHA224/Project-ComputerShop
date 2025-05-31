@@ -13,24 +13,23 @@ import org.springframework.validation.annotation.Validated;
 @ToString
 @Validated
 public class OrderUpdateRqDTO {
-    private Long id;
-    private Double totalPrice;
-    private String status;
-    private String typePayment;
+    private Long id; // Không có validation
+    private Double totalPrice; // Không có validation
+    private String status; // Không có validation
+    private String typePayment; // Không có validation
 
-
-    @NotBlank(message = "Tên người nhận không được để trống")
-    @Size(max = 100, message = "Tên người nhận không được vượt quá 100 ký tự")
+    @NotBlank(message = "{OrderUpdateRqDTO.receiverName.NotBlank}")
+    @Size(max = 100, message = "{OrderUpdateRqDTO.receiverName.Size}")
     private String receiverName;
 
-    @NotBlank(message = "Địa chỉ người nhận không được để trống")
-    @Size(max = 255, message = "Địa chỉ người nhận không được vượt quá 255 ký tự")
+    @NotBlank(message = "{OrderUpdateRqDTO.receiverAddress.NotBlank}")
+    @Size(max = 255, message = "{OrderUpdateRqDTO.receiverAddress.Size}")
     private String receiverAddress;
 
-    @NotBlank(message = "Số điện thoại không được để trống")
-    @Pattern(regexp = "^(0\\d{9}|\\+84\\d{9,10})$", message = "Số điện thoại không hợp lệ")
+    @NotBlank(message = "{OrderUpdateRqDTO.receiverPhone.NotBlank}")
+    @Pattern(regexp = "^(0\\d{9}|\\+84\\d{9,10})$", message = "{OrderUpdateRqDTO.receiverPhone.Pattern}")
     private String receiverPhone;
 
-    private String statusPayment;
+    private String statusPayment; // Không có validation
 
 }
