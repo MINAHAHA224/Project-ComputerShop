@@ -142,8 +142,8 @@
                                     <div class="info-pair"><strong>Điện thoại người nhận:</strong> <span><c:out value="${order.receiverPhone}"/></span></div>
                                     <div class="info-pair"><strong>Địa chỉ người nhận:</strong> <span><c:out value="${order.receiverAddress}"/></span></div>
                                     <hr style="border-color: var(--current-admin-divider-color);">
-                                    <div class="info-pair"><strong>Người đặt hàng:</strong> <span><c:out value="${order.user.fullName}"/></span></div>
-                                    <div class="info-pair"><strong>Email người đặt:</strong> <span><c:out value="${order.user.email}"/></span></div>
+                                    <div class="info-pair"><strong>Người đặt hàng:</strong> <span><c:out value="${order.nameUser}"/></span></div>
+                                    <div class="info-pair"><strong>Email người đặt:</strong> <span><c:out value="${order.emailUser}"/></span></div>
                                 </div>
                             </div>
 
@@ -161,7 +161,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <c:forEach var="detail" items="${orderDetails}">
+                                            <c:forEach var="detail" items="${order.orderDetails}">
                                                 <tr>
                                                     <td>
                                                         <img src="<c:url value='/images/product/${detail.productImage}'/>" alt="${detail.productName}">

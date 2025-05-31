@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class OrderDetailRpDTO {
+
+
     private String productImage;
     private Long productId;
     private String productName;

@@ -79,7 +79,8 @@ public class OrderService {
         return listResult;
     }
 
-    public List<OrderDetailRpDTO> handeGetOrderDetailAd(Long id) {
+    public OrderRpDTO handeGetOrderDetailAd(Long id) {
+        OrderRpDTO order = new OrderRpDTO();
         List<OrderDetailRpDTO> listResult = new ArrayList<>();
         OrderEntity orderEntity = this.orderRepository.findOrderEntityById(id);
         List<OrderDetailEntity> listEntity = orderEntity.getOrderDetails();
@@ -93,7 +94,19 @@ public class OrderService {
             result.setProductQuantity(entity.getQuantity());
             listResult.add(result);
         }
-        return listResult;
+        order.setId(orderEntity.getId());
+        order.setTime(orderEntity.getTime());
+        order.setTotalPrice(orderEntity.getTotalPrice());
+        order.setStatus(orderEntity.getStatus());
+        order.setStatusPayment(orderEntity.getStatusPayment());
+        order.setNameUser(orderEntity.getUser().getFullName());
+        order.setEmailUser(orderEntity.getUser().getEmail());
+        order.setReceiverName(orderEntity.getReceiverName());
+        order.setReceiverPhone(orderEntity.getReceiverPhone());
+        order.setReceiverAddress(orderEntity.getReceiverAddress());
+
+        order.setOrderDetails(listResult);
+        return order;
     }
 
     public OrderUpdateRqDTO handleGetOrderRqAd(Long id) {
