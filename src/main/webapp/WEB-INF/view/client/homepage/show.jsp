@@ -31,6 +31,10 @@
 <!-- Spinner End -->
 
 <jsp:include page="../layout/header.jsp" />
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}');
+    localStorage.setItem('productSearchData', JSON.stringify(window.productSearchData));
+</script>
 <jsp:include page="../layout/banner.jsp" />
 <jsp:include page="../layout/feature.jsp" />
 

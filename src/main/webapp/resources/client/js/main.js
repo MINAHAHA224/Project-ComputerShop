@@ -534,6 +534,107 @@
     }
 
     displayMessagesAsToasts();
+
+    const $liveSearchInput = $('#liveSearchInput');
+    const $liveSearchResults = $('#liveSearchResults');
+    const $liveSearchForm = $('#liveSearchForm');
+    if (typeof window.productSearchData === 'undefined') {
+      try {
+        const storedData = localStorage.getItem('productSearchData');
+        if (storedData) {
+          window.productSearchData = JSON.parse(storedData);
+        }
+      } catch (e) {
+        console.warn('Không thể lấy productSearchData từ localStorage:', e);
+      }
+    }
+    if (
+      $liveSearchInput.length &&
+      $liveSearchResults.length &&
+      typeof window.productSearchData !== 'undefined'
+    ) {
+      let searchDebounceTimer;
+
+      $liveSearchInput.on('input focus', function () {
+        const query = $(this).val().trim().toLowerCase();
+
+        clearTimeout(searchDebounceTimer);
+
+        if (query.length < 2) {
+          $liveSearchResults.removeClass('show').empty();
+          return;
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+          const filteredProducts = window.productSearchData.filter(
+            (product) => {
+              return product.name.toLowerCase().includes(query);
+            }
+          );
+
+          $liveSearchResults.empty();
+          console.log('filteredProducts:', filteredProducts);
+          if (filteredProducts.length > 0) {
+            filteredProducts.slice(0, 7).forEach((product) => {
+              const productUrl = `/product/${product.id}`;
+              const imageUrl = `/images/product/${
+                product.image ? product.image : 'default-product.png'
+              }`;
+
+              console.log('Product URL:', productUrl);
+              console.log('Image URL:', imageUrl);
+
+              const $item = $(`
+              <a href="${productUrl}" class="dropdown-item">
+                <img src="${imageUrl}" alt="${product.name}">
+                <div class="product-info">
+                  <span class="product-name">${product.name}</span>
+                  <span class="product-price">${
+                    product.formattedPrice ||
+                    parseFloat(product.price).toLocaleString('vi-VN') + ' đ'
+                  }</span>
+                </div>
+              </a>
+            `);
+              $liveSearchResults.append($item);
+            });
+            $liveSearchResults.addClass('show');
+          } else {
+            if (query.length > 0) {
+              $liveSearchResults.append(
+                '<div class="dropdown-item no-results">Không tìm thấy sản phẩm nào.</div>'
+              );
+              $liveSearchResults.addClass('show');
+            } else {
+              $liveSearchResults.removeClass('show');
+            }
+          }
+        }, 300);
+      });
+
+      $(document).on('click', function (e) {
+        if (
+          !$liveSearchInput.is(e.target) &&
+          $liveSearchResults.has(e.target).length === 0
+        ) {
+          $liveSearchResults.removeClass('show');
+        }
+      });
+
+      $liveSearchResults.on('click', '.dropdown-item', function (e) {
+        if (!$(this).hasClass('no-results')) {
+          e.preventDefault();
+          window.location.href = $(this).attr('href');
+        }
+      });
+    } else {
+      if ($liveSearchInput.length === 0)
+        console.warn('Live search input not found.');
+      if ($liveSearchResults.length === 0)
+        console.warn('Live search results container not found.');
+      if (typeof window.productSearchData === 'undefined')
+        console.warn('productSearchData is not defined globally.');
+    }
   });
 
   // Product Quantity

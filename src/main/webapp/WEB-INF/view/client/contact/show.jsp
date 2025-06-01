@@ -96,6 +96,11 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     </div>
 
     <jsp:include page="../layout/header.jsp" />
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}'); 
+    // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+</script>
+
 
     <div class="container-fluid page-header contact-page-header py-5">
       <h1 class="text-center text-white display-5"><spring:message code="page.contact.header.title"/></h1>

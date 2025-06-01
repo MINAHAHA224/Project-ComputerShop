@@ -2470,4 +2470,107 @@ a:hover {
     font-size: 1.1rem;
     line-height: 1;
 }
+/* ==================================================================
+        3TLAP - LIVE SEARCH HEADER
+===================================================================== */
+.search-form-container {
+    min-width: 250px;
+    max-width: 350px;
+}
 
+.admin-search-form input.form-control-sm {
+    font-size: 0.875rem;
+    height: calc(1.5em + .5rem + 2px + 4px);
+    padding-right: 3rem;
+    background-color: var(--light-bg-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-in-out;
+}
+body.theme-dark .admin-search-form input.form-control-sm {
+    background-color: var(--admin-card-bg-dark);
+    border-color: var(--admin-border-color-dark);
+    color: var(--admin-text-primary-dark);
+}
+.admin-search-form input.form-control-sm:focus {
+    background-color: var(--white-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.2);
+}
+
+.admin-search-form button {
+    border: none;
+    z-index: 4;
+}
+.admin-search-form button i {
+    font-size: 0.9rem;
+}
+
+.live-search-results.dropdown-menu {
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
+    margin-top: 21.5rem !important;
+    padding: 0.5rem 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.live-search-results .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    white-space: normal;
+    border-bottom: 1px solid var(--border-color-light);
+    transition: background-color 0.15s ease;
+}
+.live-search-results .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.live-search-results .dropdown-item img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    margin-right: 0.75rem;
+    border-radius: 0.25rem;
+    background-color: var(--light-bg-color);
+}
+
+.live-search-results .dropdown-item .product-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.live-search-results .dropdown-item .product-name {
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.live-search-results .dropdown-item .product-price {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.live-search-results .dropdown-item:hover,
+.live-search-results .dropdown-item:focus {
+    background-color: rgba(var(--primary-rgb), 0.08);
+    color: initial;
+}
+.live-search-results .dropdown-item:hover .product-name {
+    color: var(--primary-color);
+}
+
+.live-search-results .no-results {
+    padding: 0.75rem 1rem;
+    color: var(--text-muted-color);
+    font-style: italic;
+    font-size: 0.9rem;
+}

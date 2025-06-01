@@ -36,12 +36,20 @@
                 </div>
                 <div class="d-flex align-items-center">
 
-                    <form action="<c:url value='/search-results'/>" method="get" class="d-flex me-3 search-form-placeholder">
-                        <spring:message code="layout.header.search.placeholder" var="searchPlaceholder"/>
-                        <spring:message code="layout.header.search.ariaLabel" var="searchAriaLabel"/>
-                        <input class="form-control form-control-sm rounded-pill" type="search" placeholder="${searchPlaceholder}" aria-label="${searchAriaLabel}" name="keyword">
-                        <button class="btn btn-outline-primary btn-sm rounded-pill ms-1" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
+                
+        <div class="search-box admin-search-form">
+            <input class="rounded-pill form-control-sm" 
+                   type="search" 
+                   placeholder="Tìm kiếm laptop..." 
+                   aria-label="Search" 
+                   name="keyword"
+                   id="liveSearchInput"
+                   autocomplete="off">
+        </div>
+ 
+    <div class="dropdown-menu live-search-results mt-5 shadow-lg search-form-container" id="liveSearchResults">
+
+    </div>
                     <div class="language-switcher">
                         <spring:message code="layout.header.lang.vietnamese.title" var="vietnameseTitle"/>
                         <spring:message code="layout.header.lang.vietnamese.alt" var="vietnameseAlt"/>

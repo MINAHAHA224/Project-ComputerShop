@@ -47,6 +47,10 @@ uri="http://www.springframework.org/tags" %>
   </head>
   <body>
     <jsp:include page="../layout/header.jsp" />
+    <script type="text/javascript">
+      window.productSearchData = JSON.parse('${dataSearchJson}');
+      // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+    </script>
 
     <div class="container-fluid py-5">
       <div class="container py-5 thank-you-container">

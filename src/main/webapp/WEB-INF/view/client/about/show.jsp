@@ -117,6 +117,12 @@
 </div>
 
 <jsp:include page="../layout/header.jsp" />
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}'); 
+    // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+</script>
+
+
 
 <div class="container-fluid page-header about-page-header py-5">
   <div class="container text-center">

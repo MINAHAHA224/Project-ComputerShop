@@ -1,8 +1,10 @@
 package vn.javaweb.ComputerShop.controller.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import vn.javaweb.ComputerShop.domain.dto.request.ChangePasswordDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.ProductFilterDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.UserProfileUpdateDTO;
@@ -40,10 +45,29 @@ public class ClientPageController {
     private final UploadService uploadService;
 
     @GetMapping("/home")
-    public String getHomepage(Model model) {
+    public String getHomepage(Model model, HttpSession session) {
         List<ProductRpDTO> listResult = this.productService.getAllProductView();
         model.addAttribute("products", listResult);
 
+        List<Map<String, String>> dataSearch = new ArrayList<>();
+        for (ProductRpDTO result : listResult) {
+            Map<String, String> productInfo = new HashMap<>();
+            productInfo.put("id", result.getId().toString());
+            productInfo.put("name", result.getName());
+            productInfo.put("image", result.getImage());
+            productInfo.put("price", result.getPrice().toString());
+            productInfo.put("formattedPrice", String.format("%,.0f đ", result.getPrice()));
+            dataSearch.add(productInfo);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String dataSearchJson = objectMapper.writeValueAsString(dataSearch);
+            model.addAttribute("dataSearchJson", dataSearchJson);
+        } catch (Exception e) {
+            model.addAttribute("dataSearchJson", "[]");
+            e.printStackTrace();
+        }
         return "client/homepage/show";
     }
 

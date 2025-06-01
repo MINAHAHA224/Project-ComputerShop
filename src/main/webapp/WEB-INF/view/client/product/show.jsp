@@ -28,6 +28,11 @@
                 <!-- Spinner End -->
 
                 <jsp:include page="../layout/header.jsp" />
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}'); 
+    // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+</script>
+
 
                 <!-- Single Product Start -->
                 <div class="container-fluid py-5 mt-5">
