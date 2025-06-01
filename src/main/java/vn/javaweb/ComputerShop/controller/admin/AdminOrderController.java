@@ -42,8 +42,8 @@ public class AdminOrderController {
 
     @GetMapping("/admin/order/{id}")
     public String getOrderDetail(Model model, @PathVariable long id) {
-            List<OrderDetailRpDTO> orderDetails = this.orderService.handeGetOrderDetailAd(id);
-            model.addAttribute("orderDetails", orderDetails);
+            OrderRpDTO order = this.orderService.handeGetOrderDetailAd(id);
+            model.addAttribute("order", order);
             return "admin/order/detail";
     }
 

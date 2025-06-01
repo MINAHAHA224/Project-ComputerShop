@@ -21,12 +21,17 @@
     --admin-border-color-dark: #3e444e;
     --admin-divider-color-dark: #323840;
     --admin-primary-accent: #0A7AFF;
+    --admin-primary-accent-hover: #0A6EDB;
     --admin-primary-accent-rgb: 10, 122, 255;
     --admin-secondary-accent: #FF8C00;
+    --admin-secondary-accent-hover: #e07b00;
     --admin-success-accent: #198754;
     --admin-danger-accent: #dc3545;
+    --admin-danger-accent-hover: #c82333;
     --admin-warning-accent: #ffc107;
+    --admin-warning-accent-hover: #e0a800;
     --admin-info-accent: #0dcaf0;
+    --admin-info-accent-hover: #0bb8e4;
     --white-color: #ffffff;
     --black-color: #000000;
     --admin-font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -468,8 +473,8 @@ body.admin-body-3tlap.theme-dark .theme-toggle-button .fa-moon { display: none; 
     color: var(--white-color) !important;
 }
 .admin-body-3tlap .btn-primary:hover {
-    background-color: darken(var(--admin-primary-accent), 8%) !important;
-    border-color: darken(var(--admin-primary-accent), 10%) !important;
+    background-color: var(--admin-primary-accent-hover) !important;
+    border-color: var(--admin-primary-accent-hover) !important;
 }
 
 .admin-body-3tlap .btn-secondary {
@@ -478,8 +483,8 @@ body.admin-body-3tlap.theme-dark .theme-toggle-button .fa-moon { display: none; 
     color: var(--white-color) !important;
 }
 .admin-body-3tlap .btn-secondary:hover {
-    background-color: darken(var(--admin-secondary-accent), 8%) !important;
-    border-color: darken(var(--admin-secondary-accent), 10%) !important;
+    background-color: var(--admin-secondary-accent-hover) !important;
+    border-color: var(--admin-secondary-accent-hover) !important;
 }
 
 .admin-body-3tlap .text-primary { color: var(--admin-primary-accent) !important; }
@@ -656,11 +661,11 @@ body.admin-body-3tlap.theme-dark .table-hover > tbody > tr:hover > * {
     font-size: 0.9em;
 }
 .table-actions .btn-info { background-color: var(--admin-info-accent) !important; border-color: var(--admin-info-accent) !important; color: var(--white-color) !important; }
-.table-actions .btn-info:hover { background-color: darken(var(--admin-info-accent), 8%) !important; border-color: darken(var(--admin-info-accent), 10%) !important;}
+.table-actions .btn-info:hover { background-color: var(--admin-info-accent-hover) !important; border-color: var(--admin-info-accent-hover) !important;}
 .table-actions .btn-warning { background-color: var(--admin-warning-accent) !important; border-color: var(--admin-warning-accent) !important; color: #212529 !important; }
-.table-actions .btn-warning:hover { background-color: darken(var(--admin-warning-accent), 8%) !important; border-color: darken(var(--admin-warning-accent), 10%) !important;}
+.table-actions .btn-warning:hover { background-color: var(--admin-warning-accent-hover) !important; border-color: var(--admin-warning-accent-hover) !important;}
 .table-actions .btn-danger { background-color: var(--admin-danger-accent) !important; border-color: var(--admin-danger-accent) !important; color: var(--white-color) !important; }
-.table-actions .btn-danger:hover { background-color: darken(var(--admin-danger-accent), 8%) !important; border-color: darken(var(--admin-danger-accent), 10%) !important;}
+.table-actions .btn-danger:hover { background-color: var(--admin-danger-accent-hover) !important; border-color: var(--admin-danger-accent-hover) !important;}
 
 .admin-modal-content {
     background-color: var(--current-admin-card-bg);

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
+import vn.javaweb.ComputerShop.component.MailerComponent;
 import vn.javaweb.ComputerShop.domain.dto.request.OrderUpdateRqDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.momo.MomoRpRedirectDTO;
@@ -27,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
+    private final MailerComponent mailerComponent;
 
 
     public List<OrderRpDTO> handleGetDataOrderOfUser(HttpSession session) {
@@ -77,7 +79,8 @@ public class OrderService {
         return listResult;
     }
 
-    public List<OrderDetailRpDTO> handeGetOrderDetailAd(Long id) {
+    public OrderRpDTO handeGetOrderDetailAd(Long id) {
+        OrderRpDTO order = new OrderRpDTO();
         List<OrderDetailRpDTO> listResult = new ArrayList<>();
         OrderEntity orderEntity = this.orderRepository.findOrderEntityById(id);
         List<OrderDetailEntity> listEntity = orderEntity.getOrderDetails();
@@ -91,7 +94,19 @@ public class OrderService {
             result.setProductQuantity(entity.getQuantity());
             listResult.add(result);
         }
-        return listResult;
+        order.setId(orderEntity.getId());
+        order.setTime(orderEntity.getTime());
+        order.setTotalPrice(orderEntity.getTotalPrice());
+        order.setStatus(orderEntity.getStatus());
+        order.setStatusPayment(orderEntity.getStatusPayment());
+        order.setNameUser(orderEntity.getUser().getFullName());
+        order.setEmailUser(orderEntity.getUser().getEmail());
+        order.setReceiverName(orderEntity.getReceiverName());
+        order.setReceiverPhone(orderEntity.getReceiverPhone());
+        order.setReceiverAddress(orderEntity.getReceiverAddress());
+
+        order.setOrderDetails(listResult);
+        return order;
     }
 
     public OrderUpdateRqDTO handleGetOrderRqAd(Long id) {
@@ -139,7 +154,9 @@ public class OrderService {
     public ResponseBodyDTO handleCompleteOrderPaymentOnline(MomoRpDTO momoRpDTO) {
         ResponseBodyDTO response = new ResponseBodyDTO();
 
-        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(Long.valueOf(momoRpDTO.getOrderId()));
+        String prefixOrderId = momoRpDTO.getOrderId().substring(0, 2);
+        Long orderId = Long.valueOf(prefixOrderId);
+        OrderEntity orderEntity = this.orderRepository.findOrderEntityById(orderId);
         if (momoRpDTO.getResultCode() != 1006) {
 
             UserEntity user = orderEntity.getUser();
@@ -151,6 +168,9 @@ public class OrderService {
 
             response.setStatus(200);
             response.setMessage(momoRpDTO.getMessage());
+
+            // send mail invoice
+            mailerComponent.sendInvoiceEmail(orderEntity);
         } else {
             this.orderRepository.deleteOrderEntityById(orderEntity.getId());
             response.setStatus(500);

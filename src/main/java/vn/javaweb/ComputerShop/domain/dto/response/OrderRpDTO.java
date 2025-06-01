@@ -22,6 +22,7 @@ public class OrderRpDTO {
 
     // detail from show oderAdmin
     private String nameUser;
+    private String emailUser;
 
     private Date time;
 
@@ -30,5 +31,8 @@ public class OrderRpDTO {
     private String statusPayment;
 
 
+    private String receiverName;
 
+    private String receiverPhone;
+    private String receiverAddress;
 }

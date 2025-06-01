@@ -1,3 +1,6 @@
+// src/main/webapp/resources/client/js/goong-autocomplete.js
+
+
 $(document).ready(function () {
   const GOONG_API_KEY = 'EAddPu1fx9SFE8rAE7Ogdp1rheIPEfrhiAB65nif';
   let debounceTimer;

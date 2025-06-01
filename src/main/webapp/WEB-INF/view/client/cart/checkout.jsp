@@ -1,18 +1,20 @@
+<%--src/main/webapp/WEB-INF/view/client/cart/checkout.jsp--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>Thanh Toán Đơn Hàng - 3TLap</title>
+    <title><spring:message code="page.checkout.meta.title"/></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Thanh toán, đặt hàng, laptop, 3TLap" name="keywords">
-    <meta content="Hoàn tất đơn hàng của bạn tại 3TLap với các thông tin thanh toán và giao hàng an toàn." name="description">
-
+    <meta content="<spring:message code="page.checkout.meta.keywords"/>" name="keywords">
+    <meta content="<spring:message code="page.checkout.meta.description"/>" name="description">
     <jsp:include page="../layout/common_head_links.jsp"/>
     <style>
         .checkout-page-header {
@@ -106,128 +108,147 @@
 </head>
 
 <body>
-    <div id="spinner"
-         class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" role="status"></div>
-    </div>
+<div id="spinner"
+     class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
 
-    <jsp:include page="../layout/header.jsp"/>
-
-    <div class="container-fluid page-header checkout-page-header py-5">
-        <h1 class="text-center text-white display-6">Xác Nhận & Thanh Toán</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="<c:url value='/home'/>">Trang Chủ</a></li>
-            <li class="breadcrumb-item"><a href="<c:url value='/cart'/>">Giỏ Hàng</a></li>
-            <li class="breadcrumb-item active text-white">Thanh Toán</li>
-        </ol>
-    </div>
-
-    <div class="container-fluid py-5">
-        <div class="container py-5">
-            <c:if test="${not empty messageError}">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    ${messageError}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-
-            <form:form action="/place-order" method="post" modelAttribute="infoOrderRqDTO">
-                <security:csrfInput />
-                <div class="row g-5">
-                    <div class="col-md-12 col-lg-6 col-xl-7">
-                        <div class="checkout-section">
-                            <h4>Thông Tin Giao Hàng</h4>
-                            <div class="row">
-                                <div class="col-12 mb-3">
-                                    <label for="receiverName" class="form-label">Họ và tên người nhận <span class="text-danger">*</span></label>
-                                    <form:input path="receiverName" cssClass="form-control" id="receiverName"/>
-                                    <form:errors path="receiverName" cssClass="form-error"/>
-                                </div>
-                       <div class="col-12 mb-3">
-    <label for="receiverAddressCheckout" class="form-label">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
-    <div class="address-autocomplete-wrapper position-relative">
-        <form:input type="text" 
-                    path="receiverAddress" 
-                    cssClass="form-control goong-address-input" 
-                    id="receiverAddressCheckout" 
-                    placeholder="Nhập địa chỉ..." 
-                    autocomplete="off"/>
-        <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="receiverAddressCheckout">
-
-        </div>
-    </div>
-    <form:errors path="receiverAddress" cssClass="form-error d-block"/> 
 </div>
-                                <div class="col-12 mb-3">
-                                    <label for="receiverPhone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                    <form:input path="receiverPhone" cssClass="form-control" id="receiverPhone" type="tel"/>
-                                    <form:errors path="receiverPhone" cssClass="form-error"/>
-                                </div>
-                                <form:hidden path="totalPriceToSaveOrder"/>
-                            </div>
-                        </div>
 
-                        <div class="checkout-section mt-4">
-                            <h4>Phương Thức Thanh Toán</h4>
-                            <form:errors path="paymentMethod" cssClass="form-error mb-3"/>
-                            <div class="form-check mb-3">
-                                <form:radiobutton path="paymentMethod" id="paymentCod" value="COD" cssClass="form-check-input"/>
-                                <label class="form-check-label" for="paymentCod">
-                                    <i class="fas fa-money-bill-wave me-2 text-success"></i>Thanh toán khi nhận hàng (COD)
-                                </label>
+<jsp:include page="../layout/header.jsp"/>
+
+<div class="container-fluid page-header checkout-page-header py-5">
+    <h1 class="text-center text-white display-6"><spring:message code="page.checkout.header.title"/></h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="<c:url value='/'/>"><spring:message code="page.checkout.breadcrumb.home"/></a></li>
+        <li class="breadcrumb-item"><a href="<c:url value='/cart'/>"><spring:message code="page.checkout.breadcrumb.cart"/></a></li>
+        <li class="breadcrumb-item active text-white"><spring:message code="page.checkout.breadcrumb.checkout"/></li>
+    </ol>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <c:if test="${not empty messageError}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${messageError} <%-- Nếu messageError là key, dùng <spring:message code="${messageError}"/> --%>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
+        <form:form action="/place-order" method="post" modelAttribute="infoOrderRqDTO">
+            <security:csrfInput />
+            <div class="row g-5">
+                <div class="col-md-12 col-lg-6 col-xl-7">
+                    <div class="checkout-section">
+                        <h4><spring:message code="page.checkout.shippingInfo.title"/></h4>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="receiverName" class="form-label"><spring:message code="page.checkout.shippingInfo.label.receiverName"/> <span class="text-danger"><spring:message code="page.checkout.shippingInfo.requiredMark"/></span></label>
+                                <form:input path="receiverName" cssClass="form-control" id="receiverName"/>
+                                <form:errors path="receiverName" cssClass="form-error"/>
                             </div>
-                            <div class="form-check mb-3">
-                                <form:radiobutton path="paymentMethod" id="paymentMomo" value="MOMO" cssClass="form-check-input"/>
-                                <label class="form-check-label" for="paymentMomo">
-                                    <img src="<c:url value='/client/img/momo-icon.png'/>" alt="Momo" height="20" class="me-2">Thanh toán qua Ví MoMo
-                                </label>
+                            <div class="col-12 mb-3">
+                                <label for="receiverAddressCheckout" class="form-label"><spring:message code="page.checkout.shippingInfo.label.receiverAddress"/> <span class="text-danger"><spring:message code="page.checkout.shippingInfo.requiredMark"/></span></label>
+                                <div class="address-autocomplete-wrapper position-relative">
+                                    <spring:message code="page.checkout.shippingInfo.placeholder.receiverAddress" var="addressPlaceholder"/>
+                                    <form:input type="text"
+                                                path="receiverAddress"
+                                                cssClass="form-control goong-address-input"
+                                                id="receiverAddressCheckout"
+                                                placeholder="${addressPlaceholder}"
+                                                autocomplete="off"/>
+                                    <div class="dropdown-menu goong-address-suggestions w-100" aria-labelledby="receiverAddressCheckout">
+                                    </div>
+                                </div>
+                                <form:errors path="receiverAddress" cssClass="form-error d-block"/>
                             </div>
-                            <div class="form-check">
-                                <form:radiobutton path="paymentMethod" id="paymentVnpay" value="VNPAY" cssClass="form-check-input"/>
-                                <label class="form-check-label" for="paymentVnpay">
-                                    <img src="<c:url value='/client/img/vnpay-icon.png'/>" alt="VNPay" height="20" class="me-2">Thanh toán qua VNPay QR
-                                </label>
+                            <div class="col-12 mb-3">
+                                <label for="receiverPhone" class="form-label"><spring:message code="page.checkout.shippingInfo.label.receiverPhone"/> <span class="text-danger"><spring:message code="page.checkout.shippingInfo.requiredMark"/></span></label>
+                                <form:input path="receiverPhone" cssClass="form-control" id="receiverPhone" type="tel"/>
+                                <form:errors path="receiverPhone" cssClass="form-error"/>
                             </div>
+                            <form:hidden path="totalPriceToSaveOrder"/>
                         </div>
                     </div>
 
-                    <div class="col-md-12 col-lg-6 col-xl-5">
-                        <div class="order-summary-checkout">
-                            <h4>Tóm Tắt Đơn Hàng</h4>
-                            <c:forEach var="item" items="${cartDetails}">
-                                <div class="summary-item">
-                                    <span class="product-name-summary" title="${item.productName}">${item.quantity} x ${item.productName}</span>
-                                    <span><fmt:formatNumber type="number" value="${item.price * item.quantity}"/> đ</span>
-                                </div>
-                            </c:forEach>
-                            <hr class="my-3">
-                            <div class="summary-item">
-                                <span>Tạm tính:</span>
-                                <span><fmt:formatNumber type="number" value="${totalPrice}"/> đ</span>
-                            </div>
-                            <div class="summary-item">
-                                <span>Phí vận chuyển:</span>
-                                <span>Miễn phí</span>
-                            </div>
-                            <div class="summary-item summary-total">
-                                <span>Tổng cộng:</span>
-                                <span><fmt:formatNumber type="number" value="${totalPrice}"/> đ</span>
-                            </div>
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-pill btn-place-order">
-                                    <i class="fas fa-check-circle me-2"></i>ĐẶT HÀNG
-                                </button>
-                            </div>
+                    <div class="checkout-section mt-4">
+                        <h4><spring:message code="page.checkout.paymentMethod.title"/></h4>
+                        <form:errors path="paymentMethod" cssClass="form-error mb-3"/>
+                        <div class="form-check mb-3">
+                            <form:radiobutton path="paymentMethod" id="paymentCod" value="COD" cssClass="form-check-input"/>
+                            <label class="form-check-label" for="paymentCod">
+                                <i class="fas fa-money-bill-wave me-2 text-success"></i><spring:message code="page.checkout.paymentMethod.cod"/>
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <form:radiobutton path="paymentMethod" id="paymentMomo" value="MOMO" cssClass="form-check-input"/>
+                            <spring:message code="page.checkout.paymentMethod.alt.momo" var="momoAlt"/>
+                            <label class="form-check-label" for="paymentMomo">
+                                <img src="<c:url value='/client/img/momo-icon.png'/>" alt="${momoAlt}" height="20" class="me-2"><spring:message code="page.checkout.paymentMethod.momo"/>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <form:radiobutton path="paymentMethod" id="paymentVnpay" value="VNPAY" cssClass="form-check-input"/>
+                            <spring:message code="page.checkout.paymentMethod.alt.vnpay" var="vnpayAlt"/>
+                            <label class="form-check-label" for="paymentVnpay">
+                                <img src="<c:url value='/client/img/vnpay-icon.png'/>" alt="${vnpayAlt}" height="20" class="me-2"><spring:message code="page.checkout.paymentMethod.vnpay"/>
+                            </label>
                         </div>
                     </div>
                 </div>
-            </form:form>
-        </div>
+
+                <div class="col-md-12 col-lg-6 col-xl-5">
+                    <div class="order-summary-checkout">
+                        <h4><spring:message code="page.checkout.orderSummary.title"/></h4>
+                        <c:forEach var="item" items="${cartDetails}">
+                            <div class="summary-item">
+                                <span class="product-name-summary" title="${item.productName}">${item.quantity} x ${item.productName}</span>
+                                <span><fmt:formatNumber type="number" value="${item.price * item.quantity}"/> <spring:message code="page.checkout.orderSummary.currencySymbol"/></span>
+                            </div>
+                        </c:forEach>
+                        <hr class="my-3">
+                        <div class="summary-item">
+                            <span><spring:message code="page.checkout.orderSummary.subtotal"/></span>
+                            <span><fmt:formatNumber type="number" value="${totalPrice}"/> <spring:message code="page.checkout.orderSummary.currencySymbol"/></span>
+                        </div>
+                        <div class="summary-item">
+                            <span><spring:message code="page.checkout.orderSummary.shippingFee"/></span>
+                            <span><spring:message code="page.checkout.orderSummary.shippingFee.free"/></span>
+                        </div>
+                        <div class="summary-item summary-total">
+                            <span><spring:message code="page.checkout.orderSummary.total"/></span>
+                            <span><fmt:formatNumber type="number" value="${totalPrice}"/> <spring:message code="page.checkout.orderSummary.currencySymbol"/></span>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill btn-place-order">
+                                <i class="fas fa-check-circle me-2"></i><spring:message code="page.checkout.orderSummary.button.placeOrder"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form:form>
+    </div>
+</div>
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
     </div>
 
-    <jsp:include page="../layout/footer.jsp"/>
-    <jsp:include page="../layout/common_scripts.jsp"/>
-    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
+    <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+        <div id="toast-message-success" class="d-none" data-message="${param.messageSuccess}${messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty param.messageError || not empty messageError}">
+        <div id="toast-message-error" class="d-none" data-message="${param.messageError}${messageError}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}">
+        <div id="flash-toast-message-success" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}">
+        <div id="flash-toast-message-error" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"></div>
+    </c:if>
 
+  
+<jsp:include page="../layout/chatbot_widget.jsp" />
+<jsp:include page="../layout/footer.jsp"/>
+<jsp:include page="../layout/common_scripts.jsp"/>
+<script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
 </body>
 </html>

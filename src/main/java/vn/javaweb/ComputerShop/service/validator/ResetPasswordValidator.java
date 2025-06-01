@@ -13,7 +13,7 @@ public class ResetPasswordValidator implements ConstraintValidator<ResetPassword
     public boolean isValid(ResetPasswordDTO resetPasswordDTO, ConstraintValidatorContext context) {
         if (resetPasswordDTO.getPassword().length() < 6 || resetPasswordDTO.getPassword().length() > 20 ||
                 resetPasswordDTO.getConfirmPassword().length() < 6 || resetPasswordDTO.getConfirmPassword().length() > 20) {
-            context.buildConstraintViolationWithTemplate("Mật khẩu và xác nhận mật khẩu phải từ 6 đến 20 ký tự.")
+            context.buildConstraintViolationWithTemplate("{ResetPasswordDTO.password.length}")
                     .addPropertyNode("password")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
@@ -21,7 +21,7 @@ public class ResetPasswordValidator implements ConstraintValidator<ResetPassword
         }
 
         if (!resetPasswordDTO.getPassword().equals(resetPasswordDTO.getConfirmPassword())) {
-            context.buildConstraintViolationWithTemplate("Mật khẩu không khớp.")
+            context.buildConstraintViolationWithTemplate("{ResetPasswordDTO.password.mismatch}")
                     .addPropertyNode("confirmPassword")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();

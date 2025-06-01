@@ -1,4 +1,5 @@
 
+<%--src/main/webapp/WEB-INF/view/admin/product/create.jsp--%>
         <%@page contentType="text/html" pageEncoding="UTF-8" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -31,6 +32,7 @@
         <body class="sb-nav-fixed admin-body-3tlap">
             <c:set var="breadcrumbCurrentPage" value="Thêm Sản Phẩm" scope="request"/>
             <jsp:include page="../layout/header.jsp"/>
+
 
             <div id="layoutSidenav">
                 <jsp:include page="../layout/navbar.jsp"/>

@@ -1,3 +1,5 @@
+// src/main/webapp/resources/client/js/chatbot.js
+
 $(document).ready(function () {
   const CHATBOT_API_BASE_URL = 'http://8.34.124.122:20610';
   const CHATBOT_API_KEY = 'P39vB66xz1SFKwzKImvvYb3FMkzhUp26';

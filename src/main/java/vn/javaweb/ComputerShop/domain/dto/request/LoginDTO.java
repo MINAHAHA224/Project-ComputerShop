@@ -16,15 +16,15 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 @Validated
 public class LoginDTO {
-    @NotBlank(message = "Email không được để trống.")
-    @Email(message = "Email không đúng định dạng.")
+    @NotBlank(message = "{LoginDTO.email.NotBlank}")
+    @Email(message = "{LoginDTO.email.Email}")
     @Pattern(
             regexp = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",
-            message = "Email phải có dạng @<subdomain>.<domain>."
+            message = "{LoginDTO.email.Pattern}"
     )
     private String email;
 
-    @NotBlank(message = "Mật khẩu không được để trống.")
-    @Size(min = 6, max = 20, message = "Mật khẩu phải từ 6 đến 20 ký tự.")
+    @NotBlank(message = "{LoginDTO.password.NotBlank}")
+    @Size(min = 6, max = 20, message = "{LoginDTO.password.Size}")
     private String password;
 }

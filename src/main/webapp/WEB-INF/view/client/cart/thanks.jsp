@@ -1,17 +1,25 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
-<!-- JSP Path: client/cart/thanks.jsp -->
+<%--src/main/webapp/WEB-INF/view/client/cart/thanks.jsp--%> <%@page
+contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="spring"
+uri="http://www.springframework.org/tags" %>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${pageContext.response.locale.language}">
   <head>
     <meta charset="UTF-8" />
-    <title>Đặt hàng thành công - Laptopshop</title>
-    <%--
-    <jsp:include page="../layout/common_head.jsp" />
-    &lt;%&ndash; Giả sử bạn có file này cho common head &ndash;%&gt;--%>
-    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/client/css/style.css" rel="stylesheet" />
+    <title><spring:message code="page.thanks.meta.title"/></title>
+
+    <jsp:include page="../layout/common_head_links.jsp" />
+
+    <link
+      href="<c:url value='/client/css/bootstrap.min.css'/>"
+      rel="stylesheet"
+    />
+    <%-- Cân nhắc dùng c:url --%>
+    <link href="<c:url value='/client/css/style.css'/>" rel="stylesheet" />
+    <%-- Cân nhắc dùng c:url --%>
     <style>
+      /* CSS giữ nguyên */
       .thank-you-container {
         min-height: 60vh;
         display: flex;
@@ -22,17 +30,17 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       }
       .icon-success {
         font-size: 5rem;
-        color: #28a745; /* Màu xanh lá cây thành công */
+        color: #28a745;
         margin-bottom: 20px;
       }
       .icon-warning {
         font-size: 5rem;
-        color: #ffc107; /* Màu vàng cảnh báo */
+        color: #ffc107;
         margin-bottom: 20px;
       }
       .icon-error {
         font-size: 5rem;
-        color: #dc3545; /* Màu đỏ lỗi */
+        color: #dc3545;
         margin-bottom: 20px;
       }
     </style>
@@ -44,47 +52,66 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       <div class="container py-5 thank-you-container">
         <c:if test="${not empty successMessage}">
           <i class="fas fa-check-circle icon-success"></i>
-          <h1 class="display-4">Cảm ơn bạn!</h1>
+          <h1 class="display-4">
+            <spring:message code="page.thanks.header.success" />
+          </h1>
           <p class="lead">${successMessage}</p>
+          <%-- Nếu successMessage là key, dùng
+          <spring:message code="${successMessage}" /> --%>
         </c:if>
         <c:if test="${not empty warningMessage}">
           <i class="fas fa-exclamation-triangle icon-warning"></i>
-          <h1 class="display-4">Đặt hàng thành công!</h1>
+          <h1 class="display-4">
+            <spring:message code="page.thanks.header.warning" />
+          </h1>
           <p class="lead">${warningMessage}</p>
+          <%-- Nếu warningMessage là key, dùng
+          <spring:message code="${warningMessage}" /> --%>
         </c:if>
         <c:if test="${not empty errorMessage}">
           <i class="fas fa-times-circle icon-error"></i>
-          <h1 class="display-4">Đã có lỗi!</h1>
+          <h1 class="display-4">
+            <spring:message code="page.thanks.header.error" />
+          </h1>
           <p class="lead">${errorMessage}</p>
+          <%-- Nếu errorMessage là key, dùng
+          <spring:message code="${errorMessage}" /> --%>
         </c:if>
 
-        <%-- Hiển thị thông báo mặc định nếu không có message cụ thể từ redirect
-        --%>
         <c:if
           test="${empty successMessage && empty warningMessage && empty errorMessage}"
         >
           <i class="fas fa-check-circle icon-success"></i>
-          <h1 class="display-4">Đặt hàng của bạn đã được tiếp nhận!</h1>
+          <h1 class="display-4">
+            <spring:message code="page.thanks.header.default" />
+          </h1>
         </c:if>
 
         <c:if test="${not empty orderId}">
-          <p>Mã đơn hàng của bạn là: <strong>#${orderId}</strong></p>
+          <p>
+            <spring:message code="page.thanks.orderId.prefix" />
+            <strong>#${orderId}</strong
+            ><spring:message code="page.thanks.orderId.suffix" />
+          </p>
         </c:if>
-        <p>Chúng tôi sẽ xử lý đơn hàng của bạn sớm nhất có thể.</p>
+        <p><spring:message code="page.thanks.processingMessage" /></p>
         <hr />
-        <p>Gặp vấn đề? <a href="/contact">Liên hệ chúng tôi</a></p>
+        <p>
+          <spring:message code="page.thanks.issue.prompt" />
+          <a href="<c:url value='/contact-us'/>"
+            ><spring:message code="page.thanks.issue.contactLink"
+          /></a>
+        </p>
         <p class="lead">
-          <a class="btn btn-primary btn-sm" href="/home" role="button"
-            >Tiếp tục mua sắm</a
-          >
+          <a
+            class="btn btn-primary btn-sm"
+            href="<c:url value='/home'/>"
+            role="button"
+            ><spring:message code="page.thanks.button.continueShopping"
+          /></a>
         </p>
       </div>
     </div>
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1100"
-    ></div>
-
     <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
       <div
         id="toast-message-success"
@@ -120,10 +147,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
     <jsp:include page="../layout/chatbot_widget.jsp" />
     <jsp:include page="../layout/footer.jsp" />
-    <%--<jsp:include page="../layout/common_scripts.jsp" /> &lt;%&ndash; Giả sử
-    bạn có file này cho common scripts &ndash;%&gt;--%>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/client/js/main.js"></script>
+    <jsp:include page="../layout/common_scripts.jsp" />
   </body>
 </html>

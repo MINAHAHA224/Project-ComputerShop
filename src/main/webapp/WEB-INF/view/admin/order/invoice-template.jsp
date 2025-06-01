@@ -1,12 +1,12 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib prefix="c"
+<%--src/main/webapp/WEB-INF/view/admin/order/invoice-template.jsp--%> <%@page
+contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fmt"
 uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!-- JSP Path: admin/order/invoice-template.jsp -->
 <!DOCTYPE html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Hóa Đơn Điện Tử - Laptopshop</title>
+    <title>Hóa Đơn Điện Tử - 3TLap</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -92,7 +92,8 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
   <body>
     <div class="container">
       <div class="header">
-        <h1>Laptopshop</h1>
+        <h1>3TLap</h1>
+
         <p>Cảm ơn bạn đã mua hàng!</p>
       </div>
 
@@ -192,7 +193,8 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
       </div>
 
       <div class="footer">
-        <p>Cảm ơn quý khách đã tin tưởng và mua sắm tại Laptopshop.</p>
+        <p>Cảm ơn quý khách đã tin tưởng và mua sắm tại 3TLap.</p>
+
         <p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ chúng tôi.</p>
       </div>
     </div>

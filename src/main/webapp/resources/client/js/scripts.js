@@ -4,7 +4,7 @@
     * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
     */
     // 
-// Scripts
+// src/main/webapp/resources/client/js/scripts.js
 // 
 
 window.addEventListener('DOMContentLoaded', event => {

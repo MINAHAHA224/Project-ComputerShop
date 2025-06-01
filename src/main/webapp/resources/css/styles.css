@@ -296,7 +296,7 @@ a {
 }
 
 a:hover {
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
     text-decoration: none;
 }
 
@@ -3456,8 +3456,8 @@ fieldset:disabled .btn {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: darken(var(--primary-color), 10%) !important;
-    border-color: darken(var(--primary-color), 10%) !important;
+    background-color: var(--primary-color-hover) !important;
+    border-color: var(--primary-color-hover) !important;
 }
 
 .btn-secondary {
@@ -7961,7 +7961,7 @@ fieldset:disabled .btn {
     color: var(--primary-color); /* Màu logo */
 }
 .navbar-brand h1.display-6:hover {
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
 }
 
 .navbar-nav .nav-link {

@@ -1,4 +1,6 @@
-<!-- JSP Path: admin/product/update.jsp -->
+
+<!-- JSP Path: src/main/webapp/WEB-INF/view/admin/product/update.jsp -->
+
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

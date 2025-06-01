@@ -1,6 +1,7 @@
+<!-- JSP Path: src/main/webapp/WEB-INF/view/admin/dashboard/show.jsp -->
 <%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %>
-<!-- JSP Path: admin/dashboard/show.jsp -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>

@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ResetPasswordChecked {
-    String message() default "Vui lòng điền đầy đủ thông tin";
+    String message() default "{ResetPasswordDTO.default.invalid}";
 
     Class<?>[] groups() default {};
 

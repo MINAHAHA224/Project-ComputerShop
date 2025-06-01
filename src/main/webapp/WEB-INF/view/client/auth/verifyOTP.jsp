@@ -1,16 +1,18 @@
-<!-- JSP Path: client/auth/verifyOTP.jsp -->
-<%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
+<%-- JSP Path: src/main/webapp/WEB-INF/view/client/auth/verifyOTP.jsp --%> <%@
+page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
 prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
-prefix="security" uri="http://www.springframework.org/security/tags" %>
+prefix="security" uri="http://www.springframework.org/security/tags" %> <%@
+taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="${pageContext.response.locale.language}">
   <head>
     <meta charset="utf-8" />
-    <title>Xác Thực OTP - 3TLap</title>
+    <title><spring:message code="page.verifyOtp.meta.title"/></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <jsp:include page="../layout/common_head_links.jsp" />
     <link href="<c:url value='/client/css/auth-pages.css'/>" rel="stylesheet" />
     <style>
+      /* Giữ nguyên style này vì nó đặc thù cho trang OTP */
       .otp-input-group input {
         text-align: center;
         font-size: 1.5rem;
@@ -29,7 +31,7 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
       }
       #countdownTimer {
         font-weight: 500;
-        color: var(--primary-color);
+        color: var(--bs-primary);
       }
     </style>
   </head>
@@ -46,29 +48,39 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
           src="<c:url value='/client/video/auth-background.mp4'/>"
           type="video/mp4"
         />
-        Trình duyệt của bạn không hỗ trợ thẻ video.
+        <spring:message code="page.verifyOtp.video.notSupported" />
       </video>
     </div>
     <div class="auth-wrapper">
       <div class="card auth-card" style="max-width: 500px">
         <div class="card-header">
-          <a href="<c:url value='/home'/>" class="logo-text-auth">3TLap</a>
-          <h3 class="font-weight-light my-1">Xác Thực Mã OTP</h3>
+          <a href="<c:url value='/'/>" class="logo-text-auth"
+            ><spring:message code="page.verifyOtp.header.brandName"
+          /></a>
+          <h3 class="font-weight-light my-1">
+            <spring:message code="page.verifyOtp.header.title" />
+          </h3>
         </div>
-        <div class="card-body">
-          <p class="text-muted text-center mb-3">
-            Một mã OTP gồm 6 chữ số đã được gửi đến địa chỉ email:
-            <strong class="text-dark">${email}</strong>. Vui lòng kiểm tra và
-            nhập mã vào ô bên dưới.
-          </p>
 
+        <div class="card-body">
+          <jsp:include page="../layout/_language_switcher.jsp" />
+
+          <p class="text-muted text-center mb-3">
+            <spring:message code="page.verifyOtp.instruction.text1" />
+            <strong class="text-dark">${email}</strong>. <%-- Email giữ nguyên
+            --%>
+            <spring:message code="page.verifyOtp.instruction.text2" />
+          </p>
+          <%-- Các message success/error từ flash attributes hoặc model
+          attributes giữ nguyên --%> <%-- Nếu các biến này chứa key, bạn sẽ cần
+          dùng <spring:message code="${...}" /> --%>
           <c:if test="${not empty messageError}">
             <div class="alert alert-danger alert-auth my-3" role="alert">
               ${messageError}
             </div>
           </c:if>
           <c:if
-            test="${not empty messageSuccess && not messageSuccess.contains('Xác thực mã OTP thành công')}"
+            test="${not empty messageSuccess and not messageSuccess.contains('Xác thực mã OTP thành công')}"
           >
             <div class="alert alert-info alert-auth my-3" role="alert">
               ${messageSuccess}
@@ -82,22 +94,30 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
           >
             <input type="hidden" name="email" value="${email}" />
             <security:csrfInput />
-
             <div class="form-floating mb-3 otp-input-group">
+              <spring:message
+                code="page.verifyOtp.form.placeholder.otp"
+                var="otpPlaceholder"
+              />
+              <spring:message
+                code="page.verifyOtp.form.title.otpValidation"
+                var="otpTitleValidation"
+              />
               <input
                 type="text"
                 class="form-control"
                 id="otp"
                 name="OTP"
-                placeholder="123456"
+                placeholder="${otpPlaceholder}"
                 maxlength="6"
                 pattern="[A-Z0-9]{6}"
-                title="Mã OTP gồm 6 ký tự chữ hoa hoặc số."
+                title="${otpTitleValidation}"
                 required
               />
-              <label for="otp">Nhập mã OTP</label>
+              <label for="otp"
+                ><spring:message code="page.verifyOtp.form.label.otp"
+              /></label>
             </div>
-
             <div class="form-actions mb-3">
               <button
                 type="submit"
@@ -105,7 +125,7 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
                 value="VERIFY-OTP"
                 class="btn btn-primary btn-lg"
               >
-                Xác Nhận
+                <spring:message code="page.verifyOtp.form.button.verify" />
               </button>
               <button
                 type="submit"
@@ -115,7 +135,8 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
                 class="btn btn-outline-secondary btn-lg"
                 formnovalidate
               >
-                Gửi lại OTP <span id="countdownTimer"></span>
+                <spring:message code="page.verifyOtp.form.button.resend" />
+                <span id="countdownTimer"></span>
               </button>
             </div>
           </form>
@@ -124,29 +145,30 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
               href="<c:url value='/forgotPassword'/>"
               class="small text-muted text-decoration-none"
             >
-              <i class="fas fa-arrow-left me-1"></i> Quay lại nhập email
+              <i class="fas fa-arrow-left me-1"></i>
+              <spring:message code="page.verifyOtp.link.backToEmailInput" />
             </a>
           </div>
         </div>
         <div class="card-footer">
           <div class="small">
-            Cần hỗ trợ?
+            <spring:message code="page.verifyOtp.footer.needSupport" />
             <a
               href="<c:url value='/contact-us'/>"
               class="text-primary fw-medium"
-              >Liên hệ chúng tôi</a
-            >
+              ><spring:message code="page.verifyOtp.footer.contactUs"
+            /></a>
           </div>
         </div>
       </div>
     </div>
-
     <jsp:include page="../layout/common_scripts.jsp" />
     <script>
+      // Giữ nguyên script này
       document.addEventListener('DOMContentLoaded', function () {
         const resendButton = document.getElementById('resendOtpBtn');
         const countdownTimerSpan = document.getElementById('countdownTimer');
-        let countdownTime = 90;
+        let countdownTime = 90; // Thời gian countdown (giây)
         let timerInterval;
 
         function formatTime(seconds) {
@@ -158,10 +180,12 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
         }
 
         function startTimer() {
+          if (!resendButton || !countdownTimerSpan) return;
           resendButton.disabled = true;
-          countdownTime = 90;
+          countdownTime = 90; // Reset lại thời gian khi bắt đầu
           countdownTimerSpan.textContent = formatTime(countdownTime);
 
+          clearInterval(timerInterval); // Xóa interval cũ nếu có
           timerInterval = setInterval(function () {
             countdownTime--;
             countdownTimerSpan.textContent = formatTime(countdownTime);
@@ -172,14 +196,19 @@ prefix="security" uri="http://www.springframework.org/security/tags" %>
             }
           }, 1000);
         }
-        if (resendButton && countdownTimerSpan) {
-          <c:choose>
-            <c:when test="${not empty messageSuccess and messageSuccess.contains('Mã OTP đã được gửi lại')}">
+        // Kiểm tra nếu có thông báo gửi lại OTP thì bắt đầu timer
+        <>
+          <c:if test="${not empty messageSuccess and messageSuccess.contains('Mã OTP đã được gửi lại')}">
+            startTimer();
+          </c:if>
+
+          <c:if test="${empty messageSuccess or !messageSuccess.contains('Mã OTP đã được gửi lại')}">
+            {/* Nếu không có flash attribute nào từ resend thì mới start */}
+            <c:if test="${empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}">
               startTimer();
-            </c:when>
-            <c:otherwise>startTimer();</c:otherwise>
-          </c:choose>;
-        }
+            </c:if>
+          </c:if>
+        </>;
       });
     </script>
   </body>

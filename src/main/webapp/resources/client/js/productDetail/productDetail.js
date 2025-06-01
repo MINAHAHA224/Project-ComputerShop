@@ -1,3 +1,5 @@
+// src/main/webapp/resources/client/js/productDetail/productDetail.js
+
 (function ($) {
   'use strict';
 
@@ -151,32 +153,41 @@
         }
       });
     }
-    // Quantity control for product detail page
-    const $displayInputDetail = $('#formQuantityInputDetail');
+    $('.quantity .btn-plus-detail')
+      .off('click')
+      .on('click', function () {
+        const $input = $(this).closest('.quantity').find('input');
 
-    $('.quantity .btn-plus-detail').on('click', function () {
-      let oldValue = parseFloat($displayInputDetail.val());
-      if (isNaN(oldValue)) {
-        oldValue = 0;
-      }
-      let newVal = oldValue + 1;
-      // TODO: Có thể thêm kiểm tra số lượng tối đa ở đây (dựa trên product.quantity từ server)
-      $displayInputDetail.val(newVal);
-    });
+        let oldValue = parseFloat($input.val());
+        console.log('Old value:', oldValue);
+        if (isNaN(oldValue)) oldValue = 0;
 
-    $('.quantity .btn-minus-detail').on('click', function () {
-      let oldValue = parseFloat($displayInputDetail.val());
-      if (isNaN(oldValue)) {
-        oldValue = 1;
-      }
-      let newVal;
-      if (oldValue > 1) {
-        newVal = oldValue - 1;
-      } else {
-        newVal = 1;
-      }
-      $displayInputDetail.val(newVal);
-    });
+        let newVal = oldValue + 1;
+        console.log('New value before max check:', newVal);
+
+        const maxQuantity = parseInt($input.data('quantity'), 10);
+        console.log('Max quantity:', maxQuantity);
+
+        if (!isNaN(maxQuantity) && newVal > maxQuantity) {
+          newVal = maxQuantity;
+        }
+
+        $input.val(newVal);
+        console.log('New value after max check:', newVal);
+      });
+
+    $('.quantity .btn-minus-detail')
+      .off('click')
+      .on('click', function () {
+        const $input = $(this).closest('.quantity').find('input');
+
+        let oldValue = parseFloat($input.val());
+        if (isNaN(oldValue)) oldValue = 1;
+
+        let newVal = oldValue > 1 ? oldValue - 1 : 1;
+
+        $input.val(newVal);
+      });
 
     // Logic chuyển ảnh chính khi click thumbnail (nếu bạn thêm gallery thumbnail)
     window.changeMainImage = function (newSrc) {

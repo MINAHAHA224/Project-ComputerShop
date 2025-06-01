@@ -2,6 +2,7 @@ package vn.javaweb.ComputerShop.controller.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import jakarta.servlet.http.HttpSession;
@@ -46,9 +47,19 @@ public class ClientPageController {
         return "client/homepage/show";
     }
 
+    @GetMapping(value = "/")
+    public String getHome() {
+        return "redirect:/home";
+    }
+
+    @GetMapping(value = "/thanks")
+    public String getThankYouPage(Model model) {
+
+        return "client/cart/thanks";
+    }
+
     @GetMapping("/accessDeny")
     public String getAccessDenyPage() {
-
         return "client/auth/deny";
     }
 
@@ -94,7 +105,7 @@ public class ClientPageController {
     public String postUpdateProfile(Model model,
             RedirectAttributes redirectAttributes,
             @Valid @ModelAttribute("userProfileUpdateDTO") UserProfileUpdateDTO userProfileUpdateDTO,
-            BindingResult bindingResult, HttpSession session) {
+            BindingResult bindingResult, HttpSession session, Locale locale) {
 
         if (bindingResult.hasErrors()) {
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -107,7 +118,7 @@ public class ClientPageController {
             return "client/profile/index";
         }
 
-        ResponseBodyDTO updateProfile = this.userService.handleUpdateProfile(session, userProfileUpdateDTO);
+        ResponseBodyDTO updateProfile = this.userService.handleUpdateProfile(session, userProfileUpdateDTO, locale);
 
         if (updateProfile.getStatus() != 200) {
             model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
@@ -125,7 +136,7 @@ public class ClientPageController {
     @PostMapping(value = "/user/profile/change-password")
     public String postUpdateChangePass(Model model, RedirectAttributes redirectAttributes,
             @Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO,
-            BindingResult bindingResult, HttpSession session) {
+            BindingResult bindingResult, HttpSession session, Locale locale) {
         if (bindingResult.hasErrors()) {
 
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -148,7 +159,7 @@ public class ClientPageController {
             return "client/profile/index";
         }
 
-        ResponseBodyDTO updatePassword = this.userService.handleUpdatePassword(session, changePasswordDTO);
+        ResponseBodyDTO updatePassword = this.userService.handleUpdatePassword(session, changePasswordDTO, locale);
         if (updatePassword.getStatus() != 200) {
             redirectAttributes.addFlashAttribute("messageError", updatePassword.getMessage());
             return "redirect:/account-management";
@@ -161,11 +172,11 @@ public class ClientPageController {
     }
 
     @PostMapping(value = "/user/profile/update-avatar")
-    public String postUpdateAvatar(Model model,
+    public String postUpdateAvatar(Model model, Locale locale,
             HttpSession session, RedirectAttributes redirectAttributes,
             @RequestParam("avatarFile") MultipartFile avatarFile) {
 
-        ResponseBodyDTO updateAvatar = this.userService.handleUpdateAvatar(session, avatarFile);
+        ResponseBodyDTO updateAvatar = this.userService.handleUpdateAvatar(session, avatarFile, locale);
 
         if (updateAvatar.getStatus() != 200) {
             redirectAttributes.addFlashAttribute("messageError", updateAvatar.getMessage());
