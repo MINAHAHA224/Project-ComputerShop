@@ -199,22 +199,11 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             </div>
           </div>
         </main>
-
+        <jsp:include page="../../client/layout/chatbot_widget.jsp" />
         <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="<c:url value='/js/scripts.js'/>"></script>
-    <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="<c:url value='/js/chart-area-demo.js'/>"></script>
-    <script src="<c:url value='/js/chart-bar-demo.js'/>"></script>
+    <jsp:include page="../layout/common_admin_scripts.jsp" />
     <script>
       if (typeof Chart !== 'undefined') {
         Chart.defaults.global.defaultFontColor = 'var(--admin-text-secondary)';

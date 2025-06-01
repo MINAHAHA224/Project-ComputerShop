@@ -146,6 +146,7 @@
                     </div>
                 </div>
             </main>
+            <jsp:include page="../../client/layout/chatbot_widget.jsp" />
             <jsp:include page="../layout/footer.jsp"/>
         </div>
     </div>
