@@ -1,4 +1,3 @@
-
 <!-- JSP Path: src/main/webapp/WEB-INF/view/client/product/show.jsp -->
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -271,11 +270,20 @@
                                                 </c:forEach>
                                                 <li class="page-item">
                                                     <spring:message code="page.products.pagination.next.ariaLabel" var="nextAriaLabel"/>
-                                                    <a class="${totalPages eq currentPage ? 'disabled page-link' : 'page-link'}"
-                                                       href="/products?page=${currentPage + 1}${queryString}"
-                                                       aria-label="${nextAriaLabel}">
-                                                        <span aria-hidden="true">»</span>
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${currentPage >= totalPages}">
+                                                            <a class="disabled page-link" href="javascript:void(0);" aria-label="${nextAriaLabel}">
+                                                                <span aria-hidden="true" style="pointer-events: none; color: #ccc;">»</span>
+                                                            </a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="page-link"
+                                                               href="/products?page=${currentPage + 1}${queryString}"
+                                                               aria-label="${nextAriaLabel}">
+                                                                <span aria-hidden="true">»</span>
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </li>
                                             </div>
                                         </c:if>
@@ -312,6 +320,7 @@
 
 
                     <jsp:include page="../layout/common_scripts.jsp" />
+                    
                 </body>
 
                 </html>
