@@ -254,11 +254,20 @@
                                             <div class="pagination d-flex justify-content-center mt-5">
                                                 <li class="page-item">
                                                     <spring:message code="page.products.pagination.previous.ariaLabel" var="prevAriaLabel"/>
-                                                    <a class="${1 eq currentPage ? 'disabled page-link' : 'page-link'}"
-                                                       href="/products?page=${currentPage - 1}${queryString}"
-                                                       aria-label="${prevAriaLabel}">
-                                                        <span aria-hidden="true">«</span>
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${currentPage <= 1}">
+                                                            <a class="disabled page-link" href="javascript:void(0);" aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true" style="pointer-events: none; color: #ccc;">«</span>
+                                                            </a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="page-link"
+                                                               href="/products?page=${currentPage - 1}${queryString}"
+                                                               aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true">«</span>
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </li>
                                                 <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
                                                     <li class="page-item">
