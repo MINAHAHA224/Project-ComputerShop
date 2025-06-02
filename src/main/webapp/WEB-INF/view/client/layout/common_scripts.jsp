@@ -15,4 +15,3 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- Template Main Javascript File -->
 <script src="<c:url value='/client/js/main.js'/>"></script>
-<script src="<c:url value='/client/js/chatbot.js'/>"></script>

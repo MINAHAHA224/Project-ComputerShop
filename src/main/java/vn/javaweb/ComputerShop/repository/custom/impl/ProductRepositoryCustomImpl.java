@@ -94,14 +94,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             }
 
             // ngoai vong lap
-            sql.setLength(0); // reset sql gốc
+//            sql.setLength(0); // reset sql gốc
             sql.append(String.join(" UNION ALL ", unionQuery));
-
-
-            // boc all_results de sai order by trong truong hop co 2 sql
-
-
-            // Có thể gắn tiếp ORDER BY nếu cần
 
         }else {
 
@@ -129,10 +123,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
 
     }
-    public final String specialQuery (){
 
-        return null;
-    }
 
 
     @Override
@@ -167,6 +158,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         List<Object> rows = query.getResultList();
         long totalResults = rows.size();
 
+//        offset = (pageNumber - 1) * pageSize).
         // setup pagination cho List<BuildingEntity>
         query.setFirstResult((int) pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
@@ -175,6 +167,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
 
         return new PageImpl<>(resultList, pageable , totalResults);
+        //page.getTotalPage() la so trang
     }
 
     @Override

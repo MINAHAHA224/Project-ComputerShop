@@ -28,6 +28,10 @@
                 <!-- Spinner End -->
 
                 <jsp:include page="../layout/header.jsp" />
+                <script type="text/javascript">
+                    window.productSearchData = JSON.parse('${dataSearchJson}');
+                    // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+                </script>
 
                 <!-- Single Product Start -->
                 <div class="container-fluid py-5 mt-5">
@@ -238,7 +242,7 @@
                                                         </p>
                                                         <div class="mt-auto">
                                                             <p class="card-text product-price fw-bold fs-5 mb-2">
-                                                                <fmt:formatNumber type="number" value="${product.price}" /> <spring:message code="page.products.card.currencySymbol"/>
+                                                                <fmt:formatNumber type="number" value="${product.price}" />đ
                                                             </p>
                                                         </div>
                                                     </div>
@@ -250,11 +254,20 @@
                                             <div class="pagination d-flex justify-content-center mt-5">
                                                 <li class="page-item">
                                                     <spring:message code="page.products.pagination.previous.ariaLabel" var="prevAriaLabel"/>
-                                                    <a class="${1 eq currentPage ? 'disabled page-link' : 'page-link'}"
-                                                       href="/products?page=${currentPage - 1}${queryString}"
-                                                       aria-label="${prevAriaLabel}">
-                                                        <span aria-hidden="true">«</span>
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${currentPage <= 1}">
+                                                            <a class="disabled page-link" href="javascript:void(0);" aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true" style="pointer-events: none; color: #ccc;">«</span>
+                                                            </a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="page-link"
+                                                               href="/products?page=${currentPage - 1}${queryString}"
+                                                               aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true">«</span>
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </li>
                                                 <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
                                                     <li class="page-item">
@@ -266,11 +279,21 @@
                                                 </c:forEach>
                                                 <li class="page-item">
                                                     <spring:message code="page.products.pagination.next.ariaLabel" var="nextAriaLabel"/>
-                                                    <a class="${totalPages eq currentPage ? 'disabled page-link' : 'page-link'}"
-                                                       href="/products?page=${currentPage + 1}${queryString}"
-                                                       aria-label="${nextAriaLabel}">
-                                                        <span aria-hidden="true">»</span>
-                                                    </a>
+                                                    <c:choose>
+                                                        <c:when test="${currentPage <= 1}">
+                                                            <a class="disabled page-link" href="javascript:void(0);" aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true" style="pointer-events: none; color: #ccc;">»</span>
+                                                            </a>
+
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a class="page-link"
+                                                               href="/products?page=${currentPage - 1}${queryString}"
+                                                               aria-label="${prevAriaLabel}">
+                                                                <span aria-hidden="true">«</span>
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
                                                 </li>
                                             </div>
                                         </c:if>
@@ -281,7 +304,23 @@
                     </div>
                 </div>
                     <!-- Single Product End -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    </div>
 
+    <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+        <div id="toast-message-success" class="d-none" data-message="${param.messageSuccess}${messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty param.messageError || not empty messageError}">
+        <div id="toast-message-error" class="d-none" data-message="${param.messageError}${messageError}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}">
+        <div id="flash-toast-message-success" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}">
+        <div id="flash-toast-message-error" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"></div>
+    </c:if>
+
+    <jsp:include page="../layout/chatbot_widget.jsp" />
                     <jsp:include page="../layout/footer.jsp" />
 
 

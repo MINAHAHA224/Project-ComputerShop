@@ -22,7 +22,7 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <style>
       .contact-page-header {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-          url('<c:url value="/client/img/placeholder/contact-banner.jpg"/>');
+          url('<c:url value="/client/img/contacus.jpg"/>');
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -96,7 +96,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     </div>
 
     <jsp:include page="../layout/header.jsp" />
-
+    <script type="text/javascript">
+      window.productSearchData = JSON.parse('${dataSearchJson}');
+      // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+    </script>
     <div class="container-fluid page-header contact-page-header py-5">
       <h1 class="text-center text-white display-5"><spring:message code="page.contact.header.title"/></h1>
       <ol class="breadcrumb justify-content-center mb-0">
@@ -253,7 +256,45 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         </div>
       </div>
     </div>
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 1100"
+    ></div>
 
+    <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+      <div
+        id="toast-message-success"
+        class="d-none"
+        data-message="${param.messageSuccess}${messageSuccess}"
+      ></div>
+    </c:if>
+    <c:if test="${not empty param.messageError || not empty messageError}">
+      <div
+        id="toast-message-error"
+        class="d-none"
+        data-message="${param.messageError}${messageError}"
+      ></div>
+    </c:if>
+    <c:if
+      test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"
+    >
+      <div
+        id="flash-toast-message-success"
+        class="d-none"
+        data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"
+      ></div>
+    </c:if>
+    <c:if
+      test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"
+    >
+      <div
+        id="flash-toast-message-error"
+        class="d-none"
+        data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"
+      ></div>
+    </c:if>
+
+    <jsp:include page="../layout/chatbot_widget.jsp" />
     <jsp:include page="../layout/footer.jsp" />
     <jsp:include page="../layout/common_scripts.jsp" />
   </body>

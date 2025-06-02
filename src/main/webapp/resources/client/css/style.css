@@ -5,13 +5,16 @@
 ===================================================================== */
 :root {
     --primary-color: #0A7AFF;
+    --primary-color-hover: #0056b3;
     --secondary-color: #FF8C00;
+    --secondary-color-hover: #e07b00;
     --text-color: #212529;
     --text-muted-color: #6C757D;
     --light-bg-color: #F8F9FA;
     --white-color: #FFFFFF;
     --border-color: #DEE2E6;
     --danger-color: #DC3545;
+    --danger-color-hover: #c82333;
     --success-color: #198754;
     --font-primary: 'Poppins', sans-serif;
     --font-secondary: 'Inter', sans-serif;
@@ -34,7 +37,7 @@ a {
 }
 
 a:hover {
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
     text-decoration: none;
 }
 
@@ -46,8 +49,8 @@ a:hover {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: darken(var(--primary-color), 10%) !important;
-    border-color: darken(var(--primary-color), 10%) !important;
+    background-color: var(--primary-color-hover) !important;
+    border-color: var(--primary-color-hover) !important;
 }
 
 .btn-outline-primary {
@@ -439,15 +442,6 @@ a:hover {
 .fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
     color: var(--bs-primary);
-}
-
-.navbar .dropdown-toggle::after {
-    border: none;
-    content: "\f107";
-    font-family: "Open Sans", sans-serif;
-    font-weight: 700;
-    vertical-align: middle;
-    margin-left: 8px;
 }
 
 @media (min-width: 1200px) {
@@ -845,8 +839,8 @@ a:hover {
     font-weight: 500;
 }
 .filter-section .btn-filter-apply:hover {
-    background-color: darken(var(--secondary-color), 10%);
-    border-color: darken(var(--secondary-color), 10%);
+    background-color: var(--secondary-color-hover);
+    border-color: var(--secondary-color-hover);
 }
 .filter-section .mb-2 b {
     font-family: var(--font-primary);
@@ -1071,8 +1065,8 @@ a:hover {
     border-color: var(--secondary-color) !important;
 }
 .footer-3tlap .btn-primary:hover {
-    background-color: darken(var(--secondary-color), 10%) !important;
-    border-color: darken(var(--secondary-color), 10%) !important;
+    background-color: var(--secondary-color-hover) !important;
+    border-color: var(--secondary-color-hover) !important;
 }
 
 .footer-3tlap .btn-social {
@@ -1134,7 +1128,7 @@ a:hover {
     color: var(--primary-color);
 }
 .navbar-brand h1.display-6:hover {
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
 }
 
 .navbar-nav .nav-link {
@@ -1176,9 +1170,11 @@ a:hover {
 
 .header-action-icon {
     margin-left: 1rem;
+    margin-right: 1rem;
     color: #495057;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     transition: color 0.2s ease;
 }
 .header-action-icon:hover {
@@ -1191,9 +1187,10 @@ a:hover {
     font-size: 0.6em;
     font-weight: 600;
     padding: 0.3em 0.5em;
-    top: -8px;
-    right: -8px;
+    top: -8px; 
+    right: -8px; 
     background-color: var(--secondary-color) !important;
+    width: 10px;
 }
 
 .dropdown-menu[aria-labelledby="userDropdown"] {
@@ -1224,23 +1221,29 @@ a:hover {
     color: var(--primary-color);
 }
 .dropdown-menu[aria-labelledby="userDropdown"] .rounded-circle {
-    width: 30px;
+    width: 30px; 
     height: 30px;
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--primary-color); 
 }
 
 .login-register-buttons .btn {
     font-size: 0.85rem;
     padding: 0.4rem 0.8rem;
 }
+.user-fullname {
+   margin-left: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1rem;
+}
 
 @media (max-width: 1199.98px) {
-    #navbarCollapseTop .navbar-nav {
+     #navbarCollapseTop .navbar-nav {
         margin-left: 0;
         margin-right: 0;
         width: 100%;
         text-align: left;
-        margin-top: 0.5rem;
+        margin-top: 0.5rem; 
     }
     .navbar-collapse {
         background-color: var(--white-color);
@@ -1260,10 +1263,10 @@ a:hover {
         width: 100%;
         flex-direction: column;
         align-items: stretch !important;
-        margin-top: 1rem;
+        margin-top: 1rem; 
     }
     .search-form-placeholder {
-        margin-top: 0;
+       margin-top: 0; 
         margin-bottom: 0.75rem;
         max-width: none;
         margin-right: 0 !important;
@@ -1272,44 +1275,45 @@ a:hover {
         margin-left: 0 !important;
         margin-right: 0 !important;
     }
-    .header-action-icon {
+        .header-action-icon {
         margin-left: 0;
         margin-top: 0.75rem;
         padding: 0.5rem 0;
-        justify-content: flex-start;
+        justify-content: flex-start; 
         border-bottom: 1px solid var(--light-bg-color);
     }
-    .header-action-icon:last-child {
+     .header-action-icon:last-child {
         border-bottom: none;
     }
     .user-dropdown-container, .login-register-buttons {
         width: 100%;
         text-align: left;
-        margin-top: 0;
+        margin-top: 0; 
     }
     .user-actions-container {
-        width: 100%;
-        text-align: left;
-        margin-top: 0.5rem;
-        border-top: 1px solid var(--light-bg-color);
-        padding-top: 0.75rem;
-    }
-    .user-actions-container .dropdown,
-    .user-actions-container .login-register-buttons {
-        width: 100%;
-    }
+    width: 100%;
+    text-align: left;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--light-bg-color); 
+    padding-top: 0.75rem; 
+}
+
+.user-actions-container .dropdown,
+.user-actions-container .login-register-buttons {
+    width: 100%;
+}
     .login-register-buttons .btn {
         display: block;
         width: 100%;
         margin-bottom: 0.5rem;
-        text-align: center;
+        text-align: center; 
     }
     .login-register-buttons .btn:last-child {
         margin-bottom: 0;
     }
     .dropdown-menu[aria-labelledby="userDropdown"] {
         width: 100%;
-        box-shadow: none;
+        box-shadow: none; 
         border-top: 1px solid var(--border-color);
     }
 }
@@ -1380,7 +1384,7 @@ a:hover {
 
 .contact .contact-info-content a:hover {
     text-decoration: underline;
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
 }
 
 .contact .map-container {
@@ -1615,7 +1619,7 @@ a:hover {
     transition: color 0.2s ease;
 }
 .table-cart .btn-remove-product:hover {
-    color: darken(var(--danger-color), 15%);
+    color: var(--danger-color-hover);
 }
 
 .cart-summary {
@@ -2195,7 +2199,7 @@ a:hover {
     transition: all 0.3s ease;
 }
 #chatbot-toggle-button:hover {
-    background-color: darken(var(--primary-color), 8%);
+    background-color: var(--primary-color-hover);
     transform: scale(1.1);
 }
 .chatbot-badge {
@@ -2410,7 +2414,7 @@ a:hover {
     transition: background-color 0.2s ease;
 }
 #chatbot-send-button:hover {
-    background-color: darken(var(--primary-color), 8%);
+    background-color: var(--primary-color-hover);
 }
 #chatbot-send-button i {
     transform: translateX(1px);
@@ -2426,4 +2430,147 @@ a:hover {
 }
 .chatbot-footer-brand strong {
     color: var(--primary-color);
+}
+
+
+
+/* ==================================================================
+        3TLAP - TOAST NOTIFICATIONS
+===================================================================== */
+.toast-container {
+    z-index: 1100 !important;
+}
+
+.toast {
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,.15);
+    border: none;
+    min-width: 300px;
+}
+
+.toast-header {
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-primary);
+}
+.toast-header .btn-close {
+    margin: -0.375rem -0.375rem -0.375rem auto;
+}
+.toast-header .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.toast-body {
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.toast-header i.fas {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+/* ==================================================================
+        3TLAP - LIVE SEARCH HEADER
+===================================================================== */
+.search-form-container {
+    min-width: 250px;
+    max-width: 350px;
+}
+
+.admin-search-form input.form-control-sm {
+    font-size: 0.875rem;
+    height: calc(1.5em + .5rem + 2px + 4px);
+    padding-right: 3rem;
+    background-color: var(--light-bg-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-in-out;
+}
+body.theme-dark .admin-search-form input.form-control-sm {
+    background-color: var(--admin-card-bg-dark);
+    border-color: var(--admin-border-color-dark);
+    color: var(--admin-text-primary-dark);
+}
+.admin-search-form input.form-control-sm:focus {
+    background-color: var(--white-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.2);
+}
+
+.admin-search-form button {
+    border: none;
+    z-index: 4;
+}
+.admin-search-form button i {
+    font-size: 0.9rem;
+}
+
+.live-search-results.dropdown-menu {
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
+    margin-top: 21.5rem !important;
+    padding: 0.5rem 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.live-search-results .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    white-space: normal;
+    border-bottom: 1px solid var(--border-color-light);
+    transition: background-color 0.15s ease;
+}
+.live-search-results .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.live-search-results .dropdown-item img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    margin-right: 0.75rem;
+    border-radius: 0.25rem;
+    background-color: var(--light-bg-color);
+}
+
+.live-search-results .dropdown-item .product-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.live-search-results .dropdown-item .product-name {
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.live-search-results .dropdown-item .product-price {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.live-search-results .dropdown-item:hover,
+.live-search-results .dropdown-item:focus {
+    background-color: rgba(var(--primary-rgb), 0.08);
+    color: initial;
+}
+.live-search-results .dropdown-item:hover .product-name {
+    color: var(--primary-color);
+}
+
+.live-search-results .no-results {
+    padding: 0.75rem 1rem;
+    color: var(--text-muted-color);
+    font-style: italic;
+    font-size: 0.9rem;
 }

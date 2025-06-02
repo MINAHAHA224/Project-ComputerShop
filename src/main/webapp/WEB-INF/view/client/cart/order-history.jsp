@@ -158,7 +158,7 @@
                                     <div class="col-md-4 text-md-end">
                                         <div class="order-summary-item">
                                             <span><spring:message code="page.orderHistory.card.totalPriceLabel"/></span>
-                                            <strong><fmt:formatNumber type="number" value="${order.totalPrice}"/> <spring:message code="page.orderHistory.card.currencySymbol"/></strong>
+                                            <strong><fmt:formatNumber type="number" value="${order.totalPrice}"/> đ</strong>
                                         </div>
                                     </div>
                                 </div>
@@ -191,8 +191,8 @@
                                                         <a href="<c:url value='/product/${detail.productId}'/>">${detail.productName}</a> <%-- Tên sản phẩm giữ nguyên --%>
                                                     </td>
                                                     <td class="text-center">${detail.productQuantity}</td>
-                                                    <td class="text-end"><fmt:formatNumber type="number" value="${detail.price}"/> <spring:message code="page.orderHistory.card.currencySymbol"/></td>
-                                                    <td class="text-end"><fmt:formatNumber type="number" value="${detail.price * detail.productQuantity}"/> <spring:message code="page.orderHistory.card.currencySymbol"/></td>
+                                                    <td class="text-end"><fmt:formatNumber type="number" value="${detail.price}"/> đ</td>
+                                                    <td class="text-end"><fmt:formatNumber type="number" value="${detail.price * detail.productQuantity}"/> đ</td>
                                                 </tr>
                                             </c:forEach>
                                             </tbody>

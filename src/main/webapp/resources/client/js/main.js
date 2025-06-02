@@ -424,7 +424,7 @@
     // --- EVENT LISTENERS ---
     $toggleButton.on('click', toggleChatbot);
     $closeButtonWidget.on('click', toggleChatbot);
-    $minimizeButton.on('click', toggleChatbot); // Hiện tại minimize cũng là close
+    $minimizeButton.on('click', toggleChatbot);
 
     $sendButton.on('click', sendMessage);
     $inputField.on('keypress', function (e) {
@@ -434,22 +434,206 @@
       }
     });
     $inputField.on('input', function () {
-      // Tự động điều chỉnh chiều cao textarea
       this.style.height = 'auto';
       this.style.height = this.scrollHeight + 'px';
     });
 
-    // --- INITIALIZATION ---
-    // Lấy thông tin user từ thẻ body (nếu có, để hiển thị avatar người dùng)
-    // Bạn cần thêm data-attributes vào thẻ <body> trong layout chính của client
-    // ví dụ: <body data-user-avatar-url="<c:url value='/images/avatar/${sessionScope.informationDTO.avatar}'/>" data-user-fullname="<c:out value='${sessionScope.informationDTO.fullName}'/>">
-
-    // Khởi tạo chatbot khi trang tải, hoặc khi người dùng mở widget lần đầu
-    // initializeChatbot(); // Gọi ở đây nếu muốn khởi tạo ngay, hoặc trong toggleChatbot
-    // Tạm thời, chúng ta sẽ gọi khi người dùng mở chat lần đầu để tránh gọi API không cần thiết
-    // và để người dùng cung cấp API key trước
     if (!CHATBOT_API_KEY || CHATBOT_API_KEY === 'YOUR_ACTUAL_CHATBOT_API_KEY') {
       disableChatbot('Trợ lý ảo chưa được cấu hình (thiếu API Key).');
+    }
+
+    function showToast(message, type = 'success') {
+      const toastContainer = document.querySelector('.toast-container');
+      if (!toastContainer) return;
+
+      // Xác định icon và class dựa trên type
+      let iconHtml = '';
+      let toastClass = '';
+      let toastHeaderBg = '';
+      let toastHeaderText = 'Thông báo';
+
+      if (type === 'success') {
+        iconHtml = '<i class="fas fa-check-circle text-success me-2"></i>';
+        toastClass = 'toast-success'; // class tùy chỉnh nếu muốn style riêng
+        toastHeaderBg = 'bg-success text-white';
+        toastHeaderText = 'Thành công!';
+      } else if (type === 'error') {
+        iconHtml = '<i class="fas fa-times-circle text-danger me-2"></i>';
+        toastClass = 'toast-error';
+        toastHeaderBg = 'bg-danger text-white';
+        toastHeaderText = 'Lỗi!';
+      } else if (type === 'warning') {
+        iconHtml =
+          '<i class="fas fa-exclamation-triangle text-warning me-2"></i>';
+        toastClass = 'toast-warning';
+        toastHeaderBg = 'bg-warning text-dark';
+        toastHeaderText = 'Cảnh báo!';
+      } else {
+        // info hoặc mặc định
+        iconHtml = '<i class="fas fa-info-circle text-info me-2"></i>';
+        toastClass = 'toast-info';
+        toastHeaderBg = 'bg-info text-dark';
+      }
+
+      const toastId = 'toast-' + new Date().getTime();
+
+      const toastHtml = `
+        <div class="toast ${toastClass}" role="alert" aria-live="assertive" aria-atomic="true" id="${toastId}" data-bs-delay="5000">
+            <div class="toast-header ${toastHeaderBg}">
+                ${iconHtml}
+                <strong class="me-auto">${toastHeaderText}</strong>
+                <small class="text-white-50">vừa xong</small> 
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+
+      toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+
+      const toastElement = document.getElementById(toastId);
+      const toast = new bootstrap.Toast(toastElement);
+
+      toastElement.addEventListener('hidden.bs.toast', function () {
+        toastElement.remove();
+      });
+
+      toast.show();
+    }
+
+    function displayMessagesAsToasts() {
+      const successToastDiv = document.getElementById('toast-message-success');
+      if (successToastDiv && successToastDiv.dataset.message) {
+        showToast(successToastDiv.dataset.message, 'success');
+        successToastDiv.remove();
+      }
+
+      const errorToastDiv = document.getElementById('toast-message-error');
+      if (errorToastDiv && errorToastDiv.dataset.message) {
+        showToast(errorToastDiv.dataset.message, 'error');
+        errorToastDiv.remove();
+      }
+
+      const flashSuccessToastDiv = document.getElementById(
+        'flash-toast-message-success'
+      );
+      if (flashSuccessToastDiv && flashSuccessToastDiv.dataset.message) {
+        showToast(flashSuccessToastDiv.dataset.message, 'success');
+        flashSuccessToastDiv.remove();
+      }
+
+      const flashErrorToastDiv = document.getElementById(
+        'flash-toast-message-error'
+      );
+      if (flashErrorToastDiv && flashErrorToastDiv.dataset.message) {
+        showToast(flashErrorToastDiv.dataset.message, 'error');
+        flashErrorToastDiv.remove();
+      }
+    }
+
+    displayMessagesAsToasts();
+
+    const $liveSearchInput = $('#liveSearchInput');
+    const $liveSearchResults = $('#liveSearchResults');
+    const $liveSearchForm = $('#liveSearchForm');
+    if (typeof window.productSearchData === 'undefined') {
+      try {
+        const storedData = localStorage.getItem('productSearchData');
+        if (storedData) {
+          window.productSearchData = JSON.parse(storedData);
+        }
+      } catch (e) {
+        console.warn('Không thể lấy productSearchData từ localStorage:', e);
+      }
+    }
+    if (
+      $liveSearchInput.length &&
+      $liveSearchResults.length &&
+      typeof window.productSearchData !== 'undefined'
+    ) {
+      let searchDebounceTimer;
+
+      $liveSearchInput.on('input focus', function () {
+        const query = $(this).val().trim().toLowerCase();
+
+        clearTimeout(searchDebounceTimer);
+
+        if (query.length < 2) {
+          $liveSearchResults.removeClass('show').empty();
+          return;
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+          const filteredProducts = window.productSearchData.filter(
+            (product) => {
+              return product.name.toLowerCase().includes(query);
+            }
+          );
+
+          $liveSearchResults.empty();
+          console.log('filteredProducts:', filteredProducts);
+          if (filteredProducts.length > 0) {
+            filteredProducts.slice(0, 7).forEach((product) => {
+              const productUrl = `/product/${product.id}`;
+              const imageUrl = `/images/product/${
+                product.image ? product.image : 'default-product.png'
+              }`;
+
+              console.log('Product URL:', productUrl);
+              console.log('Image URL:', imageUrl);
+
+              const $item = $(`
+              <a href="${productUrl}" class="dropdown-item">
+                <img src="${imageUrl}" alt="${product.name}">
+                <div class="product-info">
+                  <span class="product-name">${product.name}</span>
+                  <span class="product-price">${
+                    product.formattedPrice ||
+                    parseFloat(product.price).toLocaleString('vi-VN') + ' đ'
+                  }</span>
+                </div>
+              </a>
+            `);
+              $liveSearchResults.append($item);
+            });
+            $liveSearchResults.addClass('show');
+          } else {
+            if (query.length > 0) {
+              $liveSearchResults.append(
+                '<div class="dropdown-item no-results">Không tìm thấy sản phẩm nào.</div>'
+              );
+              $liveSearchResults.addClass('show');
+            } else {
+              $liveSearchResults.removeClass('show');
+            }
+          }
+        }, 300);
+      });
+
+      $(document).on('click', function (e) {
+        if (
+          !$liveSearchInput.is(e.target) &&
+          $liveSearchResults.has(e.target).length === 0
+        ) {
+          $liveSearchResults.removeClass('show');
+        }
+      });
+
+      $liveSearchResults.on('click', '.dropdown-item', function (e) {
+        if (!$(this).hasClass('no-results')) {
+          e.preventDefault();
+          window.location.href = $(this).attr('href');
+        }
+      });
+    } else {
+      if ($liveSearchInput.length === 0)
+        console.warn('Live search input not found.');
+      if ($liveSearchResults.length === 0)
+        console.warn('Live search results container not found.');
+      if (typeof window.productSearchData === 'undefined')
+        console.warn('productSearchData is not defined globally.');
     }
   });
 

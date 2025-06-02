@@ -68,7 +68,7 @@
             <div class="carousel-item active">
               <spring:message code="section.hero.carousel.item1.alt" var="item1Alt"/>
               <img
-                      src="<c:url value='/client/img/hero-img-1.png'/>"
+                      src="<c:url value='/client/img/hero-img-1.jpg'/>"
                       class="d-block w-100"
                       alt="${item1Alt}"
               />
@@ -80,7 +80,7 @@
             <div class="carousel-item">
               <spring:message code="section.hero.carousel.item2.alt" var="item2Alt"/>
               <img
-                      src="<c:url value='/client/img/hero-img-3.png'/>"
+                      src="<c:url value='/client/img/hero-img-3.jpg'/>"
                       class="d-block w-100"
                       alt="${item2Alt}"
               />
@@ -92,7 +92,7 @@
             <div class="carousel-item">
               <spring:message code="section.hero.carousel.item3.alt" var="item3Alt"/>
               <img
-                      src="<c:url value='/client/img/hero-img-2.png'/>"
+                      src="<c:url value='/client/img/hero-img-2.jpg'/>"
                       class="d-block w-100"
                       alt="${item3Alt}"
               />

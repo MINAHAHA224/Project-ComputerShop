@@ -18,8 +18,7 @@ public class LocaleConfiguration {
     public LocaleResolver localeResolver() { // Kiểu trả về là LocaleResolver
         log.info(">>>>>>>>>> Creating SessionLocaleResolver bean in LocaleConfiguration! <<<<<<<<<<");
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(new Locale("vi", "VN")); // Hoặc Locale.US, new Locale("en", "US")
-        // Nếu muốn, bạn có thể đặt tên cho session attribute:
+        slr.setDefaultLocale(new Locale("vi", "VN"));
          slr.setLocaleAttributeName("session_locale");
         return slr;
     }

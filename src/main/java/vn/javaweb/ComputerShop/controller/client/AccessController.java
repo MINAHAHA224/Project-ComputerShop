@@ -49,8 +49,9 @@ public class AccessController {
     @PostMapping("/login")
     public String postLogin(Model model, HttpSession session , Locale locale
             , @Valid @ModelAttribute("loginDTO") LoginDTO loginDTO
+            , BindingResult bindingResult
             ,  RedirectAttributes redirectAttributes
-            , BindingResult bindingResult) {
+           ) {
 
 
         List<FieldError> errors = bindingResult.getFieldErrors();
@@ -58,7 +59,7 @@ public class AccessController {
             for (FieldError error : errors) {
                 System.out.println("--ER " + error.getField() + " - " + error.getDefaultMessage());
             }
-
+            model.addAttribute("loginDTO", loginDTO);
             return "client/auth/login";
         }
         ResponseBodyDTO handleLogin = this.userService.handleLogin(loginDTO, session , locale);
@@ -114,11 +115,16 @@ public class AccessController {
     }
 
     @GetMapping("/auth/oauth2/code/google")
-    public String handleGoogleCallback(@RequestParam("code") String code
-            , HttpServletResponse response, HttpSession session , Model model) {
+    public String handleGoogleCallback(@RequestParam("code") String code , RedirectAttributes redirectAttributes
+            , HttpSession session , Model model ,Locale locale) {
 
-        InformationDTO informationDTO = this.userService.handleLoginOauth2Google(code, response, session);
-        session.setAttribute("informationDTO", informationDTO);
+        ResponseBodyDTO result = this.userService.handleLoginOauth2Google(code, locale, session);
+        if ( result.getStatus() == 200) {
+            InformationDTO informationDTO = (InformationDTO) result.getData();
+            session.setAttribute("informationDTO", informationDTO);
+            redirectAttributes.addFlashAttribute("messageSuccess" ,result.getMessage() );
+        }
+
 
 
         return "redirect:/home";

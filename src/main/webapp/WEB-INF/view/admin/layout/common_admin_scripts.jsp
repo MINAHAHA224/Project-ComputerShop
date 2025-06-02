@@ -15,5 +15,8 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
         crossorigin="anonymous"
 ></script>
+
+<script src="<c:url value='/js/chart-area-demo.js'/>"></script>
+<script src="<c:url value='/js/chart-bar-demo.js'/>"></script>
 <script src="<c:url value='/js/scripts.js'/>"></script>
 <script src="<c:url value='/client/js/goong-autocomplete.js'/>"></script>

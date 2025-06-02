@@ -47,9 +47,9 @@ public class ClientProductController {
 
     @PostMapping("/add-product-to-cart/{id}")
     public String addProductToCart(@PathVariable("id") Long productId
-            , HttpSession session , Model model , Locale locale ) {
+            , HttpSession session , Model model , Locale locale , RedirectAttributes redirectAttributes ) {
         ResponseBodyDTO responseBodyDTO = this.cartService.handleAddOneProductToCart(session , productId , locale);
-        model.addAttribute("messageSuccess" ,responseBodyDTO.getMessage() );
+        redirectAttributes.addFlashAttribute("messageSuccess" ,responseBodyDTO.getMessage() );
         return "redirect:/home";
     }
 

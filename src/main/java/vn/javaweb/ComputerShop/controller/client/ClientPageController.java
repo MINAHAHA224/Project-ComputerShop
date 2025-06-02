@@ -1,10 +1,8 @@
 package vn.javaweb.ComputerShop.controller.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.javaweb.ComputerShop.domain.dto.request.ChangePasswordDTO;
+import vn.javaweb.ComputerShop.domain.dto.request.InformationDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.ProductFilterDTO;
 import vn.javaweb.ComputerShop.domain.dto.request.UserProfileUpdateDTO;
 import vn.javaweb.ComputerShop.domain.dto.response.ProductFilterRpDTO;
@@ -41,9 +40,33 @@ public class ClientPageController {
 
 
     @GetMapping("/home")
-    public String getHomepage(Model model) {
+    public String getHomepage(Model model , HttpSession session) {
         List<ProductRpDTO> listResult = this.productService.getAllProductView();
         model.addAttribute("products", listResult);
+
+
+        // mang product danh de search
+
+        List< Map<String , String >> dataSearch = new ArrayList<>();
+
+        for (ProductRpDTO result : listResult) {
+            Map<String, String> productInfo = new HashMap<>();
+            productInfo.put("id", result.getId().toString());
+            productInfo.put("name", result.getName());
+            productInfo.put("image", result.getImage());
+            productInfo.put("price", result.getPrice().toString());
+            productInfo.put("formattedPrice", String.format("%,.0f đ", result.getPrice()));
+            dataSearch.add( productInfo);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String dataSearchJson = objectMapper.writeValueAsString(dataSearch);
+            model.addAttribute("dataSearchJson", dataSearchJson);
+        } catch (Exception e) {
+            model.addAttribute("dataSearchJson", "[]");
+            e.printStackTrace();
+        }
 
 
         return "client/homepage/show";
@@ -109,6 +132,8 @@ public class ClientPageController {
                     System.out.println("-- ER  " + error.getField() + " - " + error.getDefaultMessage());
                 }
 
+                InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
+                userProfileUpdateDTO.setAvatar(informationDTO.getAvatar());
                 model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
                 model.addAttribute("changePasswordDTO", new ChangePasswordDTO());
                 return "client/profile/index";
@@ -134,6 +159,8 @@ public class ClientPageController {
     public String postUpdateChangePass (Model model , RedirectAttributes redirectAttributes,
                                         @Valid @ModelAttribute("changePasswordDTO") ChangePasswordDTO changePasswordDTO ,
                                         BindingResult bindingResult , HttpSession session , Locale locale){
+        InformationDTO informationDTO = (InformationDTO) session.getAttribute("informationDTO") ;
+
         if ( bindingResult.hasErrors()){
 
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -142,6 +169,9 @@ public class ClientPageController {
                 System.out.println("-- ER  " + error.getField() + " - " + error.getDefaultMessage());
             }
             UserProfileUpdateDTO userProfileUpdateDTO = this.userService.handleGetDataUserToProfile(session);
+
+            userProfileUpdateDTO.setAvatar(informationDTO.getAvatar());
+            userProfileUpdateDTO.setAvatar(informationDTO.getAvatar());
             model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
             model.addAttribute("changePasswordDTO", changePasswordDTO);
 
@@ -150,6 +180,7 @@ public class ClientPageController {
 
         if (!changePasswordDTO.getNewPassword().trim().equals(changePasswordDTO.getConfirmNewPassword().trim()) ){
             UserProfileUpdateDTO userProfileUpdateDTO = this.userService.handleGetDataUserToProfile(session);
+            userProfileUpdateDTO.setAvatar(informationDTO.getAvatar());
             model.addAttribute("userProfileUpdateDTO", userProfileUpdateDTO);
             model.addAttribute("changePasswordDTO", changePasswordDTO);
             model.addAttribute("messageError" , "Mật khẩu nhập lai không khớp");

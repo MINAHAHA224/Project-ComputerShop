@@ -18,7 +18,7 @@
     <jsp:include page="../layout/common_head_links.jsp"/>
 </head>
 
-<body data-user-avatar-url="<c:url value='/client/img/${not empty sessionScope.informationDTO.avatar ? sessionScope.informationDTO.avatar : "avatar.jpg"}'/>"
+<body data-user-avatar-url="<c:url value='/images/profile/${not empty sessionScope.informationDTO.avatar ? sessionScope.informationDTO.avatar : "avatar.jpg"}'/>"
       data-user-fullname="<c:out value='${sessionScope.informationDTO.fullName}'/>">
 
 <!-- Spinner Start -->
@@ -29,6 +29,10 @@
 <!-- Spinner End -->
 
 <jsp:include page="../layout/header.jsp" />
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}');
+    localStorage.setItem('productSearchData', JSON.stringify(window.productSearchData));
+</script>
 <jsp:include page="../layout/banner.jsp" />
 <jsp:include page="../layout/feature.jsp" />
 
@@ -96,8 +100,27 @@
 </div>
 <!-- Products Section End-->
 
-<jsp:include page="../layout/chatbot_widget.jsp" />
-<jsp:include page="../layout/footer.jsp" />
+    <%-- Có thể thêm các section khác ở đây: CTA, Testimonials, Blog posts,... --%>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    </div>
+
+    <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+        <div id="toast-message-success" class="d-none" data-message="${param.messageSuccess}${messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty param.messageError || not empty messageError}">
+        <div id="toast-message-error" class="d-none" data-message="${param.messageError}${messageError}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}">
+        <div id="flash-toast-message-success" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"></div>
+    </c:if>
+    <c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}">
+        <div id="flash-toast-message-error" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"></div>
+    </c:if>
+
+    <jsp:include page="../layout/chatbot_widget.jsp" />
+
+    <jsp:include page="../layout/footer.jsp" />
 
 <!-- Back to Top -->
 <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a> <%-- Title có thể được thêm nếu muốn: title="<spring:message code="page.home.button.backToTop"/>" --%>

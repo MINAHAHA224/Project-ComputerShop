@@ -151,8 +151,8 @@ public class UserService {
     }
 
     @Transactional
-    public InformationDTO handleLoginOauth2Google(String code, HttpServletResponse response, HttpSession session) {
-
+    public ResponseBodyDTO  handleLoginOauth2Google(String code,Locale locale, HttpSession session) {
+        ResponseBodyDTO response = new ResponseBodyDTO();
         InformationDTO informationDTO = new InformationDTO();
         // 1. Get access token
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(
@@ -245,8 +245,10 @@ public class UserService {
 
             session.setAttribute("email", email);
         }
-
-        return informationDTO;
+        response.setStatus(200);
+        response.setMessage(messageService.getLocalizedMessage("user.register.success",locale));
+        response.setData(informationDTO);
+        return response;
     }
 
     @Transactional

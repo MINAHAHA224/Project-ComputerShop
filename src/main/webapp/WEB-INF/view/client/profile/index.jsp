@@ -378,6 +378,23 @@
         </div>
     </div>
 </div>
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+</div>
+
+<c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+    <div id="toast-message-success" class="d-none" data-message="${param.messageSuccess}${messageSuccess}"></div>
+</c:if>
+<c:if test="${not empty param.messageError || not empty messageError}">
+    <div id="toast-message-error" class="d-none" data-message="${param.messageError}${messageError}"></div>
+</c:if>
+<c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}">
+    <div id="flash-toast-message-success" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"></div>
+</c:if>
+<c:if test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}">
+    <div id="flash-toast-message-error" class="d-none" data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"></div>
+</c:if>
+
+<jsp:include page="../layout/chatbot_widget.jsp" />
 
 <jsp:include page="../layout/footer.jsp"/>
 <jsp:include page="../layout/common_scripts.jsp"/>

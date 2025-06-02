@@ -42,7 +42,10 @@
 </head>
 <body>
 <jsp:include page="../layout/header.jsp" />
-
+<script type="text/javascript">
+    window.productSearchData = JSON.parse('${dataSearchJson}');
+    // Nếu dùng session: window.productSearchData = JSON.parse('${sessionScope.dataSearchJson}');
+</script>
 <div class="container-fluid py-5">
   <div class="container py-5 thank-you-container">
     <c:if test="${not empty successMessage}">
@@ -77,13 +80,51 @@
     </p>
   </div>
 </div>
+<div
+        class="toast-container position-fixed top-0 end-0 p-3"
+        style="z-index: 1100"
+></div>
 
-<jsp:include page="../layout/footer.jsp" />
-<jsp:include page="../layout/common_scripts.jsp" />
-<%-- Các script này có thể đã được include trong common_scripts.jsp --%>
-<%-- Nếu chưa, bạn có thể giữ lại hoặc di chuyển vào common_scripts.jsp --%>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<c:url value='/client/js/main.js'/>"></script> <%-- Cân nhắc dùng c:url --%>
-</body>
+    <c:if test="${not empty param.messageSuccess || not empty messageSuccess}">
+      <div
+        id="toast-message-success"
+        class="d-none"
+        data-message="${param.messageSuccess}${messageSuccess}"
+      ></div>
+    </c:if>
+    <c:if test="${not empty param.messageError || not empty messageError}">
+      <div
+        id="toast-message-error"
+        class="d-none"
+        data-message="${param.messageError}${messageError}"
+      ></div>
+    </c:if>
+    <c:if
+      test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"
+    >
+      <div
+        id="flash-toast-message-success"
+        class="d-none"
+        data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageSuccess}"
+      ></div>
+    </c:if>
+    <c:if
+      test="${not empty requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"
+    >
+      <div
+        id="flash-toast-message-error"
+        class="d-none"
+        data-message="${requestScope['SPRING_REDIRECT_FLASH_ATTRIBUTES'].messageError}"
+      ></div>
+    </c:if>
+
+    <jsp:include page="../layout/chatbot_widget.jsp" />
+    <jsp:include page="../layout/footer.jsp" />
+    <%--<jsp:include page="../layout/common_scripts.jsp" /> &lt;%&ndash; Giả sử
+    bạn có file này cho common scripts &ndash;%&gt;--%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/js/main.js"></script>
+
+  </body>
 </html>

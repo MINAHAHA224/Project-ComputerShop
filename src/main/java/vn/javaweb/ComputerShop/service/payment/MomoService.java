@@ -4,10 +4,9 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -23,6 +22,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class MomoService {
+    private final RestTemplate restTemplate = new RestTemplate();
     @Value("${momo.partner-code}")
     private String PARTNER_CODE;
 
@@ -39,7 +39,7 @@ public class MomoService {
     private String IPN_URL;
 
     @Value("${momo.request-type}")
-    private String REQUEST_TYPE; // Ví dụ: "captureWallet" hoặc "payWithMethod"
+    private String REQUEST_TYPE; //
 
     // Sửa hàm này, có thể trả về MomoRpDTO hoặc payUrl
     public MomoRpDTO generateMomoPayment(OrderEntity order) { // Hoặc String nếu chỉ trả về payUrl
@@ -49,19 +49,14 @@ public class MomoService {
 //        (long) order.getTotalPrice()
         Long amount =  10000L ;
         String orderInfo = "Thanh toan don hang LaptopShop " + orderId;
-        String extraData = ""; // Để trống nếu không có, hoặc là một JSON string hợp lệ
-        // Ví dụ: "{\"customerName\":\"Nguyen Van A\", \"loyaltyCode\":\"123\"}"
-        // Quan trọng: Nếu extraData là JSON, nó không được đưa vào rawSignature string.
-        // Nếu nó là một chuỗi đơn giản và cần được sign, thì đưa vào. Kiểm tra tài liệu Momo.
-        // Hiện tại, với requestType="captureWallet", extraData thường là chuỗi base64 nếu có.
-        // Nếu không dùng, để trống "" và KHÔNG đưa vào rawSignature.
+        String extraData = "";
 
         // 1. Chuẩn bị các tham số để tạo signature
         // Chỉ bao gồm các tham số ở cấp độ gốc của JSON request theo tài liệu Momo
         Map<String, String> signatureParams = new TreeMap<>(); // TreeMap tự động sắp xếp key theo alphabet
         signatureParams.put("accessKey", ACCESS_KEY);
         signatureParams.put("amount", String.valueOf(amount));
-         signatureParams.put("extraData", extraData); // CHỈ thêm nếu Momo yêu cầu extraData phải được ký. Thường là KHÔNG.
+        signatureParams.put("extraData", extraData); // CHỈ thêm nếu Momo yêu cầu extraData phải được ký. Thường là KHÔNG.
         signatureParams.put("ipnUrl", IPN_URL);
         signatureParams.put("orderId", orderId);
         signatureParams.put("orderInfo", orderInfo);
@@ -109,67 +104,24 @@ public class MomoService {
                 .lang("vi")
                 .signature(generatedSignature);
 
-        // Ví dụ: Nếu requestType="payWithMethod" hoặc API mới có hỗ trợ, bạn có thể thêm items
-//         if ("payWithMethod".equals(REQUEST_TYPE) || "someOtherTypeRequiringItems".equals(REQUEST_TYPE)) {
-//             List<ItemsMomoDTO> items = new ArrayList<>();
-//             for(OrderDetailEntity orderDetail :  order.getOrderDetails()){
-//                 ItemsMomoDTO item = new ItemsMomoDTO();
-//                 item.setId(String.valueOf(orderDetail.getProduct().getId())); // Cần ID sản phẩm
-//                 item.setName(orderDetail.getProduct().getName());
-//                 item.setPrice(orderDetail.getProduct().getPrice().longValue()); // Đơn giá
-//                 item.setQuantity((int) orderDetail.getQuantity());
-//                 item.setTotalPrice((long)orderDetail.getPrice()); // Thành tiền cho item này
-//                 items.add(item);
-//             }
-//             momoRequestBuilder.items(items);
-//         }
+
 
         MomoRqDTO momoRequest = momoRequestBuilder.build();
 
         // 4. Gọi API Momo
-        WebClient webClient = WebClient.builder()
-                .baseUrl("https://test-payment.momo.vn") // URL môi trường test
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MomoRqDTO> requestEntity = new HttpEntity<>(momoRequest, headers);
+        String momoFullApiUrl =   "https://test-payment.momo.vn/v2/gateway/api/create"; // URL đầy đủ của API tạo thanh toán
         try {
-            System.out.println("Sending to Momo: " + momoRequest.toString()); // Log request body
-            MomoRpDTO response = webClient.post()
-                    .uri("/v2/gateway/api/create")
-                    .bodyValue(momoRequest)
-                    .retrieve()
-                    .onStatus(
-                            // SỬA Ở ĐÂY: Sử dụng lambda để kiểm tra statusCode
-                            httpStatus -> httpStatus.is4xxClientError() || httpStatus.is5xxServerError(),
-                            clientResponse -> // Lambda này sẽ được gọi nếu điều kiện trên là true
-                                    clientResponse.bodyToMono(String.class)
-                                            .flatMap(errorBody -> {
-                                                System.err.println("Momo API Error Response Status: " + clientResponse.statusCode());
-                                                System.err.println("Momo API Error Response Body: " + errorBody);
-                                                // Tạo WebClientResponseException với các thông tin cần thiết
-                                                // Bạn có thể cần điều chỉnh constructor của WebClientResponseException
-                                                // tùy thuộc vào phiên bản Spring Webflux của bạn.
-                                                // Constructor này thường mong đợi message, statusCode, statusText, headers, responseBodyAsBytes, charset
-                                                byte[] responseBodyBytes = errorBody != null ? errorBody.getBytes(StandardCharsets.UTF_8) : null;
-                                                return Mono.error(WebClientResponseException.create(
-                                                        clientResponse.statusCode().value(), // int statusCode
-                                                        clientResponse.statusCode().toString(), // String statusText (hoặc lấy từ HttpStatus)
-                                                        clientResponse.headers().asHttpHeaders(), // HttpHeaders
-                                                        responseBodyBytes, // byte[] responseBody
-                                                        StandardCharsets.UTF_8, // Charset
-                                                        clientResponse.request() // HttpRequest (có thể null nếu không có)
-                                                ));
-                                            })
-                    )
-                    .bodyToMono(MomoRpDTO.class)
-                    .block(); // Đồng bộ hóa
+            ResponseEntity<MomoRpDTO> responseEntity = restTemplate.postForEntity(
+                    momoFullApiUrl,
+                    requestEntity,
+                    MomoRpDTO.class
+            );
 
-            if (response != null && response.getResultCode() == 0) {
-                System.out.println("Momo Pay URL: " + response.getPayUrl());
-            } else if (response != null) {
-                System.err.println("Momo payment creation failed with result code: " + response.getResultCode() + " - Message: " + response.getMessage());
-            }
-            return response;
+            MomoRpDTO result = responseEntity.getBody();
+            return result;
 
         } catch (WebClientResponseException e) {
             // Lỗi đã được log ở onStatus, ở đây có thể làm thêm nếu cần

@@ -193,7 +193,7 @@
                                                    data-cart-detail-index="${status.index}"
                                                    data-cart-detail-stock="${cartDetail.stockQuantity}"
                                                    readonly>
-                                            <form:hidden path="cartDetailOne[${status.index}].quantity" value="${cartDetail.quantity}" cssClass="actual-quantity-input"/>
+                                            <form:hidden id="cartDetailOne[${status.index}].quantity" path="cartDetailOne[${status.index}].quantity" value="${cartDetail.quantity}" cssClass="actual-quantity-input"/>
                                             <div class="input-group-btn">
                                                 <button class="btn btn-sm btn-light rounded-end border btn-plus-cart" type="button">
                                                     <i class="fa fa-plus"></i>
@@ -267,7 +267,9 @@
             }
 
             $input.val(newQuantity);
-            $(`input[name="cartDetailOne[${itemIndex}].quantity"]`).val(newQuantity);
+            <%--document.getElementById("cartDetailOne[${itemIndex}].quantity").value = newQuantity;--%>
+            $input.siblings('.actual-quantity-input').val(newQuantity);
+
 
             const itemTotalPrice = price * newQuantity;
             $(`.item-total-price[data-item-total-id="${itemId}"]`).text(formatCurrencyVI(itemTotalPrice) + ' đ');
